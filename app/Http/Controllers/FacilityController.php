@@ -4,88 +4,105 @@ namespace App\Http\Controllers;
 
 use App\Models\Facility;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class FacilityController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    // Halaman daftar fasilitas, bisa dibuka tanpa login + ada filter pencarian
+    public function index(Request $request)
     {
-        // Mengambil seluruh data fasilitas dari database
-        $facilities = Facility::all();
-        return $facilities;
+        $query = Facility::query();
+
+        // Yang INACTIVE cuma boleh dilihat admin, yang lain disembunyikan
+        if (!Auth::check() || Auth::user()->role !== 'ADMIN') {
+            $query->where('status', '!=', 'INACTIVE');
+        }
+
+        // Filter pencarian: tipe, lokasi, kapasitas minimal
+        if ($request->filled('type')) {
+            $query->where('type', $request->string('type'));
+        }
+        if ($request->filled('location')) {
+            $query->where('location', 'like', '%' . $request->string('location') . '%');
+        }
+        if ($request->filled('min_capacity')) {
+            $query->where('capacity', '>=', (int) $request->input('min_capacity'));
+        }
+
+        $facilities = $query->orderBy('name')->get();
+
+        // Buat isi dropdown tipe di form filter
+        $types = Facility::select('type')->distinct()->orderBy('type')->pluck('type');
+
+        return view('facilities.index', [
+            'facilities' => $facilities,
+            'types' => $types,
+            'filters' => $request->only(['type', 'location', 'min_capacity']),
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    // Admin: form tambah fasilitas
     public function create()
     {
-        //
+        return view('facilities.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Admin: simpan fasilitas baru
     public function store(Request $request)
     {
-        // Validasi input fasilitas
-        $request->validate([
-            'name' => 'required',
-            'type' => 'required',
-            'location' => 'required',
-            'capacity' => 'required|integer',
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'type' => 'required|string|max:100',
+            'location' => 'required|string|max:255',
+            'capacity' => 'required|integer|min:1',
+            'description' => 'nullable|string',
+            'status' => 'required|in:AVAILABLE,MAINTENANCE,INACTIVE',
         ]);
 
-        // Simpan fasilitas baru
-        Facility::create([
-            'name' => $request->name,
-            'type' => $request->type,
-            'location' => $request->location,
-            'capacity' => $request->capacity,
-            'description' => $request->description,
-            'status' => 'AVAILABLE',
+        Facility::create($validated);
+
+        return redirect()->route('facilities.index')->with('success', 'Fasilitas berhasil ditambahkan.');
+    }
+
+    // Halaman detail fasilitas, isinya info umum aja
+    public function show(Facility $facility)
+    {
+        // Kalau INACTIVE dan bukan admin, anggap tidak ada
+        if ($facility->status === 'INACTIVE' && (!Auth::check() || Auth::user()->role !== 'ADMIN')) {
+            abort(404);
+        }
+
+        return view('facilities.show', compact('facility'));
+    }
+
+    // Admin: form edit fasilitas
+    public function edit(Facility $facility)
+    {
+        return view('facilities.edit', compact('facility'));
+    }
+
+    // Admin: simpan hasil editan
+    public function update(Request $request, Facility $facility)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'type' => 'required|string|max:100',
+            'location' => 'required|string|max:255',
+            'capacity' => 'required|integer|min:1',
+            'description' => 'nullable|string',
+            'status' => 'required|in:AVAILABLE,MAINTENANCE,INACTIVE',
         ]);
 
-        return "Facility created";
+        $facility->update($validated);
+
+        return redirect()->route('facilities.index')->with('success', 'Fasilitas berhasil diperbarui.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    // Admin: nonaktifkan aja (biar riwayat pinjam/lapor tidak ikut hilang)
+    public function destroy(Facility $facility)
     {
-        //
-    }
+        $facility->update(['status' => 'INACTIVE']);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
-
-    public function __construct()
-    {
-        // Membatasi akses Facility hanya untuk user dengan role ADMIN
-        $this->middleware('role:ADMIN');
+        return redirect()->route('facilities.index')->with('success', 'Fasilitas dinonaktifkan (INACTIVE).');
     }
 }

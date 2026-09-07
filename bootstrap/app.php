@@ -12,7 +12,8 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            'role' => \App\Http\Middleware\RoleMiddleware::class,       // Proteksi halaman berdasarkan role (ADMIN, STAFF, USER)
+            'role' => \App\Http\Middleware\CheckRole::class,       // jaga halaman per role (ADMIN / STAFF / USER)
+            'active' => \App\Http\Middleware\EnsureUserActive::class,   // cuma yang ACTIVE boleh masuk
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

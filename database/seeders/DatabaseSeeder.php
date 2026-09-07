@@ -18,7 +18,8 @@ class DatabaseSeeder extends Seeder
             'name' => 'Dian Berlian',
             'email' => 'dianberlian@undip.ac.id',
             'password' => Hash::make('dian123'),
-            'role' => 'ADMIN'
+            'role' => 'ADMIN',
+            'status' => 'ACTIVE'
         ]);
 
 
@@ -26,7 +27,8 @@ class DatabaseSeeder extends Seeder
             'name' => 'Marchella Arkhina',
             'email' => 'marchell@undip.ac.id',
             'password' => Hash::make('marsel123'),
-            'role' => 'STAFF'
+            'role' => 'STAFF',
+            'status' => 'ACTIVE'
         ]);
 
 
@@ -34,14 +36,16 @@ class DatabaseSeeder extends Seeder
             'name' => 'Kayla Febrina',
             'email' => 'kayla@students.undip.ac.id',
             'password' => Hash::make('kayla123'),
-            'role' => 'USER'
+            'role' => 'USER',
+            'status' => 'ACTIVE'
         ]);
 
         User::create([
             'name' => 'Firdaus Argifari',
             'email' => 'argifari@students.undip.ac.id',
             'password' => Hash::make('argi123'),
-            'role' => 'USER'
+            'role' => 'USER',
+            'status' => 'ACTIVE'
         ]);
 
 
