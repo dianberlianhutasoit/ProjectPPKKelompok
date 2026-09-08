@@ -15,6 +15,11 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => \App\Http\Middleware\CheckRole::class,       // jaga halaman per role (ADMIN / STAFF / USER)
             'active' => \App\Http\Middleware\EnsureUserActive::class,   // cuma yang ACTIVE boleh masuk
         ]);
+        $middleware->validateCsrfTokens(except: [
+            'reservasi',
+            'reservasi/*',
+            'petugas/*',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

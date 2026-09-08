@@ -37,3 +37,17 @@ Route::middleware(['auth', 'active', 'role:ADMIN'])->prefix('admin')->name('admi
     Route::post('/users', [UserController::class, 'store'])->name('users.store');
     Route::patch('/users/{user}/verify', [UserController::class, 'verify'])->name('users.verify');
 });
+
+use App\Http\Controllers\ReservationController;
+
+Route::middleware(['auth'])->group(function () {
+    // Route Pengguna
+    Route::patch('/reservasi/{id}/batal-user', [ReservationController::class, 'cancelByUser'])->name('reservations.cancelByUser');
+    Route::post('/reservasi', [ReservationController::class, 'store'])->name('reservations.store');
+    // Route Petugas
+    Route::middleware(['role:petugas'])->group(function () {
+        Route::patch('/petugas/reservasi/{id}/setujui', [ReservationController::class, 'approveByPetugas'])->name('reservations.approve');
+        Route::patch('/petugas/reservasi/{id}/tolak', [ReservationController::class, 'rejectByPetugas'])->name('reservations.reject');
+        Route::patch('/petugas/reservasi/{id}/batal', [ReservationController::class, 'cancelByPetugas'])->name('reservations.cancelByPetugas');
+    });
+});
