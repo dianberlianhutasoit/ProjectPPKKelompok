@@ -114,11 +114,7 @@ return [
     | manage Laravel's "maintenance mode" status. The "cache" driver will
     | allow maintenance mode to be controlled across multiple machines.
     |
-<<<<<<< HEAD
-    | Supported drivers: "file", "cache", "array"
-=======
     | Supported drivers: "file", "cache"
->>>>>>> feature/person-1-backend
     |
     */
 
