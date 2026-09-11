@@ -2,7 +2,10 @@ compiled.php
 config.php
 down
 events.scanned.php
+<<<<<<< HEAD
 lsp-*.php
+=======
+>>>>>>> feature/person-1-backend
 maintenance.php
 routes.php
 routes.scanned.php
