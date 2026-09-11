@@ -3,35 +3,27 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-<<<<<<< HEAD
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class DatabaseSeeder extends Seeder
-{
-    use WithoutModelEvents;
 
-=======
+
 use App\Models\Facility;
-use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
->>>>>>> feature/person-1-backend
     /**
      * Seed the application's database.
      */
     public function run(): void
     {
-<<<<<<< HEAD
         // User::factory(10)->create();
 
         User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
-=======
         User::create([
             'name' => 'Dian Berlian',
             'email' => 'dianberlian@undip.ac.id',
@@ -133,6 +125,5 @@ class DatabaseSeeder extends Seeder
             'status' => 'AVAILABLE'
         ]);
 
->>>>>>> feature/person-1-backend
     }
 }

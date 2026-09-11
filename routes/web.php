@@ -1,19 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-<<<<<<< HEAD
-=======
 use App\Http\Controllers\FacilityController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\UserController;
->>>>>>> feature/person-1-backend
 
 Route::get('/', function () {
     return view('welcome');
 });
-<<<<<<< HEAD
-=======
 
 // Daftar sendiri khusus USER (langsung PENDING), + login & logout
 Route::middleware('guest')->group(function () {
@@ -42,4 +37,3 @@ Route::middleware(['auth', 'active', 'role:ADMIN'])->prefix('admin')->name('admi
     Route::post('/users', [UserController::class, 'store'])->name('users.store');
     Route::patch('/users/{user}/verify', [UserController::class, 'verify'])->name('users.verify');
 });
->>>>>>> feature/person-1-backend
