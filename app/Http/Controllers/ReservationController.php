@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
+use Illuminate\Http\Request; 
 use App\Models\Reservation;
+use App\Http\Requests\ReservationRequest; 
 use Carbon\Carbon;
 
 class ReservationController extends Controller
@@ -12,39 +13,14 @@ class ReservationController extends Controller
     /**
      * Membuat reservasi baru + Validasi Core Logic
      */
-    public function store(Request $request)
+    public function store(ReservationRequest $request)
     {
-        // 1. Validasi Format Input
-        $request->validate([
-            'facility_id'      => 'required|exists:facilities,id',
-            'reservation_date' => 'required|date_format:Y-m-d',
-            'start_time'       => 'required|date_format:H:i',
-            'end_time'         => 'required|date_format:H:i|after:start_time',
-            'purpose'          => 'required|string',
-        ]);
 
-        // Gabungkan tanggal & jam menjadi format DateTime (Sesuai Migration Person 1)
+        // 1. Format waktu
         $startCarbon = Carbon::parse($request->reservation_date . ' ' . $request->start_time);
         $endCarbon   = Carbon::parse($request->reservation_date . ' ' . $request->end_time);
 
-        // 2. Business Rule: Kelipatan 30 Menit
-        if ($startCarbon->minute % 30 !== 0 || $endCarbon->minute % 30 !== 0) {
-            return response()->json([
-                'message' => 'Waktu mulai dan selesai harus kelipatan 30 menit (misal: 08:00, 08:30).'
-            ], 422);
-        }
-
-        // 3. Business Rule: Jam Operasional (07:00 - 20:00)
-        $opStart = Carbon::parse($request->reservation_date . ' 07:00');
-        $opEnd   = Carbon::parse($request->reservation_date . ' 20:00');
-
-        if ($startCarbon->lt($opStart) || $endCarbon->gt($opEnd)) {
-            return response()->json([
-                'message' => 'Reservasi hanya diperbolehkan pada jam operasional (07:00 - 20:00).'
-            ], 422);
-        }
-
-        // 4. Business Rule: Cek Anti-Bentrok (Overlap Check)
+        // 2. Cek Anti-Bentrok (Overlap Check)
         $isOverlap = Reservation::where('facility_id', $request->facility_id)
             ->whereIn('status', ['PENDING', 'APPROVED'])
             ->where(function ($query) use ($startCarbon, $endCarbon) {
@@ -55,13 +31,13 @@ class ReservationController extends Controller
 
         if ($isOverlap) {
             return response()->json([
-                'message' => 'Fasilitas sudah dipesan pada rentang waktu tersebut.'
+                'message' => 'Maaf, fasilitas sudah dipesan pada rentang waktu tersebut.'
             ], 422);
         }
 
-        // 5. Simpan ke Database
+        // 3. Simpan ke Database
         $reservation = Reservation::create([
-            'user_id'     => Auth::id() ?? 1, // Fallback ke User ID 1 jika testing tanpa login
+            'user_id'     => Auth::id() ?? 1, // Catatan: Nanti hapus '?? 1' jika sistem login sudah siap
             'facility_id' => $request->facility_id,
             'start_time'  => $startCarbon,
             'end_time'    => $endCarbon,
@@ -78,20 +54,79 @@ class ReservationController extends Controller
     public function cancelByUser($id)
     {
         // Logika pembatalan oleh user
+        $reservation = Reservation::findOrFail($id);
+
+        // 1. Validasi Keamanan: Pastikan yang membatalkan adalah pemilik reservasi
+        if ($reservation->user_id !== Auth::id()) {
+            return response()->json(['message' => 'Anda tidak berhak membatalkan reservasi ini.'], 403);
+        }
+
+        // 2. Business Rule: Hanya reservasi berstatus PENDING yang boleh dibatalkan sendiri
+        if ($reservation->status !== 'PENDING') {
+            return response()->json(['message' => 'Reservasi tidak dapat dibatalkan karena sudah diproses.'], 400);
+        }
+
+        // 3. Business Rule: Batas Waktu Pembatalan
+        // Kita atur batas maksimal pembatalan adalah 2 jam sebelum start_time
+        $now = Carbon::now();
+        $batasWaktuBatal = Carbon::parse($reservation->start_time)->subHours(2); 
+
+        if ($now->greaterThanOrEqualTo($batasWaktuBatal)) {
+            return response()->json([
+                'message' => 'Batas waktu pembatalan habis. Anda hanya bisa membatalkan maksimal 2 jam sebelum jadwal dimulai.'
+            ], 400);
+        }
+
+        $reservation->update(['status' => 'CANCELLED']);
+
+        return response()->json(['message' => 'Reservasi Anda berhasil dibatalkan.']);
     }
 
     public function approveByPetugas($id)
     {
         // Logika persetujuan petugas
+        $reservation = Reservation::findOrFail($id);
+        
+        $reservation->update(['status' => 'APPROVED']);
+
+        return response()->json(['message' => 'Reservasi berhasil disetujui.']);
     }
 
     public function rejectByPetugas(Request $request, $id)
     {
-        // Logika penolakan petugas
+        // Logika penolakan petugas (butuh input alasan)
+        $request->validate([
+            'alasan' => 'required|string|max:255'
+        ], [
+            'alasan.required' => 'Alasan penolakan wajib diisi.'
+        ]);
+
+        $reservation = Reservation::findOrFail($id);
+        
+        $reservation->update([
+            'status' => 'REJECTED',
+            'alasan' => $request->alasan 
+        ]);
+
+        return response()->json(['message' => 'Reservasi berhasil ditolak.']);
     }
 
     public function cancelByPetugas(Request $request, $id)
     {
-        // Logika pembatalan oleh petugas
+        // Logika pembatalan oleh petugas (butuh input alasan)
+        $request->validate([
+            'alasan' => 'required|string|max:255'
+        ], [
+            'alasan.required' => 'Alasan pembatalan mendesak wajib diisi.'
+        ]);
+
+        $reservation = Reservation::findOrFail($id);
+        
+        $reservation->update([
+            'status' => 'CANCELLED',
+            'alasan' => $request->alasan 
+        ]);
+
+        return response()->json(['message' => 'Reservasi berhasil dibatalkan oleh Petugas.']);
     }
 }
