@@ -53,7 +53,6 @@ class ReservationController extends Controller
 
     public function cancelByUser($id)
     {
-        // Logika pembatalan oleh user
         $reservation = Reservation::findOrFail($id);
 
         // 1. Validasi Keamanan: Pastikan yang membatalkan adalah pemilik reservasi
@@ -61,22 +60,14 @@ class ReservationController extends Controller
             return response()->json(['message' => 'Anda tidak berhak membatalkan reservasi ini.'], 403);
         }
 
-        // 2. Business Rule: Hanya reservasi berstatus PENDING yang boleh dibatalkan sendiri
+        // 2. Business Rule: Hanya reservasi yang masih PENDING (belum di-approve) yang boleh dibatalkan
         if ($reservation->status !== 'PENDING') {
-            return response()->json(['message' => 'Reservasi tidak dapat dibatalkan karena sudah diproses.'], 400);
-        }
-
-        // 3. Business Rule: Batas Waktu Pembatalan
-        // Kita atur batas maksimal pembatalan adalah 2 jam sebelum start_time
-        $now = Carbon::now();
-        $batasWaktuBatal = Carbon::parse($reservation->start_time)->subHours(2); 
-
-        if ($now->greaterThanOrEqualTo($batasWaktuBatal)) {
             return response()->json([
-                'message' => 'Batas waktu pembatalan habis. Anda hanya bisa membatalkan maksimal 2 jam sebelum jadwal dimulai.'
+                'message' => 'Reservasi tidak dapat dibatalkan karena sudah disetujui atau diproses oleh petugas.'
             ], 400);
         }
 
+        // Ubah status menjadi CANCELLED
         $reservation->update(['status' => 'CANCELLED']);
 
         return response()->json(['message' => 'Reservasi Anda berhasil dibatalkan.']);
