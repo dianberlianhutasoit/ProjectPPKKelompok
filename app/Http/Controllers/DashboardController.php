@@ -16,7 +16,12 @@ class DashboardController extends Controller
             return redirect()->route('admin.users.index');
         }
 
-        // STAFF / USER sementara ke katalog fasilitas (nanti diganti kalau halamannya sudah ada)
-        return redirect()->route('facilities.index');
+        // STAFF ke halaman pengelolaan reservasi
+        if ($user->role === 'STAFF') {
+            return redirect()->route('staff.reservations.index');
+        }
+
+        // USER ke riwayat reservasinya
+        return redirect()->route('reservations.index');
     }
 }
