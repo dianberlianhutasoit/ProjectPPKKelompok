@@ -9,6 +9,8 @@ class Reservation extends Model
     protected $fillable = [
         'user_id',
         'facility_id',
+        'identity_number',
+        'participants',
         'start_time',
         'end_time',
         'purpose',
@@ -16,6 +18,14 @@ class Reservation extends Model
         'cancel_reason'
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'start_time' => 'datetime',
+            'end_time' => 'datetime',
+        ];
+    }
+    
     public function user()
     {
         return $this->belongsTo(User::class);

@@ -111,6 +111,24 @@
 
         </div>
 
+        @auth
+
+            @if(auth()->user()->role === 'USER' && $facility->status === 'AVAILABLE')
+
+                <div class="mt-5">
+
+                    <a
+                        href="{{ route('reservations.create', $facility) }}"
+                        class="inline-flex rounded-lg bg-[#d8c8bc] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#c9b5a7]">
+                        Ajukan reservasi
+                    </a>
+
+                </div>
+
+            @endif
+
+        @endauth
+
 
         {{-- Admin --}}
         @auth
@@ -134,6 +152,179 @@
     </div>
 
 
+<<<<<<< HEAD
+    {{-- Availability --}}
+<div class="mt-5 rounded-2xl border border-[#e9e3dd] bg-white p-6 shadow-sm">
+
+    <div class="mb-5">
+        <h2 class="text-lg font-semibold text-[#3f4f63]">
+            Ketersediaan Fasilitas
+        </h2>
+
+        <p class="mt-1 text-sm text-[#9ca3ab]">
+            Pilih tanggal untuk melihat ketersediaan fasilitas setiap 30 menit.
+        </p>
+    </div>
+
+    {{-- Pilih tanggal --}}
+    <form method="GET" action="{{ route('facilities.show', $facility) }}" class="mb-6">
+        <label for="date" class="mb-2 block text-sm font-medium text-[#59636f]">
+            Tanggal reservasi
+        </label>
+
+        <div class="flex flex-col gap-3 sm:flex-row">
+            <input
+                type="date"
+                id="date"
+                name="date"
+                value="{{ $selectedDate }}"
+                min="{{ now()->format('Y-m-d') }}"
+                class="rounded-lg border border-[#e3ddd7] px-3 py-2.5 text-sm text-[#59636f] outline-none focus:border-[#c9b5a7] focus:ring-1 focus:ring-[#c9b5a7]"
+            >
+
+            <button
+                type="submit"
+                class="rounded-lg bg-[#d8c8bc] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#c9b5a7]"
+            >
+                Lihat jadwal
+            </button>
+        </div>
+    </form>
+
+    @if ($facility->status === 'MAINTENANCE')
+
+        <div class="rounded-xl bg-[#f7eee4] px-4 py-4">
+            <p class="text-sm font-medium text-[#92745e]">
+                Fasilitas sedang dalam perbaikan
+            </p>
+
+            <p class="mt-1 text-xs leading-5 text-[#a18b79]">
+                Fasilitas tidak dapat digunakan untuk reservasi selama masa perbaikan.
+            </p>
+        </div>
+
+    @elseif ($facility->status === 'INACTIVE')
+
+        <div class="rounded-xl bg-[#f1eded] px-4 py-4">
+            <p class="text-sm font-medium text-[#806f6f]">
+                Fasilitas tidak aktif
+            </p>
+
+            <p class="mt-1 text-xs leading-5 text-[#9a8d8d]">
+                Fasilitas ini sedang tidak dapat digunakan untuk reservasi.
+            </p>
+        </div>
+
+    @else
+
+        {{-- Keterangan warna --}}
+        <div class="mb-5 flex flex-wrap gap-4 text-xs text-[#6f7378]">
+
+            <div class="flex items-center gap-2">
+                <span class="h-3 w-3 rounded-full bg-[#dcebdc]"></span>
+                Tersedia
+            </div>
+
+            <div class="flex items-center gap-2">
+                <span class="h-3 w-3 rounded-full bg-[#ecdede]"></span>
+                Sudah dipesan
+            </div>
+
+            <div class="flex items-center gap-2">
+                <span class="h-3 w-3 rounded-full bg-[#f1dfcc]"></span>
+                Dalam perbaikan
+            </div>
+
+        </div>
+
+        {{-- Slot waktu --}}
+        <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+
+            @foreach ($slots as $slot)
+
+                @if ($slot['status'] === 'AVAILABLE')
+
+                    @auth
+                        @if (auth()->user()->role === 'USER')
+
+                            <a
+                                href="{{ route('reservations.create', [
+                                    'facility' => $facility,
+                                    'date' => $selectedDate,
+                                    'start_time' => $slot['start'],
+                                    'end_time' => $slot['end'],
+                                ]) }}"
+                                class="rounded-xl border border-[#dcebdc] bg-[#e8f2e8] px-3 py-3 text-center transition hover:border-[#b9d1b9] hover:bg-[#dfeede]"
+                            >
+                                <p class="text-sm font-medium text-[#607560]">
+                                    {{ $slot['start'] }} - {{ $slot['end'] }}
+                                </p>
+
+                                <p class="mt-1 text-xs text-[#7c8c7c]">
+                                    Tersedia
+                                </p>
+                            </a>
+
+                        @else
+
+                            <div class="rounded-xl border border-[#dcebdc] bg-[#e8f2e8] px-3 py-3 text-center">
+                                <p class="text-sm font-medium text-[#607560]">
+                                    {{ $slot['start'] }} - {{ $slot['end'] }}
+                                </p>
+
+                                <p class="mt-1 text-xs text-[#7c8c7c]">
+                                    Tersedia
+                                </p>
+                            </div>
+
+                        @endif
+                    @else
+
+                        <div class="rounded-xl border border-[#dcebdc] bg-[#e8f2e8] px-3 py-3 text-center">
+                            <p class="text-sm font-medium text-[#607560]">
+                                {{ $slot['start'] }} - {{ $slot['end'] }}
+                            </p>
+
+                            <p class="mt-1 text-xs text-[#7c8c7c]">
+                                Tersedia
+                            </p>
+                        </div>
+
+                    @endauth
+
+                @elseif ($slot['status'] === 'MAINTENANCE')
+
+                    <div class="cursor-not-allowed rounded-xl border border-[#f1dfcc] bg-[#f7eee4] px-3 py-3 text-center">
+                        <p class="text-sm font-medium text-[#92745e]">
+                            {{ $slot['start'] }} - {{ $slot['end'] }}
+                        </p>
+
+                        <p class="mt-1 text-xs text-[#a18b79]">
+                            Perbaikan
+                        </p>
+                    </div>
+
+                @else
+
+                    <div class="cursor-not-allowed rounded-xl border border-[#ecdede] bg-[#f3e8e8] px-3 py-3 text-center">
+                        <p class="text-sm font-medium text-[#806f6f]">
+                            {{ $slot['start'] }} - {{ $slot['end'] }}
+                        </p>
+
+                        <p class="mt-1 text-xs text-[#9a8d8d]">
+                            Sudah dipesan
+                        </p>
+                    </div>
+
+                @endif
+
+            @endforeach
+
+        </div>
+
+    @endif
+
+=======
     {{-- Future reservation --}}
     <div class="mt-5 rounded-xl bg-[#f7f3ef] px-5 py-4">
 
@@ -147,6 +338,7 @@
 
     </div>
 
+>>>>>>> origin/feature/person-2-frontend
 </div>
 
 @endsection
