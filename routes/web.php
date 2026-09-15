@@ -6,9 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\UserController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', fn() => redirect()->route('facilities.index'));
 
 // Daftar sendiri khusus USER (langsung PENDING), + login & logout
 Route::middleware('guest')->group(function () {
@@ -23,7 +21,8 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->n
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'active'])->name('dashboard');
 
 // Siapa aja boleh lihat daftar & detail fasilitas
-Route::resource('facilities', FacilityController::class)->only(['index', 'show']);
+Route::get('/facilities', [FacilityController::class, 'index'])->name('facilities.index');
+Route::get('/facilities/{facility}', [FacilityController::class, 'show'])->middleware('auth')->name('facilities.show');
 
 // Cuma admin yang boleh tambah / edit / nonaktifkan fasilitas
 Route::resource('facilities', FacilityController::class)
