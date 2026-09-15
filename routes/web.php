@@ -5,6 +5,7 @@ use App\Http\Controllers\FacilityController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\ReservationController;
 
 Route::get('/', fn() => redirect()->route('facilities.index'));
 
@@ -36,3 +37,36 @@ Route::middleware(['auth', 'active', 'role:ADMIN'])->prefix('admin')->name('admi
     Route::post('/users', [UserController::class, 'store'])->name('users.store');
     Route::patch('/users/{user}/verify', [UserController::class, 'verify'])->name('users.verify');
 });
+
+// Reservasi khusus USER
+Route::middleware(['auth', 'active', 'role:USER'])->group(function () {
+    Route::get('/facilities/{facility}/reservations/create', [ReservationController::class, 'create'])
+        ->name('reservations.create');
+
+    Route::post('/facilities/{facility}/reservations', [ReservationController::class, 'store'])
+        ->name('reservations.store');
+
+    Route::get('/reservations', [ReservationController::class, 'index'])
+        ->name('reservations.index');
+
+    Route::patch('/reservations/{reservation}/cancel', [ReservationController::class, 'cancel'])
+        ->name('reservations.cancel');
+});
+
+// Pengelolaan reservasi oleh STAFF dan ADMIN
+Route::middleware(['auth', 'active', 'role:STAFF,ADMIN'])
+    ->prefix('staff')
+    ->name('staff.')
+    ->group(function () {
+        Route::get('/reservations', [ReservationController::class, 'staffIndex'])
+            ->name('reservations.index');
+
+        Route::patch('/reservations/{reservation}/approve', [ReservationController::class, 'approve'])
+            ->name('reservations.approve');
+
+        Route::patch('/reservations/{reservation}/reject', [ReservationController::class, 'reject'])
+            ->name('reservations.reject');
+
+        Route::patch('/reservations/{reservation}/cancel', [ReservationController::class, 'staffCancel'])
+            ->name('reservations.cancel');
+    });
