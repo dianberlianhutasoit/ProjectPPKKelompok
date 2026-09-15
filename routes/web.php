@@ -5,10 +5,9 @@ use App\Http\Controllers\FacilityController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\ReservationController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', fn() => redirect()->route('facilities.index'));
 
 // Daftar sendiri khusus USER (langsung PENDING), + login & logout
 Route::middleware('guest')->group(function () {
@@ -23,7 +22,8 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->n
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'active'])->name('dashboard');
 
 // Siapa aja boleh lihat daftar & detail fasilitas
-Route::resource('facilities', FacilityController::class)->only(['index', 'show']);
+Route::get('/facilities', [FacilityController::class, 'index'])->name('facilities.index');
+Route::get('/facilities/{facility}', [FacilityController::class, 'show'])->middleware('auth')->name('facilities.show');
 
 // Cuma admin yang boleh tambah / edit / nonaktifkan fasilitas
 Route::resource('facilities', FacilityController::class)
@@ -38,16 +38,35 @@ Route::middleware(['auth', 'active', 'role:ADMIN'])->prefix('admin')->name('admi
     Route::patch('/users/{user}/verify', [UserController::class, 'verify'])->name('users.verify');
 });
 
-use App\Http\Controllers\ReservationController;
+// Reservasi khusus USER
+Route::middleware(['auth', 'active', 'role:USER'])->group(function () {
+    Route::get('/facilities/{facility}/reservations/create', [ReservationController::class, 'create'])
+        ->name('reservations.create');
 
-Route::middleware(['auth'])->group(function () {
-    // Route Pengguna
-    Route::patch('/reservasi/{id}/batal-user', [ReservationController::class, 'cancelByUser'])->name('reservations.cancelByUser');
-    Route::post('/reservasi', [ReservationController::class, 'store'])->name('reservations.store');
-    // Route Petugas
-    Route::middleware(['role:petugas'])->group(function () {
-        Route::patch('/petugas/reservasi/{id}/setujui', [ReservationController::class, 'approveByPetugas'])->name('reservations.approve');
-        Route::patch('/petugas/reservasi/{id}/tolak', [ReservationController::class, 'rejectByPetugas'])->name('reservations.reject');
-        Route::patch('/petugas/reservasi/{id}/batal', [ReservationController::class, 'cancelByPetugas'])->name('reservations.cancelByPetugas');
-    });
+    Route::post('/facilities/{facility}/reservations', [ReservationController::class, 'store'])
+        ->name('reservations.store');
+
+    Route::get('/reservations', [ReservationController::class, 'index'])
+        ->name('reservations.index');
+
+    Route::patch('/reservations/{reservation}/cancel', [ReservationController::class, 'cancel'])
+        ->name('reservations.cancel');
 });
+
+// Pengelolaan reservasi oleh STAFF dan ADMIN
+Route::middleware(['auth', 'active', 'role:STAFF,ADMIN'])
+    ->prefix('staff')
+    ->name('staff.')
+    ->group(function () {
+        Route::get('/reservations', [ReservationController::class, 'staffIndex'])
+            ->name('reservations.index');
+
+        Route::patch('/reservations/{reservation}/approve', [ReservationController::class, 'approve'])
+            ->name('reservations.approve');
+
+        Route::patch('/reservations/{reservation}/reject', [ReservationController::class, 'reject'])
+            ->name('reservations.reject');
+
+        Route::patch('/reservations/{reservation}/cancel', [ReservationController::class, 'staffCancel'])
+            ->name('reservations.cancel');
+    });

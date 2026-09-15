@@ -42,6 +42,22 @@
                         </a>
                     @endif
 
+                    @if(auth()->user()->role === 'USER')
+                        <a href="{{ route('reservations.index') }}"
+                        class="hidden text-[#6b7280] transition hover:text-[#9b8878] sm:inline">
+                            Reservasi Saya
+                        </a>
+                    @endif
+
+                    @if(in_array(auth()->user()->role, ['STAFF', 'ADMIN']))
+
+    <a href="{{ route('staff.reservations.index') }}"
+       class="hidden text-[#6b7280] transition hover:text-[#9b8878] sm:inline">
+        Reservasi
+    </a>
+
+@endif
+
                     <span class="hidden border-l border-[#e9e3dd] pl-5 text-[#9ca3af] md:inline">
                         {{ auth()->user()->name }}
                     </span>
