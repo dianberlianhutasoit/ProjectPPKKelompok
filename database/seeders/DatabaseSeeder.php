@@ -90,6 +90,7 @@ class DatabaseSeeder extends Seeder
         Reservation::create([
             'user_id' => 10, 'facility_id' => 1,
             'start_time' => Carbon::parse('2026-09-20 08:00'),
+            'participants' =>20,
             'end_time' => Carbon::parse('2026-09-20 09:00'),
             'purpose' => 'Rapat UKM Informatika',
             'status' => 'APPROVED',
@@ -97,6 +98,7 @@ class DatabaseSeeder extends Seeder
         Reservation::create([
             'user_id' => 11, 'facility_id' => 1,
             'start_time' => Carbon::parse('2026-09-20 08:30'),
+            'participants' =>20,
             'end_time' => Carbon::parse('2026-09-20 09:30'),
             'purpose' => 'Diskusi kelompok (tes overlap)',
             'status' => 'PENDING',
@@ -104,6 +106,7 @@ class DatabaseSeeder extends Seeder
         Reservation::create([
             'user_id' => 12, 'facility_id' => 5,
             'start_time' => Carbon::parse('2026-09-21 13:00'),
+            'participants' =>20,
             'end_time' => Carbon::parse('2026-09-21 14:30'),
             'purpose' => 'Praktikum pengganti',
             'status' => 'PENDING',
@@ -111,6 +114,7 @@ class DatabaseSeeder extends Seeder
         Reservation::create([
             'user_id' => 13, 'facility_id' => 2,
             'start_time' => Carbon::parse('2026-09-18 10:00'),
+            'participants' =>20,
             'end_time' => Carbon::parse('2026-09-18 11:00'),
             'purpose' => 'Dibatalkan karena hujan',
             'status' => 'CANCELLED',
@@ -118,6 +122,7 @@ class DatabaseSeeder extends Seeder
         Reservation::create([
             'user_id' => 14, 'facility_id' => 3,
             'start_time' => Carbon::parse('2026-09-19 09:00'),
+            'participants' =>20,
             'end_time' => Carbon::parse('2026-09-19 10:00'),
             'purpose' => 'Ditolak karena maintenance',
             'status' => 'REJECTED',
