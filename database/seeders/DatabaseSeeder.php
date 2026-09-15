@@ -89,6 +89,7 @@ class DatabaseSeeder extends Seeder
 
         Reservation::create([
             'user_id' => 10, 'facility_id' => 1,
+            'identity_number' => '240101010001', 'participants' => 25,
             'start_time' => Carbon::parse('2026-09-20 08:00'),
             'end_time' => Carbon::parse('2026-09-20 09:00'),
             'purpose' => 'Rapat UKM Informatika',
@@ -96,6 +97,7 @@ class DatabaseSeeder extends Seeder
         ]);
         Reservation::create([
             'user_id' => 11, 'facility_id' => 1,
+            'identity_number' => '240101010002', 'participants' => 10,
             'start_time' => Carbon::parse('2026-09-20 08:30'),
             'end_time' => Carbon::parse('2026-09-20 09:30'),
             'purpose' => 'Diskusi kelompok (tes overlap)',
@@ -103,6 +105,7 @@ class DatabaseSeeder extends Seeder
         ]);
         Reservation::create([
             'user_id' => 12, 'facility_id' => 5,
+            'identity_number' => '240101010003', 'participants' => 30,
             'start_time' => Carbon::parse('2026-09-21 13:00'),
             'end_time' => Carbon::parse('2026-09-21 14:30'),
             'purpose' => 'Praktikum pengganti',
@@ -110,6 +113,7 @@ class DatabaseSeeder extends Seeder
         ]);
         Reservation::create([
             'user_id' => 13, 'facility_id' => 2,
+            'identity_number' => '240101010004', 'participants' => 20,
             'start_time' => Carbon::parse('2026-09-18 10:00'),
             'end_time' => Carbon::parse('2026-09-18 11:00'),
             'purpose' => 'Dibatalkan karena hujan',
@@ -117,6 +121,7 @@ class DatabaseSeeder extends Seeder
         ]);
         Reservation::create([
             'user_id' => 14, 'facility_id' => 3,
+            'identity_number' => '240101010005', 'participants' => 15,
             'start_time' => Carbon::parse('2026-09-19 09:00'),
             'end_time' => Carbon::parse('2026-09-19 10:00'),
             'purpose' => 'Ditolak karena maintenance',
