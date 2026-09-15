@@ -3,7 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Validator; // <-- Tambahkan import ini
+use Illuminate\Validation\Validator; 
 
 class ReservationRequest extends FormRequest
 {
