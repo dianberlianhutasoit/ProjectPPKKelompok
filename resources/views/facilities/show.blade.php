@@ -152,6 +152,7 @@
     </div>
 
 
+<<<<<<< HEAD
     {{-- Availability --}}
 <div class="mt-5 rounded-2xl border border-[#e9e3dd] bg-white p-6 shadow-sm">
 
@@ -323,6 +324,21 @@
 
     @endif
 
+=======
+    {{-- Future reservation --}}
+    <div class="mt-5 rounded-xl bg-[#f7f3ef] px-5 py-4">
+
+        <p class="text-sm font-medium text-[#786c63]">
+            Informasi reservasi
+        </p>
+
+        <p class="mt-1 text-xs leading-5 text-[#9a918b]">
+            Jadwal reservasi dan ketersediaan slot akan ditampilkan pada tahap fitur reservasi.
+        </p>
+
+    </div>
+
+>>>>>>> origin/feature/person-2-frontend
 </div>
 
 @endsection
