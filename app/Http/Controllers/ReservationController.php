@@ -23,7 +23,11 @@ class ReservationController extends Controller
         return view('reservations.create', compact('facility'));
     }
 
+<<<<<<< HEAD
     // Simpan pengajuan reservasi
+=======
+    // Simpan pengajuan reservasi + Core Logic Pengecekan Bentrok
+>>>>>>> 6f631731ed7493d53d9cad3b55bee88549bdbb15
     public function store(ReservationRequest $request, Facility $facility)
     {
         if ($facility->status !== 'AVAILABLE') {
@@ -34,6 +38,7 @@ class ReservationController extends Controller
 
         $validated = $request->validated();
 
+<<<<<<< HEAD
         // Pastikan jam mulai dan selesai benar-benar kelipatan 30 menit
         $start = Carbon::createFromFormat(
             'Y-m-d H:i',
@@ -50,11 +55,21 @@ class ReservationController extends Controller
                 ->withErrors([
                     'start_time' => 'Jam reservasi harus menggunakan interval 30 menit.'
                 ])
+=======
+        $start = Carbon::createFromFormat('Y-m-d H:i', $validated['date'] . ' ' . $validated['start_time']);
+        $end   = Carbon::createFromFormat('Y-m-d H:i', $validated['date'] . ' ' . $validated['end_time']);
+
+        // Validasi kelipatan 30 menit
+        if ($start->minute % 30 !== 0 || $end->minute % 30 !== 0) {
+            return back()
+                ->withErrors(['start_time' => 'Jam reservasi harus menggunakan interval 30 menit.'])
+>>>>>>> 6f631731ed7493d53d9cad3b55bee88549bdbb15
                 ->withInput();
         }
 
         if ($end->lessThanOrEqualTo($start)) {
             return back()
+<<<<<<< HEAD
                 ->withErrors([
                     'end_time' => 'Jam selesai harus setelah jam mulai.'
                 ])
@@ -71,6 +86,20 @@ class ReservationController extends Controller
         }
 
         // Cek bentrok jadwal
+=======
+                ->withErrors(['end_time' => 'Jam selesai harus setelah jam mulai.'])
+                ->withInput();
+        }
+
+        // Cek Kapasitas Fasilitas
+        if ($validated['participants'] > $facility->capacity) {
+            return back()
+                ->withErrors(['participants' => 'Jumlah peserta melebihi kapasitas fasilitas.'])
+                ->withInput();
+        }
+
+        // Cek Anti-Bentrok (Overlap)
+>>>>>>> 6f631731ed7493d53d9cad3b55bee88549bdbb15
         $overlap = Reservation::where('facility_id', $facility->id)
             ->whereIn('status', ['PENDING', 'APPROVED'])
             ->where('start_time', '<', $end)
@@ -79,13 +108,18 @@ class ReservationController extends Controller
 
         if ($overlap) {
             return back()
+<<<<<<< HEAD
                 ->withErrors([
                     'start_time' => 'Jadwal tersebut sudah memiliki reservasi.'
                 ])
+=======
+                ->withErrors(['start_time' => 'Jadwal tersebut sudah memiliki reservasi.'])
+>>>>>>> 6f631731ed7493d53d9cad3b55bee88549bdbb15
                 ->withInput();
         }
 
         Reservation::create([
+<<<<<<< HEAD
             'user_id' => Auth::id(),
             'facility_id' => $facility->id,
             'participants' => $validated['participants'],
@@ -93,6 +127,16 @@ class ReservationController extends Controller
             'end_time' => $end,
             'purpose' => $validated['purpose'],
             'status' => 'PENDING',
+=======
+            'user_id'         => Auth::id(),
+            'facility_id'     => $facility->id,
+            'identity_number' => $validated['identity_number'],
+            'participants'    => $validated['participants'],
+            'start_time'      => $start,
+            'end_time'        => $end,
+            'purpose'         => $validated['purpose'],
+            'status'          => 'PENDING',
+>>>>>>> 6f631731ed7493d53d9cad3b55bee88549bdbb15
         ]);
 
         return redirect()
@@ -111,7 +155,11 @@ class ReservationController extends Controller
         return view('reservations.index', compact('reservations'));
     }
 
+<<<<<<< HEAD
     // USER hanya boleh membatalkan reservasi yang masih PENDING
+=======
+    // USER membatalkan reservasi (Hanya PENDING)
+>>>>>>> 6f631731ed7493d53d9cad3b55bee88549bdbb15
     public function cancel(Reservation $reservation)
     {
         if ($reservation->user_id !== Auth::id()) {
@@ -125,14 +173,22 @@ class ReservationController extends Controller
         }
 
         $reservation->update([
+<<<<<<< HEAD
             'status' => 'CANCELLED',
+=======
+            'status'        => 'CANCELLED',
+>>>>>>> 6f631731ed7493d53d9cad3b55bee88549bdbb15
             'cancel_reason' => 'Dibatalkan oleh pengguna.',
         ]);
 
         return back()->with('success', 'Reservasi berhasil dibatalkan.');
     }
 
+<<<<<<< HEAD
     // Halaman pengajuan reservasi untuk STAFF
+=======
+    // Pengelolaan reservasi oleh STAFF/ADMIN
+>>>>>>> 6f631731ed7493d53d9cad3b55bee88549bdbb15
     public function staffIndex()
     {
         $reservations = Reservation::with(['user', 'facility'])
@@ -151,7 +207,10 @@ class ReservationController extends Controller
             ]);
         }
 
+<<<<<<< HEAD
         // Cek kembali bentrok sebelum approve
+=======
+>>>>>>> 6f631731ed7493d53d9cad3b55bee88549bdbb15
         $overlap = Reservation::where('facility_id', $reservation->facility_id)
             ->where('id', '!=', $reservation->id)
             ->where('status', 'APPROVED')
@@ -165,9 +224,13 @@ class ReservationController extends Controller
             ]);
         }
 
+<<<<<<< HEAD
         $reservation->update([
             'status' => 'APPROVED',
         ]);
+=======
+        $reservation->update(['status' => 'APPROVED']);
+>>>>>>> 6f631731ed7493d53d9cad3b55bee88549bdbb15
 
         return back()->with('success', 'Reservasi berhasil disetujui.');
     }
@@ -186,14 +249,22 @@ class ReservationController extends Controller
         }
 
         $reservation->update([
+<<<<<<< HEAD
             'status' => 'REJECTED',
+=======
+            'status'        => 'REJECTED',
+>>>>>>> 6f631731ed7493d53d9cad3b55bee88549bdbb15
             'cancel_reason' => $validated['cancel_reason'],
         ]);
 
         return back()->with('success', 'Reservasi berhasil ditolak.');
     }
 
+<<<<<<< HEAD
     // STAFF membatalkan reservasi yang sudah disetujui
+=======
+    // STAFF membatalkan reservasi
+>>>>>>> 6f631731ed7493d53d9cad3b55bee88549bdbb15
     public function staffCancel(Request $request, Reservation $reservation)
     {
         $validated = $request->validate([
@@ -207,7 +278,11 @@ class ReservationController extends Controller
         }
 
         $reservation->update([
+<<<<<<< HEAD
             'status' => 'CANCELLED',
+=======
+            'status'        => 'CANCELLED',
+>>>>>>> 6f631731ed7493d53d9cad3b55bee88549bdbb15
             'cancel_reason' => $validated['cancel_reason'],
         ]);
 
