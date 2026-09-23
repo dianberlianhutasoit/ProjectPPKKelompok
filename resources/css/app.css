@@ -6,6 +6,122 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+}
+
+:root {
+    --ink: #263634;
+    --muted: #68736f;
+    --teal: #2f625b;
+    --teal-dark: #244d48;
+    --copper: #a65f3e;
+    --paper: #f5f3ee;
+    --line: #dedbd3;
+}
+
+body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+}
+
+.page-title {
+    color: var(--ink);
+    letter-spacing: -0.02em;
+}
+
+.section-label {
+    color: var(--teal);
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+
+.panel {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+}
+
+.field-label {
+    display: block;
+    margin-bottom: .4rem;
+    color: #43504d;
+    font-size: .86rem;
+    font-weight: 600;
+}
+
+.field-input {
+    width: 100%;
+    border: 1px solid #cbc8c0;
+    border-radius: 6px;
+    background: #fff;
+    padding: .7rem .8rem;
+    color: var(--ink);
+    outline: none;
+}
+
+.field-input:focus {
+    border-color: var(--teal);
+    box-shadow: 0 0 0 2px rgba(47, 98, 91, .10);
+}
+
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    background: var(--teal);
+    padding: .68rem 1rem;
+    color: white;
+    font-size: .88rem;
+    font-weight: 600;
+    transition: .15s;
+}
+
+.btn-primary:hover {
+    background: var(--teal-dark);
+}
+
+.btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #c9c6be;
+    border-radius: 6px;
+    background: white;
+    padding: .68rem 1rem;
+    color: #46514f;
+    font-size: .88rem;
+    font-weight: 600;
+}
+
+.btn-secondary:hover {
+    background: #f4f3ef;
+}
+
+.btn-danger {
+    border: 1px solid #d9b9ad;
+    border-radius: 6px;
+    background: #fff8f5;
+    padding: .6rem .85rem;
+    color: #9a4f36;
+    font-size: .82rem;
+    font-weight: 600;
+}
+
+.status-available {
+    background: #e7f0eb;
+    color: #376453;
+}
+
+.status-reserved {
+    background: #eee8e5;
+    color: #765f59;
+}
+
+.status-maintenance {
+    background: #f4e9dd;
+    color: #99633d;
 }

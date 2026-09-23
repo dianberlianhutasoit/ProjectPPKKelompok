@@ -1,198 +1,96 @@
-@extends('layouts.app')
+@extends('layouts.layout_pasien')
 
-@section('title', 'Ajukan Reservasi')
+@section('title', 'Form Reservasi Dokter')
 
 @section('content')
-
-<div class="mx-auto max-w-2xl">
-
-    <a
-        href="{{ route('facilities.show', $facility) }}"
-        class="mb-6 inline-flex text-sm text-[#9b8878] hover:text-[#806b5d]">
-        ← Kembali ke fasilitas
-    </a>
-
-    <div class="rounded-2xl border border-[#e9e3dd] bg-white p-7 shadow-sm">
-
-        <div class="mb-7 border-b border-[#eeeae5] pb-5">
-
-            <p class="text-sm text-[#a2a7ad]">
-                Pengajuan Reservasi
-            </p>
-
-            <h1 class="mt-1 text-2xl font-semibold text-[#3f4f63]">
-                {{ $facility->name }}
-            </h1>
-
-            <p class="mt-2 text-sm text-[#8b929b]">
-                Isi data reservasi sesuai kebutuhanmu.
-            </p>
-
-        </div>
-
-        <form
-            method="POST"
-            action="{{ route('reservations.store', $facility) }}"
-            class="space-y-5">
-
-            @csrf
-
-            <div>
-                <label for="identity_number"
-                       class="mb-2 block text-sm font-medium text-[#59636f]">
-                    NIM / NIP
-                </label>
-
-                <input
-                    type="text"
-                    id="identity_number"
-                    name="identity_number"
-                    value="{{ old('identity_number') }}"
-                    required
-                    class="w-full rounded-lg border border-[#dedbd6] bg-[#fcfbfa] px-3 py-2.5 text-sm outline-none focus:border-[#c9b5a7] focus:ring-2 focus:ring-[#eadfd8]">
-            </div>
-
-            <div>
-                <label for="participants"
-                       class="mb-2 block text-sm font-medium text-[#59636f]">
-                    Jumlah peserta
-                </label>
-
-                <input
-                    type="number"
-                    id="participants"
-                    name="participants"
-                    min="1"
-                    max="{{ $facility->capacity }}"
-                    value="{{ old('participants', 1) }}"
-                    required
-                    class="w-full rounded-lg border border-[#dedbd6] bg-[#fcfbfa] px-3 py-2.5 text-sm outline-none focus:border-[#c9b5a7] focus:ring-2 focus:ring-[#eadfd8]">
-
-                <p class="mt-1 text-xs text-[#9ca3ab]">
-                    Kapasitas fasilitas: {{ $facility->capacity }} orang.
-                </p>
-            </div>
-
-            <div>
-                <label for="date"
-                       class="mb-2 block text-sm font-medium text-[#59636f]">
-                    Tanggal
-                </label>
-
-                <input
-                    type="date"
-                    id="date"
-                    name="date"
-                    min="{{ now()->toDateString() }}"
-                    value="{{ old('date', now()->toDateString()) }}"
-                    required
-                    class="w-full rounded-lg border border-[#dedbd6] bg-[#fcfbfa] px-3 py-2.5 text-sm outline-none focus:border-[#c9b5a7] focus:ring-2 focus:ring-[#eadfd8]">
-            </div>
-
-            <div class="grid gap-5 sm:grid-cols-2">
-
-                <div>
-                    <label for="start_time"
-                           class="mb-2 block text-sm font-medium text-[#59636f]">
-                        Jam mulai
-                    </label>
-
-                    <select
-                        id="start_time"
-                        name="start_time"
-                        required
-                        class="w-full rounded-lg border border-[#dedbd6] bg-[#fcfbfa] px-3 py-2.5 text-sm outline-none focus:border-[#c9b5a7] focus:ring-2 focus:ring-[#eadfd8]">
-
-                        @for($hour = 7; $hour < 20; $hour++)
-
-                            @foreach([0, 30] as $minute)
-
-                                @php
-                                    $time = sprintf('%02d:%02d', $hour, $minute);
-                                @endphp
-
-                                <option
-                                    value="{{ $time }}"
-                                    @selected(old('start_time') === $time)>
-                                    {{ $time }}
-                                </option>
-
-                            @endforeach
-
-                        @endfor
-
-                    </select>
-                </div>
-
-                <div>
-                    <label for="end_time"
-                           class="mb-2 block text-sm font-medium text-[#59636f]">
-                        Jam selesai
-                    </label>
-
-                    <select
-                        id="end_time"
-                        name="end_time"
-                        required
-                        class="w-full rounded-lg border border-[#dedbd6] bg-[#fcfbfa] px-3 py-2.5 text-sm outline-none focus:border-[#c9b5a7] focus:ring-2 focus:ring-[#eadfd8]">
-
-                        @for($hour = 7; $hour <= 20; $hour++)
-
-                            @if($hour < 20)
-                                @foreach([0, 30] as $minute)
-
-                                    @php
-                                        $time = sprintf('%02d:%02d', $hour, $minute);
-                                    @endphp
-
-                                    <option
-                                        value="{{ $time }}"
-                                        @selected(old('end_time') === $time)>
-                                        {{ $time }}
-                                    </option>
-
-                                @endforeach
-                            @else
-
-                                <option
-                                    value="20:00"
-                                    @selected(old('end_time') === '20:00')>
-                                    20:00
-                                </option>
-
-                            @endif
-
-                        @endfor
-
-                    </select>
-                </div>
-
-            </div>
-
-            <div>
-                <label for="purpose"
-                       class="mb-2 block text-sm font-medium text-[#59636f]">
-                    Tujuan reservasi
-                </label>
-
-                <textarea
-                    id="purpose"
-                    name="purpose"
-                    rows="4"
-                    required
-                    class="w-full rounded-lg border border-[#dedbd6] bg-[#fcfbfa] px-3 py-2.5 text-sm outline-none focus:border-[#c9b5a7] focus:ring-2 focus:ring-[#eadfd8]">{{ old('purpose') }}</textarea>
-            </div>
-
-            <button
-                type="submit"
-                class="w-full rounded-lg bg-[#d8c8bc] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#c9b5a7]">
-                Ajukan reservasi
-            </button>
-
-        </form>
-
+<div class="container py-4" style="max-width: 900px;">
+    <!-- Header Page -->
+    <div class="d-flex align-items-center mb-4">
+        <a href="{{ route('pasien.reservasi.pilih-jadwal') }}" class="btn btn-outline-secondary btn-sm rounded-circle me-3" style="width: 32px; height: 32px; padding: 3px 0;">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <h4 class="fw-bold mb-0 text-dark">Formulir Reservasi Dokter</h4>
     </div>
 
-</div>
+    <div class="row g-4">
+        <!-- Kolom Kiri: Card Informasi Dokter -->
+        <div class="col-md-5">
+            <div class="card border-0 shadow-sm rounded-3">
+                <div class="card-body p-4 text-center">
+                    <img src="{{ $dokter->user->foto_profil ? asset('storage/' . $dokter->user->foto_profil) : asset('assets/img/default-doctor.jpg') }}" 
+                         alt="Foto Dokter" 
+                         class="rounded-circle mb-3 object-fit-cover shadow-sm" 
+                         style="width: 100px; height: 100px;">
+                    <h5 class="fw-bold mb-1">{{ $dokter->user->name }}</h5>
+                    <p class="text-primary fw-semibold mb-3">{{ $dokter->spesialisasi }}</p>
+                    <hr class="text-muted opacity-25">
+                    
+                    <div class="text-start fs-7">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="far fa-calendar-alt text-muted me-2" style="width: 20px;"></i>
+                            <span>Hari: <strong>{{ $jadwal->hari }}</strong></span>
+                        </div>
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="far fa-clock text-muted me-2" style="width: 20px;"></i>
+                            <span>Jam: <strong>{{ \Carbon\Carbon::parse($jadwal->jam_mulai)->format('H:i') }} - {{ \Carbon\Carbon::parse($jadwal->jam_selesai)->format('H:i') }}</strong></span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-money-bill-wave text-muted me-2" style="width: 20px;"></i>
+                            <span>Biaya Konsultasi: <strong>Rp {{ number_format($dokter->biaya_konsultasi, 0, ',', '.') }}</strong></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
+        <!-- Kolom Kanan: Form Input Reservasi -->
+        <div class="col-md-7">
+            <div class="card border-0 shadow-sm rounded-3">
+                <div class="card-body p-4">
+                    <form action="{{ route('pasien.reservasi.store') }}" method="POST">
+                        @csrf
+                        
+                        <!-- Hidden Inputs -->
+                        <input type="hidden" name="jadwal_id" value="{{ $jadwal->id }}">
+                        <input type="hidden" name="tanggal_reservasi" value="{{ $tanggal_reservasi }}">
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold text-muted fs-7">Tanggal Konsultasi</label>
+                            <input type="text" class="form-control bg-light" value="{{ \Carbon\Carbon::parse($tanggal_reservasi)->isoFormat('D MMMM Y') }}" readonly>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="keluhan" class="form-label fw-semibold">Keluhan Utama <span class="text-danger">*</span></label>
+                            <textarea class="form-control @error('keluhan') is-invalid @enderror" 
+                                      id="keluhan" 
+                                      name="keluhan" 
+                                      rows="4" 
+                                      placeholder="Jelaskan secara singkat gejala atau keluhan yang Anda rasakan..." 
+                                      required>{{ old('keluhan') }}</textarea>
+                            @error('keluhan')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="catatan" class="form-label fw-semibold">Catatan Tambahan (Opsional)</label>
+                            <textarea class="form-control @error('catatan') is-invalid @enderror" 
+                                      id="catatan" 
+                                      name="catatan" 
+                                      rows="2" 
+                                      placeholder="Riwayat alergi obat, obat yang sedang dikonsumsi, dll.">{{ old('catatan') }}</textarea>
+                            @error('catatan')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 fw-bold py-2 shadow-sm">
+                            Konfirmasi Reservasi <i class="fas fa-chevron-right ms-1"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection

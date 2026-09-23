@@ -1,201 +1,334 @@
 @extends('layouts.app')
 
-@section('title', 'Tambah Fasilitas')
+@section('title', 'Tambah Fasilitas - Campus Facility System')
 
 @section('content')
 
-<div class="mx-auto max-w-2xl">
+<div class="mx-auto max-w-4xl">
 
-    <a
-        href="{{ route('facilities.index') }}"
-        class="mb-6 inline-flex text-sm text-[#9b8878] hover:text-[#806b5d]">
-        ← Kembali ke fasilitas
-    </a>
+    {{-- Header --}}
+    <div class="mb-8">
+        <a
+            href="{{ route('facilities.index') }}"
+            class="inline-flex items-center gap-2 text-sm font-semibold text-[#2f625b] hover:underline"
+        >
+            ← Kembali ke fasilitas
+        </a>
 
+        <div class="mt-6">
+            <p class="text-xs font-bold uppercase tracking-[0.14em] text-[#2f625b]">
+                Facility Management
+            </p>
 
-    <div class="mb-7">
+            <h1 class="mt-2 text-3xl font-bold tracking-tight text-[#263634]">
+                Tambah Fasilitas
+            </h1>
 
-        <h1 class="text-2xl font-semibold text-[#3f4f63]">
-            Tambah fasilitas
-        </h1>
-
-        <p class="mt-2 text-sm text-[#8b929b]">
-            Tambahkan informasi fasilitas baru ke dalam sistem.
-        </p>
-
+            <p class="mt-2 max-w-2xl text-sm leading-6 text-[#68736f]">
+                Tambahkan fasilitas baru beserta informasi dasar yang akan
+                ditampilkan pada katalog kampus.
+            </p>
+        </div>
     </div>
 
 
-    <div class="rounded-2xl border border-[#e9e3dd] bg-white p-7 shadow-sm">
+    {{-- Form --}}
+    <form
+        method="POST"
+        action="{{ route('facilities.store') }}"
+    >
 
-        <form method="POST"
-              action="{{ route('facilities.store') }}"
-              class="space-y-5">
+        @csrf
 
-            @csrf
+        <div class="grid gap-6 lg:grid-cols-[1fr_280px]">
+
+            {{-- Main Form --}}
+            <div class="border border-[#dedbd3] bg-white">
+
+                <div class="border-b border-[#e4e1da] px-6 py-5">
+                    <p class="text-xs font-bold uppercase tracking-[0.12em] text-[#2f625b]">
+                        Facility Information
+                    </p>
+
+                    <h2 class="mt-1 text-lg font-bold text-[#263634]">
+                        Informasi Fasilitas
+                    </h2>
+                </div>
 
 
-            {{-- Name --}}
-            <div>
+                <div class="space-y-5 p-6">
 
-                <label for="name"
-                       class="mb-2 block text-sm font-medium text-[#59636f]">
-                    Nama fasilitas
-                </label>
+                    {{-- Name --}}
+                    <div>
+                        <label
+                            for="name"
+                            class="mb-2 block text-sm font-semibold text-[#43504d]"
+                        >
+                            Nama Fasilitas
+                        </label>
 
-                <input
-                    id="name"
-                    type="text"
-                    name="name"
-                    value="{{ old('name') }}"
-                    required
-                    maxlength="255"
-                    placeholder="Contoh: Ruang A301"
-                    class="w-full rounded-lg border border-[#dedbd6] bg-[#fcfbfa] px-4 py-3 text-sm outline-none focus:border-[#c9b5a7] focus:ring-2 focus:ring-[#eadfd8]"
-                >
+                        <input
+                            id="name"
+                            type="text"
+                            name="name"
+                            value="{{ old('name') }}"
+                            required
+                            maxlength="255"
+                            placeholder="Contoh: Ruang Seminar Gedung A"
+                            class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-sm text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
+                        >
+
+                        @error('name')
+                            <p class="mt-1.5 text-xs text-[#a65f3e]">
+                                {{ $message }}
+                            </p>
+                        @enderror
+                    </div>
+
+
+                    {{-- Type + Location --}}
+                    <div class="grid gap-5 sm:grid-cols-2">
+
+                        <div>
+                            <label
+                                for="type"
+                                class="mb-2 block text-sm font-semibold text-[#43504d]"
+                            >
+                                Tipe Fasilitas
+                            </label>
+
+                            <input
+                                id="type"
+                                type="text"
+                                name="type"
+                                value="{{ old('type') }}"
+                                required
+                                maxlength="100"
+                                placeholder="Contoh: Ruang Kelas"
+                                class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-sm text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
+                            >
+
+                            @error('type')
+                                <p class="mt-1.5 text-xs text-[#a65f3e]">
+                                    {{ $message }}
+                                </p>
+                            @enderror
+                        </div>
+
+
+                        <div>
+                            <label
+                                for="location"
+                                class="mb-2 block text-sm font-semibold text-[#43504d]"
+                            >
+                                Lokasi
+                            </label>
+
+                            <input
+                                id="location"
+                                type="text"
+                                name="location"
+                                value="{{ old('location') }}"
+                                required
+                                maxlength="255"
+                                placeholder="Contoh: Gedung A Lantai 2"
+                                class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-sm text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
+                            >
+
+                            @error('location')
+                                <p class="mt-1.5 text-xs text-[#a65f3e]">
+                                    {{ $message }}
+                                </p>
+                            @enderror
+                        </div>
+
+                    </div>
+
+
+                    {{-- Capacity --}}
+                    <div>
+                        <label
+                            for="capacity"
+                            class="mb-2 block text-sm font-semibold text-[#43504d]"
+                        >
+                            Kapasitas
+                        </label>
+
+                        <div class="relative">
+                            <input
+                                id="capacity"
+                                type="number"
+                                name="capacity"
+                                value="{{ old('capacity') }}"
+                                required
+                                min="1"
+                                placeholder="Contoh: 50"
+                                class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 pr-20 text-sm text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
+                            >
+
+                            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-[#8a9490]">
+                                orang
+                            </span>
+                        </div>
+
+                        @error('capacity')
+                            <p class="mt-1.5 text-xs text-[#a65f3e]">
+                                {{ $message }}
+                            </p>
+                        @enderror
+                    </div>
+
+
+                    {{-- Description --}}
+                    <div>
+                        <label
+                            for="description"
+                            class="mb-2 block text-sm font-semibold text-[#43504d]"
+                        >
+                            Deskripsi
+                            <span class="font-normal text-[#9aa19e]">
+                                (opsional)
+                            </span>
+                        </label>
+
+                        <textarea
+                            id="description"
+                            name="description"
+                            rows="5"
+                            placeholder="Jelaskan fasilitas, perlengkapan, atau informasi penting lainnya."
+                            class="w-full resize-none rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-sm leading-6 text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
+                        >{{ old('description') }}</textarea>
+
+                        @error('description')
+                            <p class="mt-1.5 text-xs text-[#a65f3e]">
+                                {{ $message }}
+                            </p>
+                        @enderror
+                    </div>
+
+
+                    {{-- Status --}}
+                    <div>
+                        <label
+                            for="status"
+                            class="mb-2 block text-sm font-semibold text-[#43504d]"
+                        >
+                            Status Fasilitas
+                        </label>
+
+                        <select
+                            id="status"
+                            name="status"
+                            required
+                            class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-sm text-[#43504d] outline-none transition focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
+                        >
+
+                            <option value="AVAILABLE" @selected(old('status', 'AVAILABLE') === 'AVAILABLE')>
+                                Tersedia
+                            </option>
+
+                            <option value="MAINTENANCE" @selected(old('status') === 'MAINTENANCE')>
+                                Maintenance
+                            </option>
+
+                            <option value="INACTIVE" @selected(old('status') === 'INACTIVE')>
+                                Tidak Aktif
+                            </option>
+
+                        </select>
+
+                        @error('status')
+                            <p class="mt-1.5 text-xs text-[#a65f3e]">
+                                {{ $message }}
+                            </p>
+                        @enderror
+                    </div>
+
+                </div>
+
+
+                {{-- Form Actions --}}
+                <div class="flex flex-col-reverse gap-3 border-t border-[#e4e1da] bg-[#fafaf8] px-6 py-4 sm:flex-row sm:justify-end">
+
+                    <a
+                        href="{{ route('facilities.index') }}"
+                        class="inline-flex items-center justify-center rounded-lg border border-[#d5d2ca] bg-white px-5 py-2.5 text-sm font-semibold text-[#596460] transition hover:bg-[#f1f0eb]"
+                    >
+                        Batal
+                    </a>
+
+                    <button
+                        type="submit"
+                        class="inline-flex items-center justify-center rounded-lg bg-[#2f625b] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#244d48] hover:shadow-md"
+                    >
+                        Simpan Fasilitas
+                    </button>
+
+                </div>
 
             </div>
 
 
-            {{-- Type --}}
-            <div>
+            {{-- Side Information --}}
+            <div class="h-fit border border-[#dedbd3] bg-[#2f625b] p-6 text-white">
 
-                <label for="type"
-                       class="mb-2 block text-sm font-medium text-[#59636f]">
-                    Tipe fasilitas
-                </label>
+                <p class="text-xs font-bold uppercase tracking-[0.14em] text-white/60">
+                    Panduan
+                </p>
 
-                <input
-                    id="type"
-                    type="text"
-                    name="type"
-                    value="{{ old('type') }}"
-                    required
-                    maxlength="100"
-                    placeholder="Contoh: Classroom"
-                    class="w-full rounded-lg border border-[#dedbd6] bg-[#fcfbfa] px-4 py-3 text-sm outline-none focus:border-[#c9b5a7] focus:ring-2 focus:ring-[#eadfd8]"
-                >
+                <h2 class="mt-3 text-lg font-bold">
+                    Tambahkan informasi yang jelas
+                </h2>
 
-            </div>
+                <p class="mt-2 text-sm leading-6 text-white/75">
+                    Informasi fasilitas akan digunakan pengguna untuk
+                    menentukan ruang yang sesuai sebelum melakukan reservasi.
+                </p>
 
 
-            {{-- Location --}}
-            <div>
+                <div class="mt-6 space-y-4 border-t border-white/15 pt-5">
 
-                <label for="location"
-                       class="mb-2 block text-sm font-medium text-[#59636f]">
-                    Lokasi
-                </label>
+                    <div>
+                        <p class="text-sm font-semibold">
+                            Nama & tipe
+                        </p>
 
-                <input
-                    id="location"
-                    type="text"
-                    name="location"
-                    value="{{ old('location') }}"
-                    required
-                    maxlength="255"
-                    placeholder="Contoh: Gedung A Lantai 3"
-                    class="w-full rounded-lg border border-[#dedbd6] bg-[#fcfbfa] px-4 py-3 text-sm outline-none focus:border-[#c9b5a7] focus:ring-2 focus:ring-[#eadfd8]"
-                >
-
-            </div>
+                        <p class="mt-1 text-xs leading-5 text-white/60">
+                            Gunakan nama yang mudah dikenali dan tipe fasilitas
+                            yang sesuai.
+                        </p>
+                    </div>
 
 
-            {{-- Capacity --}}
-            <div>
+                    <div>
+                        <p class="text-sm font-semibold">
+                            Kapasitas
+                        </p>
 
-                <label for="capacity"
-                       class="mb-2 block text-sm font-medium text-[#59636f]">
-                    Kapasitas
-                </label>
+                        <p class="mt-1 text-xs leading-5 text-white/60">
+                            Masukkan jumlah maksimal pengguna fasilitas.
+                        </p>
+                    </div>
 
-                <input
-                    id="capacity"
-                    type="number"
-                    name="capacity"
-                    value="{{ old('capacity') }}"
-                    required
-                    min="1"
-                    placeholder="Contoh: 40"
-                    class="w-full rounded-lg border border-[#dedbd6] bg-[#fcfbfa] px-4 py-3 text-sm outline-none focus:border-[#c9b5a7] focus:ring-2 focus:ring-[#eadfd8]"
-                >
+
+                    <div>
+                        <p class="text-sm font-semibold">
+                            Status
+                        </p>
+
+                        <p class="mt-1 text-xs leading-5 text-white/60">
+                            Gunakan Maintenance ketika fasilitas sedang tidak
+                            dapat digunakan sementara.
+                        </p>
+                    </div>
+
+                </div>
 
             </div>
 
+        </div>
 
-            {{-- Description --}}
-            <div>
-
-                <label for="description"
-                       class="mb-2 block text-sm font-medium text-[#59636f]">
-                    Deskripsi
-                </label>
-
-                <textarea
-                    id="description"
-                    name="description"
-                    rows="4"
-                    placeholder="Jelaskan fungsi atau penggunaan fasilitas."
-                    class="w-full resize-none rounded-lg border border-[#dedbd6] bg-[#fcfbfa] px-4 py-3 text-sm outline-none focus:border-[#c9b5a7] focus:ring-2 focus:ring-[#eadfd8]"
-                >{{ old('description') }}</textarea>
-
-            </div>
-
-
-            {{-- Status --}}
-            <div>
-
-                <label for="status"
-                       class="mb-2 block text-sm font-medium text-[#59636f]">
-                    Status
-                </label>
-
-                <select
-                    id="status"
-                    name="status"
-                    required
-                    class="w-full rounded-lg border border-[#dedbd6] bg-[#fcfbfa] px-4 py-3 text-sm outline-none focus:border-[#c9b5a7] focus:ring-2 focus:ring-[#eadfd8]">
-
-                    <option value="AVAILABLE"
-                        @selected(old('status', 'AVAILABLE') === 'AVAILABLE')}>
-                        Tersedia
-                    </option>
-
-                    <option value="MAINTENANCE"
-                        @selected(old('status') === 'MAINTENANCE')}>
-                        Dalam perbaikan
-                    </option>
-
-                    <option value="INACTIVE"
-                        @selected(old('status') === 'INACTIVE')}>
-                        Nonaktif
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            {{-- Buttons --}}
-            <div class="flex justify-end gap-3 border-t border-[#eeeae5] pt-5">
-
-                <a
-                    href="{{ route('facilities.index') }}"
-                    class="rounded-lg border border-[#dedbd6] px-4 py-2.5 text-sm text-[#6b7280] hover:bg-[#f7f5f2]">
-                    Batal
-                </a>
-
-                <button
-                    type="submit"
-                    class="rounded-lg bg-[#d8c8bc] px-5 py-2.5 text-sm font-medium text-white hover:bg-[#c9b5a7]">
-                    Simpan fasilitas
-                </button>
-
-            </div>
-
-        </form>
-
-    </div>
+    </form>
 
 </div>
 
