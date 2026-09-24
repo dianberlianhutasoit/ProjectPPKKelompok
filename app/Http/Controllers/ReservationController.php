@@ -23,7 +23,7 @@ class ReservationController extends Controller
         return view('reservations.create', compact('facility'));
     }
 
-    // Simpan pengajuan reservasi
+    // Simpan pengajuan reservasi + Core Logic Pengecekan Bentrok
     public function store(ReservationRequest $request, Facility $facility)
     {
         if ($facility->status !== 'AVAILABLE') {
@@ -34,43 +34,30 @@ class ReservationController extends Controller
 
         $validated = $request->validated();
 
-        // Pastikan jam mulai dan selesai benar-benar kelipatan 30 menit
-        $start = Carbon::createFromFormat(
-            'Y-m-d H:i',
-            $validated['date'] . ' ' . $validated['start_time']
-        );
+        $start = Carbon::createFromFormat('Y-m-d H:i', $validated['date'] . ' ' . $validated['start_time']);
+        $end   = Carbon::createFromFormat('Y-m-d H:i', $validated['date'] . ' ' . $validated['end_time']);
 
-        $end = Carbon::createFromFormat(
-            'Y-m-d H:i',
-            $validated['date'] . ' ' . $validated['end_time']
-        );
-
+        // Validasi kelipatan 30 menit
         if ($start->minute % 30 !== 0 || $end->minute % 30 !== 0) {
             return back()
-                ->withErrors([
-                    'start_time' => 'Jam reservasi harus menggunakan interval 30 menit.'
-                ])
+                ->withErrors(['start_time' => 'Jam reservasi harus menggunakan interval 30 menit.'])
                 ->withInput();
         }
 
         if ($end->lessThanOrEqualTo($start)) {
             return back()
-                ->withErrors([
-                    'end_time' => 'Jam selesai harus setelah jam mulai.'
-                ])
+                ->withErrors(['end_time' => 'Jam selesai harus setelah jam mulai.'])
                 ->withInput();
         }
 
-        // Cek apakah jumlah peserta melebihi kapasitas fasilitas
+        // Cek Kapasitas Fasilitas
         if ($validated['participants'] > $facility->capacity) {
             return back()
-                ->withErrors([
-                    'participants' => 'Jumlah peserta melebihi kapasitas fasilitas.'
-                ])
+                ->withErrors(['participants' => 'Jumlah peserta melebihi kapasitas fasilitas.'])
                 ->withInput();
         }
 
-        // Cek bentrok jadwal
+        // Cek Anti-Bentrok (Overlap)
         $overlap = Reservation::where('facility_id', $facility->id)
             ->whereIn('status', ['PENDING', 'APPROVED'])
             ->where('start_time', '<', $end)
@@ -79,21 +66,18 @@ class ReservationController extends Controller
 
         if ($overlap) {
             return back()
-                ->withErrors([
-                    'start_time' => 'Jadwal tersebut sudah memiliki reservasi.'
-                ])
+                ->withErrors(['start_time' => 'Jadwal tersebut sudah memiliki reservasi.'])
                 ->withInput();
         }
 
         Reservation::create([
-            'user_id' => Auth::id(),
-            'facility_id' => $facility->id,
-            'identity_number' => $validated['identity_number'],
-            'participants' => $validated['participants'],
-            'start_time' => $start,
-            'end_time' => $end,
-            'purpose' => $validated['purpose'],
-            'status' => 'PENDING',
+            'user_id'         => Auth::id(),
+            'facility_id'     => $facility->id,
+            'participants'    => $validated['participants'],
+            'start_time'      => $start,
+            'end_time'        => $end,
+            'purpose'         => $validated['purpose'],
+            'status'          => 'PENDING',
         ]);
 
         return redirect()
@@ -112,7 +96,7 @@ class ReservationController extends Controller
         return view('reservations.index', compact('reservations'));
     }
 
-    // USER hanya boleh membatalkan reservasi yang masih PENDING
+    // USER membatalkan reservasi (Hanya PENDING)
     public function cancel(Reservation $reservation)
     {
         if ($reservation->user_id !== Auth::id()) {
@@ -126,92 +110,10 @@ class ReservationController extends Controller
         }
 
         $reservation->update([
-            'status' => 'CANCELLED',
+            'status'        => 'CANCELLED',
             'cancel_reason' => 'Dibatalkan oleh pengguna.',
         ]);
 
         return back()->with('success', 'Reservasi berhasil dibatalkan.');
-    }
-
-    // Halaman pengajuan reservasi untuk STAFF
-    public function staffIndex()
-    {
-        $reservations = Reservation::with(['user', 'facility'])
-            ->orderByDesc('created_at')
-            ->get();
-
-        return view('staff.reservations.index', compact('reservations'));
-    }
-
-    // STAFF menyetujui reservasi
-    public function approve(Reservation $reservation)
-    {
-        if ($reservation->status !== 'PENDING') {
-            return back()->withErrors([
-                'reservation' => 'Hanya reservasi PENDING yang dapat disetujui.'
-            ]);
-        }
-
-        // Cek kembali bentrok sebelum approve
-        $overlap = Reservation::where('facility_id', $reservation->facility_id)
-            ->where('id', '!=', $reservation->id)
-            ->where('status', 'APPROVED')
-            ->where('start_time', '<', $reservation->end_time)
-            ->where('end_time', '>', $reservation->start_time)
-            ->exists();
-
-        if ($overlap) {
-            return back()->withErrors([
-                'reservation' => 'Reservasi tidak dapat disetujui karena jadwal sudah bentrok.'
-            ]);
-        }
-
-        $reservation->update([
-            'status' => 'APPROVED',
-        ]);
-
-        return back()->with('success', 'Reservasi berhasil disetujui.');
-    }
-
-    // STAFF menolak reservasi
-    public function reject(Request $request, Reservation $reservation)
-    {
-        $validated = $request->validate([
-            'cancel_reason' => 'required|string|max:1000',
-        ]);
-
-        if ($reservation->status !== 'PENDING') {
-            return back()->withErrors([
-                'reservation' => 'Hanya reservasi PENDING yang dapat ditolak.'
-            ]);
-        }
-
-        $reservation->update([
-            'status' => 'REJECTED',
-            'cancel_reason' => $validated['cancel_reason'],
-        ]);
-
-        return back()->with('success', 'Reservasi berhasil ditolak.');
-    }
-
-    // STAFF membatalkan reservasi yang sudah disetujui
-    public function staffCancel(Request $request, Reservation $reservation)
-    {
-        $validated = $request->validate([
-            'cancel_reason' => 'required|string|max:1000',
-        ]);
-
-        if (!in_array($reservation->status, ['PENDING', 'APPROVED'])) {
-            return back()->withErrors([
-                'reservation' => 'Reservasi ini tidak dapat dibatalkan oleh petugas.'
-            ]);
-        }
-
-        $reservation->update([
-            'status' => 'CANCELLED',
-            'cancel_reason' => $validated['cancel_reason'],
-        ]);
-
-        return back()->with('success', 'Reservasi berhasil dibatalkan oleh petugas.');
     }
 }

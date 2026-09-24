@@ -8,16 +8,19 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CheckRole
 {
-    // Cek role sebelum masuk halaman (mis. role:ADMIN)
     public function handle(Request $request, Closure $next, ...$roles): Response
     {
-        $user = $request->user(); // siapa yang lagi login
+        $user = $request->user();
 
-        if (!$user) {  // belum login, lempar ke login
+        if (!$user) {
             return redirect('/login');
         }
 
-        if (!in_array($user->role, $roles)) { // role tidak cocok, tolak
+        // Ubah role user dan array roles menjadi huruf kapital semua agar aman dari penulisan sensitif
+        $userRole = strtoupper($user->role);
+        $allowedRoles = array_map('strtoupper', $roles);
+
+        if (!in_array($userRole, $allowedRoles)) {
             abort(403, 'Unauthorized Access');
         }
 

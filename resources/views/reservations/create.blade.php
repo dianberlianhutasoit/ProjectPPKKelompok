@@ -1,195 +1,312 @@
 @extends('layouts.app')
 
-@section('title', 'Ajukan Reservasi')
+@section('title', 'Ajukan Reservasi - Campus Facility')
 
 @section('content')
 
-<div class="mx-auto max-w-2xl">
+<div class="mx-auto max-w-5xl">
 
-    <a
-        href="{{ route('facilities.show', $facility) }}"
-        class="mb-6 inline-flex text-sm text-[#9b8878] hover:text-[#806b5d]">
-        ← Kembali ke fasilitas
-    </a>
+    {{-- Header --}}
+    <div class="mb-7">
+        <a
+            href="{{ route('facilities.show', $facility) }}"
+            class="inline-flex items-center gap-2 text-sm font-semibold text-[#2f625b] hover:underline"
+        >
+            ← Kembali ke fasilitas
+        </a>
 
-    <div class="rounded-2xl border border-[#e9e3dd] bg-white p-7 shadow-sm">
-
-        <div class="mb-7 border-b border-[#eeeae5] pb-5">
-
-            <p class="text-sm text-[#a2a7ad]">
-                Pengajuan Reservasi
+        <div class="mt-5">
+            <p class="text-xs font-bold uppercase tracking-[0.14em] text-[#2f625b]">
+                Reservation
             </p>
 
-            <h1 class="mt-1 text-2xl font-semibold text-[#3f4f63]">
-                {{ $facility->name }}
+            <h1 class="mt-2 text-3xl font-bold tracking-tight text-[#263634]">
+                Ajukan Reservasi
             </h1>
 
-            <p class="mt-2 text-sm text-[#8b929b]">
-                Isi data reservasi sesuai kebutuhanmu.
+            <p class="mt-2 text-sm leading-6 text-[#68736f]">
+                Lengkapi informasi penggunaan fasilitas yang ingin kamu reservasi.
             </p>
+        </div>
+    </div>
 
+
+    <div class="grid gap-6 lg:grid-cols-[320px_1fr]">
+
+        {{-- Facility Information --}}
+        <div class="h-fit border border-[#dedbd3] bg-white">
+
+            <div class="border-b border-[#e4e1da] px-5 py-4">
+                <p class="text-xs font-bold uppercase tracking-[0.12em] text-[#2f625b]">
+                    Fasilitas
+                </p>
+
+                <h2 class="mt-1 text-lg font-bold text-[#263634]">
+                    {{ $facility->name }}
+                </h2>
+            </div>
+
+            <div class="space-y-5 p-5">
+
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wide text-[#8a9490]">
+                        Tipe
+                    </p>
+
+                    <p class="mt-1 text-sm font-semibold text-[#43504d]">
+                        {{ $facility->type }}
+                    </p>
+                </div>
+
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wide text-[#8a9490]">
+                        Lokasi
+                    </p>
+
+                    <p class="mt-1 text-sm font-semibold text-[#43504d]">
+                        {{ $facility->location }}
+                    </p>
+                </div>
+
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wide text-[#8a9490]">
+                        Kapasitas
+                    </p>
+
+                    <p class="mt-1 text-sm font-semibold text-[#43504d]">
+                        {{ $facility->capacity }} orang
+                    </p>
+                </div>
+
+                <div class="border-t border-[#eeeae4] pt-5">
+
+                    <p class="text-xs font-semibold uppercase tracking-wide text-[#8a9490]">
+                        Status
+                    </p>
+
+                    <span class="mt-2 inline-flex rounded-full bg-[#e7f0eb] px-3 py-1.5 text-xs font-bold text-[#376453]">
+                        Tersedia
+                    </span>
+
+                </div>
+
+            </div>
         </div>
 
-        <form
-            method="POST"
-            action="{{ route('reservations.store', $facility) }}"
-            class="space-y-5">
 
-            @csrf
+        {{-- Reservation Form --}}
+        <div class="border border-[#dedbd3] bg-white">
 
-            <div>
-                <label for="identity_number"
-                       class="mb-2 block text-sm font-medium text-[#59636f]">
-                    NIM / NIP
-                </label>
-
-                <input
-                    type="text"
-                    id="identity_number"
-                    name="identity_number"
-                    value="{{ old('identity_number') }}"
-                    required
-                    class="w-full rounded-lg border border-[#dedbd6] bg-[#fcfbfa] px-3 py-2.5 text-sm outline-none focus:border-[#c9b5a7] focus:ring-2 focus:ring-[#eadfd8]">
-            </div>
-
-            <div>
-                <label for="participants"
-                       class="mb-2 block text-sm font-medium text-[#59636f]">
-                    Jumlah peserta
-                </label>
-
-                <input
-                    type="number"
-                    id="participants"
-                    name="participants"
-                    min="1"
-                    max="{{ $facility->capacity }}"
-                    value="{{ old('participants', 1) }}"
-                    required
-                    class="w-full rounded-lg border border-[#dedbd6] bg-[#fcfbfa] px-3 py-2.5 text-sm outline-none focus:border-[#c9b5a7] focus:ring-2 focus:ring-[#eadfd8]">
-
-                <p class="mt-1 text-xs text-[#9ca3ab]">
-                    Kapasitas fasilitas: {{ $facility->capacity }} orang.
+            <div class="border-b border-[#e4e1da] px-6 py-5">
+                <p class="text-xs font-bold uppercase tracking-[0.12em] text-[#2f625b]">
+                    Reservation Form
                 </p>
+
+                <h2 class="mt-1 text-lg font-bold text-[#263634]">
+                    Detail Reservasi
+                </h2>
             </div>
 
-            <div>
-                <label for="date"
-                       class="mb-2 block text-sm font-medium text-[#59636f]">
-                    Tanggal
-                </label>
 
-                <input
-                    type="date"
-                    id="date"
-                    name="date"
-                    min="{{ now()->toDateString() }}"
-                    value="{{ old('date', now()->toDateString()) }}"
-                    required
-                    class="w-full rounded-lg border border-[#dedbd6] bg-[#fcfbfa] px-3 py-2.5 text-sm outline-none focus:border-[#c9b5a7] focus:ring-2 focus:ring-[#eadfd8]">
-            </div>
+            <form
+                action="{{ route('reservations.store', $facility) }}"
+                method="POST"
+            >
 
-            <div class="grid gap-5 sm:grid-cols-2">
+                @csrf
 
-                <div>
-                    <label for="start_time"
-                           class="mb-2 block text-sm font-medium text-[#59636f]">
-                        Jam mulai
-                    </label>
+                <div class="space-y-5 p-6">
 
-                    <select
-                        id="start_time"
-                        name="start_time"
-                        required
-                        class="w-full rounded-lg border border-[#dedbd6] bg-[#fcfbfa] px-3 py-2.5 text-sm outline-none focus:border-[#c9b5a7] focus:ring-2 focus:ring-[#eadfd8]">
+                    {{-- Nama Pemohon --}}
+                    <div>
+                        <label
+                            for="applicant_name"
+                            class="mb-2 block text-sm font-semibold text-[#43504d]"
+                        >
+                            Nama Pemohon
+                        </label>
 
-                        @for($hour = 7; $hour < 20; $hour++)
+                        <input
+                            id="applicant_name"
+                            type="text"
+                            value="{{ auth()->user()->name }}"
+                            readonly
+                            class="w-full cursor-not-allowed rounded-lg border border-[#d5d2ca] bg-[#f4f4f1] px-4 py-3 text-sm text-[#68736f] outline-none"
+                        >
+                    </div>
 
-                            @foreach([0, 30] as $minute)
 
-                                @php
-                                    $time = sprintf('%02d:%02d', $hour, $minute);
-                                @endphp
+                    {{-- Date --}}
+                    <div>
+                        <label
+                            for="date"
+                            class="mb-2 block text-sm font-semibold text-[#43504d]"
+                        >
+                            Tanggal Reservasi
+                        </label>
 
-                                <option
-                                    value="{{ $time }}"
-                                    @selected(old('start_time') === $time)>
-                                    {{ $time }}
-                                </option>
+                        <input
+                            id="date"
+                            type="date"
+                            name="date"
+                            value="{{ old('date', request('date', now()->toDateString())) }}"
+                            min="{{ now()->toDateString() }}"
+                            required
+                            class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-sm text-[#263634] outline-none transition focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
+                        >
 
-                            @endforeach
+                        @error('date')
+                            <p class="mt-1.5 text-xs text-[#a65f3e]">
+                                {{ $message }}
+                            </p>
+                        @enderror
+                    </div>
 
-                        @endfor
 
-                    </select>
+                    {{-- Time --}}
+                    <div class="grid gap-5 sm:grid-cols-2">
+
+                        <div>
+                            <label
+                                for="start_time"
+                                class="mb-2 block text-sm font-semibold text-[#43504d]"
+                            >
+                                Jam Mulai
+                            </label>
+
+                            <input
+                                id="start_time"
+                                type="time"
+                                name="start_time"
+                                value="{{ old('start_time', request('start', '07:00')) }}"
+                                min="07:00"
+                                max="19:30"
+                                step="1800"
+                                required
+                                class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-sm text-[#263634] outline-none transition focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
+                            >
+
+                            @error('start_time')
+                                <p class="mt-1.5 text-xs text-[#a65f3e]">
+                                    {{ $message }}
+                                </p>
+                            @enderror
+                        </div>
+
+
+                        <div>
+                            <label
+                                for="end_time"
+                                class="mb-2 block text-sm font-semibold text-[#43504d]"
+                            >
+                                Jam Selesai
+                            </label>
+
+                            <input
+                                id="end_time"
+                                type="time"
+                                name="end_time"
+                                value="{{ old('end_time', request('end', '07:30')) }}"
+                                min="07:30"
+                                max="20:00"
+                                step="1800"
+                                required
+                                class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-sm text-[#263634] outline-none transition focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
+                            >
+
+                            @error('end_time')
+                                <p class="mt-1.5 text-xs text-[#a65f3e]">
+                                    {{ $message }}
+                                </p>
+                            @enderror
+                        </div>
+
+                    </div>
+
+
+                    {{-- Participants --}}
+                    <div>
+                        <label
+                            for="participants"
+                            class="mb-2 block text-sm font-semibold text-[#43504d]"
+                        >
+                            Jumlah Peserta
+                        </label>
+
+                        <input
+                            id="participants"
+                            type="number"
+                            name="participants"
+                            value="{{ old('participants', 1) }}"
+                            min="1"
+                            max="{{ $facility->capacity }}"
+                            required
+                            class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-sm text-[#263634] outline-none transition focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
+                        >
+
+                        <p class="mt-1.5 text-xs text-[#8a9490]">
+                            Maksimal {{ $facility->capacity }} orang.
+                        </p>
+
+                        @error('participants')
+                            <p class="mt-1.5 text-xs text-[#a65f3e]">
+                                {{ $message }}
+                            </p>
+                        @enderror
+                    </div>
+
+
+                    {{-- Purpose --}}
+                    <div>
+                        <label
+                            for="purpose"
+                            class="mb-2 block text-sm font-semibold text-[#43504d]"
+                        >
+                            Keperluan / Tujuan Kegiatan
+                        </label>
+
+                        <textarea
+                            id="purpose"
+                            name="purpose"
+                            rows="5"
+                            required
+                            maxlength="255"
+                            placeholder="Jelaskan tujuan penggunaan fasilitas..."
+                            class="w-full resize-none rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-sm leading-6 text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
+                        >{{ old('purpose') }}</textarea>
+
+                        @error('purpose')
+                            <p class="mt-1.5 text-xs text-[#a65f3e]">
+                                {{ $message }}
+                            </p>
+                        @enderror
+                    </div>
+
                 </div>
 
-                <div>
-                    <label for="end_time"
-                           class="mb-2 block text-sm font-medium text-[#59636f]">
-                        Jam selesai
-                    </label>
 
-                    <select
-                        id="end_time"
-                        name="end_time"
-                        required
-                        class="w-full rounded-lg border border-[#dedbd6] bg-[#fcfbfa] px-3 py-2.5 text-sm outline-none focus:border-[#c9b5a7] focus:ring-2 focus:ring-[#eadfd8]">
+                {{-- Actions --}}
+                <div class="flex flex-col-reverse gap-3 border-t border-[#e4e1da] bg-[#fafaf8] px-6 py-4 sm:flex-row sm:justify-end">
 
-                        @for($hour = 7; $hour <= 20; $hour++)
+                    <a
+                        href="{{ route('facilities.show', $facility) }}"
+                        class="inline-flex items-center justify-center rounded-lg border border-[#d5d2ca] bg-white px-5 py-2.5 text-sm font-semibold text-[#596460] transition hover:bg-[#f1f0eb]"
+                    >
+                        Batal
+                    </a>
 
-                            @if($hour < 20)
-                                @foreach([0, 30] as $minute)
+                    <button
+                        type="submit"
+                        class="inline-flex items-center justify-center rounded-lg bg-[#2f625b] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#244d48] hover:shadow-md"
+                    >
+                        Ajukan Reservasi
+                    </button>
 
-                                    @php
-                                        $time = sprintf('%02d:%02d', $hour, $minute);
-                                    @endphp
-
-                                    <option
-                                        value="{{ $time }}"
-                                        @selected(old('end_time') === $time)>
-                                        {{ $time }}
-                                    </option>
-
-                                @endforeach
-                            @else
-
-                                <option
-                                    value="20:00"
-                                    @selected(old('end_time') === '20:00')>
-                                    20:00
-                                </option>
-
-                            @endif
-
-                        @endfor
-
-                    </select>
                 </div>
 
-            </div>
+            </form>
 
-            <div>
-                <label for="purpose"
-                       class="mb-2 block text-sm font-medium text-[#59636f]">
-                    Tujuan reservasi
-                </label>
-
-                <textarea
-                    id="purpose"
-                    name="purpose"
-                    rows="4"
-                    required
-                    class="w-full rounded-lg border border-[#dedbd6] bg-[#fcfbfa] px-3 py-2.5 text-sm outline-none focus:border-[#c9b5a7] focus:ring-2 focus:ring-[#eadfd8]">{{ old('purpose') }}</textarea>
-            </div>
-
-            <button
-                type="submit"
-                class="w-full rounded-lg bg-[#d8c8bc] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#c9b5a7]">
-                Ajukan reservasi
-            </button>
-
-        </form>
+        </div>
 
     </div>
 
