@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\Staff\ReservationApprovalController;
 
 Route::get('/', fn() => redirect()->route('facilities.index'));
 
@@ -36,6 +37,7 @@ Route::middleware(['auth', 'active', 'role:ADMIN'])->prefix('admin')->name('admi
     Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
     Route::post('/users', [UserController::class, 'store'])->name('users.store');
     Route::patch('/users/{user}/verify', [UserController::class, 'verify'])->name('users.verify');
+    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
 });
 
 // Reservasi khusus USER
@@ -58,15 +60,15 @@ Route::middleware(['auth', 'active', 'role:STAFF,ADMIN'])
     ->prefix('staff')
     ->name('staff.')
     ->group(function () {
-        Route::get('/reservations', [ReservationController::class, 'staffIndex'])
+        Route::get('/reservations', [ReservationApprovalController::class, 'index'])
             ->name('reservations.index');
 
-        Route::patch('/reservations/{reservation}/approve', [ReservationController::class, 'approve'])
+        Route::patch('/reservations/{id}/approve', [ReservationApprovalController::class, 'approve'])
             ->name('reservations.approve');
 
-        Route::patch('/reservations/{reservation}/reject', [ReservationController::class, 'reject'])
+        Route::patch('/reservations/{id}/reject', [ReservationApprovalController::class, 'reject'])
             ->name('reservations.reject');
 
-        Route::patch('/reservations/{reservation}/cancel', [ReservationController::class, 'staffCancel'])
+        Route::patch('/reservations/{id}/cancel', [ReservationApprovalController::class, 'staffCancel'])
             ->name('reservations.cancel');
     });
