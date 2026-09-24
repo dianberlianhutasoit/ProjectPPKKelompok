@@ -18,12 +18,11 @@ class ReservationRequest extends FormRequest
 
     /**
      * Aturan validasi pengajuan reservasi.
-     * Menggunakan nama field dari form Person 1 (identity_number, participants, date).
+     * Menggunakan nama field dari form Person 1 (participants, date).
      */
     public function rules(): array
     {
         return [
-            'identity_number' => 'required|string|max:50',
             'participants'    => 'required|integer|min:1',
             'date'            => 'required|date|after_or_equal:today',
             'start_time'      => [
@@ -38,7 +37,7 @@ class ReservationRequest extends FormRequest
                 'after:07:00',
                 'before_or_equal:20:00',
             ],
-            'purpose'         => 'required|string|max:255',
+            'purpose' => 'required|string|max:255',
         ];
     }
 
@@ -72,7 +71,6 @@ class ReservationRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'identity_number.required'  => 'NIM/NIP wajib diisi.',
             'participants.required'     => 'Jumlah peserta wajib diisi.',
             'participants.min'          => 'Jumlah peserta minimal 1 orang.',
             'date.required'             => 'Tanggal reservasi wajib diisi.',
