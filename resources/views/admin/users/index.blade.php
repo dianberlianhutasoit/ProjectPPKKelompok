@@ -145,20 +145,21 @@
                                 {{-- Status --}}
                                 <td class="px-5 py-5">
 
-                                    @if($user->is_active)
-
+                                    @if($user->status === 'ACTIVE')
                                         <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-[#426b5a]">
                                             <span class="h-1.5 w-1.5 rounded-full bg-[#426b5a]"></span>
                                             Aktif
                                         </span>
-
+                                    @elseif($user->status === 'PENDING')
+                                        <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-[#99633d]">
+                                            <span class="h-1.5 w-1.5 rounded-full bg-[#99633d]"></span>
+                                            Menunggu Verifikasi
+                                        </span>
                                     @else
-
                                         <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-[#a65f3e]">
                                             <span class="h-1.5 w-1.5 rounded-full bg-[#a65f3e]"></span>
-                                            Tidak Aktif
+                                            Ditolak
                                         </span>
-
                                     @endif
 
                                 </td>
@@ -269,18 +270,18 @@
                                 Status
                             </p>
 
-                            @if($user->is_active)
-
+                            @if($user->status === 'ACTIVE')
                                 <p class="mt-1 text-sm font-semibold text-[#426b5a]">
                                     Aktif
                                 </p>
-
-                            @else
-
-                                <p class="mt-1 text-sm font-semibold text-[#a65f3e]">
-                                    Tidak Aktif
+                            @elseif($user->status === 'PENDING')
+                                <p class="mt-1 text-sm font-semibold text-[#99633d]">
+                                    Menunggu Verifikasi
                                 </p>
-
+                            @else
+                                <p class="mt-1 text-sm font-semibold text-[#a65f3e]">
+                                    Ditolak
+                                </p>
                             @endif
 
                         </div>

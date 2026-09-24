@@ -15,7 +15,14 @@ class UserController extends Controller
         $status = $request->query('status');
 
         $users = User::when($status, fn ($q) => $q->where('status', $status))
-            ->orderByRaw("FIELD(status, 'PENDING', 'ACTIVE', 'REJECTED')")
+           ->orderByRaw("
+                CASE status
+                    WHEN 'PENDING' THEN 1
+                    WHEN 'ACTIVE' THEN 2
+                    WHEN 'REJECTED' THEN 3
+                    ELSE 4
+                END
+            ")
             ->latest()
             ->get();
 
