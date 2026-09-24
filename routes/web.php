@@ -22,14 +22,19 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->n
 // Setelah login diarahkan sesuai role-nya
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'active'])->name('dashboard');
 
-// Siapa aja boleh lihat daftar & detail fasilitas
-Route::get('/facilities', [FacilityController::class, 'index'])->name('facilities.index');
-Route::get('/facilities/{facility}', [FacilityController::class, 'show'])->middleware('auth')->name('facilities.show');
+/// Daftar fasilitas bisa dilihat semua orang
+Route::get('/facilities', [FacilityController::class, 'index'])
+    ->name('facilities.index');
 
 // Cuma admin yang boleh tambah / edit / nonaktifkan fasilitas
 Route::resource('facilities', FacilityController::class)
     ->except(['index', 'show'])
     ->middleware(['auth', 'active', 'role:ADMIN']);
+
+// Detail fasilitas harus login
+Route::get('/facilities/{facility}', [FacilityController::class, 'show'])
+    ->middleware('auth')
+    ->name('facilities.show');
 
 // Cuma admin: kelola akun & verifikasi pendaftar baru
 Route::middleware(['auth', 'active', 'role:ADMIN'])->prefix('admin')->name('admin.')->group(function () {
@@ -55,8 +60,8 @@ Route::middleware(['auth', 'active', 'role:USER'])->group(function () {
         ->name('reservations.cancel');
 });
 
-// Pengelolaan reservasi oleh STAFF dan ADMIN
-Route::middleware(['auth', 'active', 'role:STAFF,ADMIN'])
+// Pengelolaan reservasi oleh STAFF
+Route::middleware(['auth', 'active', 'role:STAFF'])
     ->prefix('staff')
     ->name('staff.')
     ->group(function () {
