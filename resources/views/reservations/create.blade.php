@@ -117,6 +117,25 @@
 
                 <div class="space-y-5 p-6">
 
+                    {{-- Nama Pemohon --}}
+                    <div>
+                        <label
+                            for="applicant_name"
+                            class="mb-2 block text-sm font-semibold text-[#43504d]"
+                        >
+                            Nama Pemohon
+                        </label>
+
+                        <input
+                            id="applicant_name"
+                            type="text"
+                            value="{{ auth()->user()->name }}"
+                            readonly
+                            class="w-full cursor-not-allowed rounded-lg border border-[#d5d2ca] bg-[#f4f4f1] px-4 py-3 text-sm text-[#68736f] outline-none"
+                        >
+                    </div>
+
+
                     {{-- Date --}}
                     <div>
                         <label
