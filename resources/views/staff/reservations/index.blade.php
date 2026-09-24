@@ -6,6 +6,123 @@
 
 <div class="mx-auto max-w-7xl">
 
+    {{-- Filter & Sorting --}}
+    <div class="mb-6 border border-[#dedbd3] bg-white p-5">
+
+        <form method="GET" action="{{ route('staff.reservations.index') }}"
+            class="grid gap-4 md:grid-cols-4">
+
+            {{-- Status --}}
+            <div>
+                <label class="mb-2 block text-xs font-bold uppercase tracking-wide text-[#596460]">
+                    Status
+                </label>
+
+                <select
+                    name="status"
+                    class="w-full border border-[#d5d2ca] bg-[#fafaf8] px-3 py-2.5 text-sm text-[#263634] outline-none focus:border-[#2f625b]"
+                >
+                    <option value="PENDING" @selected($filters['status'] === 'PENDING')>
+                        Menunggu
+                    </option>
+
+                    <option value="APPROVED" @selected($filters['status'] === 'APPROVED')>
+                        Disetujui
+                    </option>
+
+                    <option value="REJECTED" @selected($filters['status'] === 'REJECTED')>
+                        Ditolak
+                    </option>
+
+                    <option value="CANCELLED" @selected($filters['status'] === 'CANCELLED')>
+                        Dibatalkan
+                    </option>
+
+                    <option value="" @selected(empty($filters['status']))>
+                        Semua
+                    </option>
+                </select>
+            </div>
+
+            {{-- Fasilitas --}}
+            <div>
+                <label class="mb-2 block text-xs font-bold uppercase tracking-wide text-[#596460]">
+                    Fasilitas
+                </label>
+
+                <select
+                    name="facility_id"
+                    class="w-full border border-[#d5d2ca] bg-[#fafaf8] px-3 py-2.5 text-sm text-[#263634] outline-none focus:border-[#2f625b]"
+                >
+                    <option value="">Semua fasilitas</option>
+
+                    @foreach(\App\Models\Facility::orderBy('name')->get() as $facility)
+                        <option
+                            value="{{ $facility->id }}"
+                            @selected((string) $filters['facility_id'] === (string) $facility->id)
+                        >
+                            {{ $facility->name }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            {{-- Urutkan --}}
+            <div>
+                <label class="mb-2 block text-xs font-bold uppercase tracking-wide text-[#596460]">
+                    Urutkan berdasarkan
+                </label>
+
+                <select
+                    name="sort_by"
+                    class="w-full border border-[#d5d2ca] bg-[#fafaf8] px-3 py-2.5 text-sm text-[#263634] outline-none focus:border-[#2f625b]"
+                >
+                    <option value="created_at" @selected($filters['sort_by'] === 'created_at')>
+                        Tanggal pengajuan
+                    </option>
+
+                    <option value="event_date" @selected($filters['sort_by'] === 'event_date')>
+                        Tanggal reservasi
+                    </option>
+
+                    <option value="facility" @selected($filters['sort_by'] === 'facility')>
+                        Nama fasilitas
+                    </option>
+                </select>
+            </div>
+
+            {{-- Urutan --}}
+            <div>
+                <label class="mb-2 block text-xs font-bold uppercase tracking-wide text-[#596460]">
+                    Urutan
+                </label>
+
+                <div class="flex gap-2">
+                    <select
+                        name="sort_order"
+                        class="w-full border border-[#d5d2ca] bg-[#fafaf8] px-3 py-2.5 text-sm text-[#263634] outline-none focus:border-[#2f625b]"
+                    >
+                        <option value="asc" @selected($filters['sort_order'] === 'asc')>
+                            Terlama
+                        </option>
+
+                        <option value="desc" @selected($filters['sort_order'] === 'desc')>
+                            Terbaru
+                        </option>
+                    </select>
+
+                    <button
+                        type="submit"
+                        class="shrink-0 bg-[#2f625b] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#244d48]"
+                    >
+                        Terapkan
+                    </button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+
     {{-- Header --}}
     <div class="mb-7">
         <p class="text-xs font-bold uppercase tracking-[0.14em] text-[#2f625b]">
@@ -68,9 +185,6 @@
                                 <td class="px-5 py-5 align-top">
                                     <p class="font-bold text-[#263634]">
                                         {{ $reservation->user->name ?? '-' }}
-                                    </p>
-                                    <p class="mt-1 text-xs text-[#7b8581]">
-                                        {{ $reservation->identity_number ?? '-' }}
                                     </p>
                                     <p class="mt-1 text-xs text-[#8a9490]">
                                         {{ $reservation->user->email ?? '-' }}
@@ -142,7 +256,7 @@
                                                 @method('PATCH')
                                                 <input
                                                     type="text"
-                                                    name="reason"
+                                                    name="cancel_reason"
                                                     placeholder="Alasan penolakan"
                                                     required
                                                     class="min-w-0 w-full rounded-md border border-[#d5d2ca] bg-[#fafaf8] px-2.5 py-2 text-xs outline-none focus:border-[#2f625b] focus:bg-white"
@@ -200,7 +314,6 @@
                         <div>
                             <p class="text-[11px] font-semibold uppercase tracking-wide text-[#8a9490]">Pemohon</p>
                             <p class="mt-1 text-sm font-semibold text-[#43504d]">{{ $reservation->user->name ?? '-' }}</p>
-                            <p class="mt-1 text-xs text-[#8a9490]">{{ $reservation->identity_number ?? '-' }}</p>
                         </div>
 
                         <div>
@@ -250,7 +363,7 @@
                                 @method('PATCH')
                                 <input
                                     type="text"
-                                    name="reason"
+                                    name="cancel_reason"
                                     placeholder="Alasan penolakan"
                                     required
                                     class="mb-2 w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-3 py-2.5 text-sm outline-none focus:border-[#2f625b] focus:bg-white"
