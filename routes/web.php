@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\Staff\ReservationApprovalController;
 
 Route::get('/', fn() => redirect()->route('facilities.index'));
 
@@ -21,14 +22,19 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->n
 // Setelah login diarahkan sesuai role-nya
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'active'])->name('dashboard');
 
-// Siapa aja boleh lihat daftar & detail fasilitas
-Route::get('/facilities', [FacilityController::class, 'index'])->name('facilities.index');
-Route::get('/facilities/{facility}', [FacilityController::class, 'show'])->middleware('auth')->name('facilities.show');
+/// Daftar fasilitas bisa dilihat semua orang
+Route::get('/facilities', [FacilityController::class, 'index'])
+    ->name('facilities.index');
 
 // Cuma admin yang boleh tambah / edit / nonaktifkan fasilitas
 Route::resource('facilities', FacilityController::class)
     ->except(['index', 'show'])
     ->middleware(['auth', 'active', 'role:ADMIN']);
+
+// Detail fasilitas harus login
+Route::get('/facilities/{facility}', [FacilityController::class, 'show'])
+    ->middleware('auth')
+    ->name('facilities.show');
 
 // Cuma admin: kelola akun & verifikasi pendaftar baru
 Route::middleware(['auth', 'active', 'role:ADMIN'])->prefix('admin')->name('admin.')->group(function () {
@@ -54,20 +60,20 @@ Route::middleware(['auth', 'active', 'role:USER'])->group(function () {
         ->name('reservations.cancel');
 });
 
-// Pengelolaan reservasi oleh STAFF dan ADMIN
-Route::middleware(['auth', 'active', 'role:STAFF,ADMIN'])
+// Pengelolaan reservasi oleh STAFF
+Route::middleware(['auth', 'active', 'role:STAFF'])
     ->prefix('staff')
     ->name('staff.')
     ->group(function () {
-        Route::get('/reservations', [ReservationController::class, 'staffIndex'])
+        Route::get('/reservations', [ReservationApprovalController::class, 'index'])
             ->name('reservations.index');
 
-        Route::patch('/reservations/{reservation}/approve', [ReservationController::class, 'approve'])
+        Route::patch('/reservations/{id}/approve', [ReservationApprovalController::class, 'approve'])
             ->name('reservations.approve');
 
-        Route::patch('/reservations/{reservation}/reject', [ReservationController::class, 'reject'])
+        Route::patch('/reservations/{id}/reject', [ReservationApprovalController::class, 'reject'])
             ->name('reservations.reject');
 
-        Route::patch('/reservations/{reservation}/cancel', [ReservationController::class, 'staffCancel'])
+        Route::patch('/reservations/{id}/cancel', [ReservationApprovalController::class, 'staffCancel'])
             ->name('reservations.cancel');
     });

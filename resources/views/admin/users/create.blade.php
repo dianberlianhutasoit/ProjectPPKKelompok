@@ -34,7 +34,6 @@
 
     </div>
 
-
     <div class="grid gap-6 lg:grid-cols-[280px_1fr]">
 
         {{-- Info Panel --}}
@@ -51,7 +50,6 @@
             <p class="mt-2 text-sm leading-6 text-white/65">
                 Pastikan data akun yang dimasukkan sudah benar sebelum dibuat.
             </p>
-
 
             <div class="mt-7 border-t border-white/15 pt-5">
 
@@ -82,7 +80,6 @@
 
         </div>
 
-
         {{-- Form --}}
         <div class="border border-[#dedbd3] bg-white">
 
@@ -97,7 +94,6 @@
                 </h2>
 
             </div>
-
 
             <form
                 method="POST"
@@ -137,7 +133,6 @@
 
                     </div>
 
-
                     {{-- Email --}}
                     <div>
 
@@ -165,7 +160,6 @@
                         @enderror
 
                     </div>
-
 
                     {{-- Password --}}
                     <div>
@@ -197,7 +191,6 @@
                         @enderror
 
                     </div>
-
 
                     {{-- Role --}}
                     <div>
@@ -251,7 +244,6 @@
 
                     </div>
 
-
                     {{-- Active --}}
                     <div class="border border-[#e4e1da] bg-[#fafaf8] p-4">
 
@@ -288,7 +280,6 @@
                     </div>
 
                 </div>
-
 
                 {{-- Actions --}}
                 <div class="flex flex-col-reverse gap-3 border-t border-[#e4e1da] bg-[#fafaf8] px-6 py-4 sm:flex-row sm:justify-end">

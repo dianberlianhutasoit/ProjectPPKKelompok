@@ -89,6 +89,7 @@ class DatabaseSeeder extends Seeder
 
         Reservation::create([
             'user_id' => 10, 'facility_id' => 1,
+            'participants' => 25,
             'start_time' => Carbon::parse('2026-09-20 08:00'),
             'participants' =>20,
             'end_time' => Carbon::parse('2026-09-20 09:00'),
@@ -97,6 +98,7 @@ class DatabaseSeeder extends Seeder
         ]);
         Reservation::create([
             'user_id' => 11, 'facility_id' => 1,
+            'participants' => 10,
             'start_time' => Carbon::parse('2026-09-20 08:30'),
             'participants' =>20,
             'end_time' => Carbon::parse('2026-09-20 09:30'),
@@ -105,6 +107,7 @@ class DatabaseSeeder extends Seeder
         ]);
         Reservation::create([
             'user_id' => 12, 'facility_id' => 5,
+            'participants' => 30,
             'start_time' => Carbon::parse('2026-09-21 13:00'),
             'participants' =>20,
             'end_time' => Carbon::parse('2026-09-21 14:30'),
@@ -113,6 +116,7 @@ class DatabaseSeeder extends Seeder
         ]);
         Reservation::create([
             'user_id' => 13, 'facility_id' => 2,
+            'participants' => 20,
             'start_time' => Carbon::parse('2026-09-18 10:00'),
             'participants' =>20,
             'end_time' => Carbon::parse('2026-09-18 11:00'),
@@ -121,6 +125,7 @@ class DatabaseSeeder extends Seeder
         ]);
         Reservation::create([
             'user_id' => 14, 'facility_id' => 3,
+            'participants' => 15,
             'start_time' => Carbon::parse('2026-09-19 09:00'),
             'participants' =>20,
             'end_time' => Carbon::parse('2026-09-19 10:00'),

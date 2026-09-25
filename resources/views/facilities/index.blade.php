@@ -27,8 +27,10 @@
 
         @auth
             @if(auth()->user()->role === 'ADMIN')
-                <a href="{{ route('facilities.create') }}"
-                   class="inline-flex shrink-0 items-center justify-center gap-2 rounded-lg bg-[#2f625b] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#244d48] hover:shadow-md">
+                <a
+                    href="{{ route('facilities.create') }}"
+                    class="inline-flex shrink-0 items-center justify-center gap-2 rounded-lg bg-[#2f625b] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#244d48] hover:shadow-md"
+                >
                     <span class="text-lg leading-none">+</span>
                     Tambah fasilitas
                 </a>
@@ -86,16 +88,32 @@
     </div>
 
     <div class="p-5">
-        <form method="GET" action="{{ route('facilities.index') }}" class="grid gap-4 md:grid-cols-4">
+        <form
+            method="GET"
+            action="{{ route('facilities.index') }}"
+            class="grid gap-4 md:grid-cols-4"
+        >
             {{-- Type --}}
             <div>
-                <label for="type" class="mb-2 block text-xs font-bold uppercase tracking-wide text-[#596460]">
+                <label
+                    for="type"
+                    class="mb-2 block text-xs font-bold uppercase tracking-wide text-[#596460]"
+                >
                     Tipe
                 </label>
-                <select id="type" name="type" class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-3.5 py-2.5 text-sm text-[#43504d] outline-none transition focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10">
-                    <option value="">Semua tipe</option>
+                <select
+                    id="type"
+                    name="type"
+                    class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-3.5 py-2.5 text-sm text-[#43504d] outline-none transition focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
+                >
+                    <option value="">
+                        Semua tipe
+                    </option>
                     @foreach($types as $t)
-                        <option value="{{ $t }}" @selected(($filters['type'] ?? '') === $t)>
+                        <option
+                            value="{{ $t }}"
+                            @selected(($filters['type'] ?? '') === $t)
+                        >
                             {{ $t }}
                         </option>
                     @endforeach
@@ -104,26 +122,54 @@
 
             {{-- Location --}}
             <div>
-                <label for="location" class="mb-2 block text-xs font-bold uppercase tracking-wide text-[#596460]">
+                <label
+                    for="location"
+                    class="mb-2 block text-xs font-bold uppercase tracking-wide text-[#596460]"
+                >
                     Lokasi
                 </label>
-                <input id="location" type="text" name="location" value="{{ $filters['location'] ?? '' }}" maxlength="255" placeholder="Contoh: Gedung A" class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-3.5 py-2.5 text-sm text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10">
+                <input
+                    id="location"
+                    type="text"
+                    name="location"
+                    value="{{ $filters['location'] ?? '' }}"
+                    maxlength="255"
+                    placeholder="Contoh: Gedung A"
+                    class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-3.5 py-2.5 text-sm text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
+                >
             </div>
 
             {{-- Capacity --}}
             <div>
-                <label for="min_capacity" class="mb-2 block text-xs font-bold uppercase tracking-wide text-[#596460]">
+                <label
+                    for="min_capacity"
+                    class="mb-2 block text-xs font-bold uppercase tracking-wide text-[#596460]"
+                >
                     Kapasitas minimal
                 </label>
-                <input id="min_capacity" type="number" name="min_capacity" value="{{ $filters['min_capacity'] ?? '' }}" min="1" placeholder="Contoh: 30" class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-3.5 py-2.5 text-sm text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10">
+                <input
+                    id="min_capacity"
+                    type="number"
+                    name="min_capacity"
+                    value="{{ $filters['min_capacity'] ?? '' }}"
+                    min="1"
+                    placeholder="Contoh: 30"
+                    class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-3.5 py-2.5 text-sm text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
+                >
             </div>
 
             {{-- Buttons --}}
             <div class="flex items-end gap-2">
-                <button type="submit" class="flex-1 rounded-lg bg-[#2f625b] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#244d48]">
+                <button
+                    type="submit"
+                    class="flex-1 rounded-lg bg-[#2f625b] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#244d48]"
+                >
                     Cari
                 </button>
-                <a href="{{ route('facilities.index') }}" class="rounded-lg border border-[#d5d2ca] bg-white px-4 py-2.5 text-sm font-semibold text-[#596460] transition hover:bg-[#f4f3ef]">
+                <a
+                    href="{{ route('facilities.index') }}"
+                    class="rounded-lg border border-[#d5d2ca] bg-white px-4 py-2.5 text-sm font-semibold text-[#596460] transition hover:bg-[#f4f3ef]"
+                >
                     Reset
                 </a>
             </div>
@@ -203,7 +249,7 @@
                             {{ $f->description }}
                         </p>
                     @else
-                        <p class="text-sm italic leading-6 text-[#a0a7a4]">
+                        <p class="text-sm italic leading-6 text-[#a0a0a0]">
                             Tidak ada deskripsi fasilitas.
                         </p>
                     @endif
@@ -234,13 +280,19 @@
 
                 {{-- Action --}}
                 <div class="mt-auto flex items-center justify-between border-t border-[#e8e5de] bg-[#fafaf8] px-5 py-3.5">
-                    <a href="{{ route('facilities.show', $f) }}" class="text-sm font-bold text-[#2f625b] transition group-hover:text-[#244d48] hover:underline">
+                    <a
+                        href="{{ route('facilities.show', $f) }}"
+                        class="text-sm font-bold text-[#2f625b] transition group-hover:text-[#244d48] hover:underline"
+                    >
                         Lihat detail →
                     </a>
 
                     @auth
                         @if(auth()->user()->role === 'ADMIN')
-                            <a href="{{ route('facilities.edit', $f) }}" class="text-xs font-semibold text-[#7a8581] transition hover:text-[#2f625b]">
+                            <a
+                                href="{{ route('facilities.edit', $f) }}"
+                                class="text-xs font-semibold text-[#7a8581] transition hover:text-[#2f625b]"
+                            >
                                 Edit fasilitas
                             </a>
                         @endif

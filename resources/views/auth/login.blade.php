@@ -78,7 +78,7 @@
         {{-- RIGHT : LOGIN --}}
         <div class="flex min-h-[560px] items-center bg-white px-7 py-10 sm:px-12">
 
-            <div class="w-full max-w-sm mx-auto">
+            <div class="mx-auto w-full max-w-sm">
 
                 <div class="mb-8">
 
