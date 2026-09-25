@@ -20,26 +20,27 @@
 
                 <select
                     name="status"
+                    onchange="this.form.submit()"
                     class="w-full border border-[#d5d2ca] bg-[#fafaf8] px-3 py-2.5 text-sm text-[#263634] outline-none focus:border-[#2f625b]"
                 >
-                    <option value="PENDING" @selected($filters['status'] === 'PENDING')>
+                    <option value="Semua" @selected(($filters['status'] ?? '') === 'Semua')>
+                        Semua
+                    </option>
+
+                    <option value="PENDING" @selected(($filters['status'] ?? 'PENDING') === 'PENDING')>
                         Menunggu
                     </option>
 
-                    <option value="APPROVED" @selected($filters['status'] === 'APPROVED')>
+                    <option value="APPROVED" @selected(($filters['status'] ?? '') === 'APPROVED')>
                         Disetujui
                     </option>
 
-                    <option value="REJECTED" @selected($filters['status'] === 'REJECTED')>
+                    <option value="REJECTED" @selected(($filters['status'] ?? '') === 'REJECTED')>
                         Ditolak
                     </option>
 
-                    <option value="CANCELLED" @selected($filters['status'] === 'CANCELLED')>
+                    <option value="CANCELLED" @selected(($filters['status'] ?? '') === 'CANCELLED')>
                         Dibatalkan
-                    </option>
-
-                    <option value="" @selected(empty($filters['status']))>
-                        Semua
                     </option>
                 </select>
             </div>
@@ -52,6 +53,7 @@
 
                 <select
                     name="facility_id"
+                    onchange="this.form.submit()"
                     class="w-full border border-[#d5d2ca] bg-[#fafaf8] px-3 py-2.5 text-sm text-[#263634] outline-none focus:border-[#2f625b]"
                 >
                     <option value="">Semua fasilitas</option>
@@ -59,7 +61,7 @@
                     @foreach(\App\Models\Facility::orderBy('name')->get() as $facility)
                         <option
                             value="{{ $facility->id }}"
-                            @selected((string) $filters['facility_id'] === (string) $facility->id)
+                            @selected((string) ($filters['facility_id'] ?? '') === (string) $facility->id)
                         >
                             {{ $facility->name }}
                         </option>
@@ -75,17 +77,18 @@
 
                 <select
                     name="sort_by"
+                    onchange="this.form.submit()"
                     class="w-full border border-[#d5d2ca] bg-[#fafaf8] px-3 py-2.5 text-sm text-[#263634] outline-none focus:border-[#2f625b]"
                 >
-                    <option value="created_at" @selected($filters['sort_by'] === 'created_at')>
+                    <option value="created_at" @selected(($filters['sort_by'] ?? '') === 'created_at')>
                         Tanggal pengajuan
                     </option>
 
-                    <option value="event_date" @selected($filters['sort_by'] === 'event_date')>
+                    <option value="event_date" @selected(($filters['sort_by'] ?? '') === 'event_date')>
                         Tanggal reservasi
                     </option>
 
-                    <option value="facility" @selected($filters['sort_by'] === 'facility')>
+                    <option value="facility" @selected(($filters['sort_by'] ?? '') === 'facility')>
                         Nama fasilitas
                     </option>
                 </select>
@@ -100,13 +103,14 @@
                 <div class="flex gap-2">
                     <select
                         name="sort_order"
+                        onchange="this.form.submit()"
                         class="w-full border border-[#d5d2ca] bg-[#fafaf8] px-3 py-2.5 text-sm text-[#263634] outline-none focus:border-[#2f625b]"
                     >
-                        <option value="asc" @selected($filters['sort_order'] === 'asc')>
+                        <option value="asc" @selected(($filters['sort_order'] ?? '') === 'asc')>
                             Terlama
                         </option>
 
-                        <option value="desc" @selected($filters['sort_order'] === 'desc')>
+                        <option value="desc" @selected(($filters['sort_order'] ?? '') === 'desc')>
                             Terbaru
                         </option>
                     </select>
@@ -158,6 +162,12 @@
     @if(session('error'))
         <div class="mb-5 border border-[#e6d0c5] bg-[#fbf0eb] px-4 py-3 text-sm font-medium text-[#a65f3e]">
             {{ session('error') }}
+        </div>
+    @endif
+
+    @if($errors->any())
+        <div class="mb-5 border border-[#e6d0c5] bg-[#fbf0eb] px-4 py-3 text-sm font-medium text-[#a65f3e]">
+            {{ $errors->first() }}
         </div>
     @endif
 
@@ -267,10 +277,17 @@
                                             </form>
                                         </div>
                                     @elseif($reservation->status === 'APPROVED')
-                                        <form method="POST" action="{{ route('staff.reservations.cancel', $reservation) }}" onsubmit="return confirm('Batalkan reservasi ini?')">
+                                        <form method="POST" action="{{ route('staff.reservations.cancel', $reservation) }}" class="flex gap-2">
                                             @csrf
                                             @method('PATCH')
-                                            <button type="submit" class="text-xs font-semibold text-[#a65f3e] hover:underline">
+                                            <input
+                                                type="text"
+                                                name="cancel_reason"
+                                                placeholder="Alasan pembatalan"
+                                                required
+                                                class="min-w-0 w-full rounded-md border border-[#d5d2ca] bg-[#fafaf8] px-2.5 py-2 text-xs outline-none focus:border-[#2f625b] focus:bg-white"
+                                            >
+                                            <button type="submit" class="rounded-md border border-[#d5d2ca] bg-white px-3 py-2 text-xs font-bold text-[#a65f3e] transition hover:bg-[#fbf0eb]" onclick="return confirm('Batalkan reservasi ini?')">
                                                 Batalkan
                                             </button>
                                         </form>
@@ -375,10 +392,17 @@
                         </div>
                     @elseif($reservation->status === 'APPROVED')
                         <div class="mt-5 border-t border-[#eeeae4] pt-4">
-                            <form method="POST" action="{{ route('staff.reservations.cancel', $reservation) }}" onsubmit="return confirm('Batalkan reservasi ini?')">
+                            <form method="POST" action="{{ route('staff.reservations.cancel', $reservation) }}">
                                 @csrf
                                 @method('PATCH')
-                                <button type="submit" class="text-sm font-semibold text-[#a65f3e] hover:underline">
+                                <input
+                                    type="text"
+                                    name="cancel_reason"
+                                    placeholder="Alasan pembatalan"
+                                    required
+                                    class="mb-2 w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-3 py-2.5 text-sm outline-none focus:border-[#2f625b] focus:bg-white"
+                                >
+                                <button type="submit" class="w-full rounded-lg border border-[#d5d2ca] bg-white px-4 py-2.5 text-sm font-bold text-[#a65f3e] transition hover:bg-[#fbf0eb]" onclick="return confirm('Batalkan reservasi ini?')">
                                     Batalkan Reservasi
                                 </button>
                             </form>
