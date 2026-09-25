@@ -20,7 +20,7 @@ return new class extends Migration
     public function down(): void
     {
         if (DB::getDriverName() === 'mysql') {
-            DB::statement("ALTER TABLE `users` MODIFY `status` ENUM('PENDING', 'ACTIVE', 'REJECTED') NOT NULL DEFAULT 'PENDING'");
+            DB::statement("ALTER TABLE `users` MODIFY `status` ENUM('PENDING', 'ACTIVE', 'REJECTED','INACTIVE') NOT NULL DEFAULT 'PENDING'");
         }
     }
 };

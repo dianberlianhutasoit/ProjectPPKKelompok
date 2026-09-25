@@ -9,14 +9,22 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('reservations', function (Blueprint $table) {
-            $table->dropColumn('identity_number');
+            // Cek dan hapus jika nama kolomnya identity_number
+            if (Schema::hasColumn('reservations', 'identity_number')) {
+                $table->dropColumn('identity_number');
+            }
+
+            // Cek dan hapus jika nama kolomnya nim_nip
+            if (Schema::hasColumn('reservations', 'nim_nip')) {
+                $table->dropColumn('nim_nip');
+            }
         });
     }
 
     public function down(): void
     {
         Schema::table('reservations', function (Blueprint $table) {
-            $table->string('identity_number', 50);
+            // $table->string('nim_nip')->nullable();
         });
     }
 };
