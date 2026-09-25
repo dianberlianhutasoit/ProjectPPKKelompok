@@ -155,6 +155,11 @@
                                             <span class="h-1.5 w-1.5 rounded-full bg-[#99633d]"></span>
                                             Menunggu Verifikasi
                                         </span>
+                                    @elseif($user->status === 'INACTIVE')
+                                        <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-[#737a77]">
+                                            <span class="h-1.5 w-1.5 rounded-full bg-[#737a77]"></span>
+                                            Nonaktif
+                                        </span>
                                     @else
                                         <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-[#a65f3e]">
                                             <span class="h-1.5 w-1.5 rounded-full bg-[#a65f3e]"></span>
@@ -178,7 +183,59 @@
                                 {{-- Action --}}
                                 <td class="px-5 py-5">
 
-                                    @if(auth()->id() !== $user->id)
+                                    @if(auth()->id() === $user->id)
+
+                                        <span class="text-xs text-[#9aa19e]">
+                                            Akun saat ini
+                                        </span>
+
+                                    @elseif($user->status === 'PENDING')
+
+                                        <div class="flex items-center gap-3">
+
+                                            <form
+                                                method="POST"
+                                                action="{{ route('admin.users.verify', $user) }}"
+                                                onsubmit="return confirm('Setujui pengguna ini?')"
+                                            >
+
+                                                @csrf
+                                                @method('PATCH')
+
+                                                <input type="hidden" name="action" value="approve">
+
+                                                <button
+                                                    type="submit"
+                                                    class="text-sm font-semibold text-[#426b5a] hover:underline"
+                                                >
+                                                    Setujui
+                                                </button>
+
+                                            </form>
+
+                                            <form
+                                                method="POST"
+                                                action="{{ route('admin.users.verify', $user) }}"
+                                                onsubmit="return confirm('Tolak pengguna ini?')"
+                                            >
+
+                                                @csrf
+                                                @method('PATCH')
+
+                                                <input type="hidden" name="action" value="reject">
+
+                                                <button
+                                                    type="submit"
+                                                    class="text-sm font-semibold text-[#a65f3e] hover:underline"
+                                                >
+                                                    Tolak
+                                                </button>
+
+                                            </form>
+
+                                        </div>
+
+                                    @elseif($user->status === 'ACTIVE')
 
                                         <form
                                             method="POST"
@@ -201,7 +258,7 @@
                                     @else
 
                                         <span class="text-xs text-[#9aa19e]">
-                                            Akun saat ini
+                                            —
                                         </span>
 
                                     @endif
@@ -278,6 +335,10 @@
                                 <p class="mt-1 text-sm font-semibold text-[#99633d]">
                                     Menunggu Verifikasi
                                 </p>
+                            @elseif($user->status === 'INACTIVE')
+                                <p class="mt-1 text-sm font-semibold text-[#737a77]">
+                                    Nonaktif
+                                </p>
                             @else
                                 <p class="mt-1 text-sm font-semibold text-[#a65f3e]">
                                     Ditolak
@@ -302,27 +363,77 @@
                     </div>
 
 
-                    @if(auth()->id() !== $user->id)
+                    @if(auth()->id() !== $user->id && in_array($user->status, ['PENDING', 'ACTIVE']))
 
                         <div class="mt-5 border-t border-[#eeeae4] pt-4">
 
-                            <form
-                                method="POST"
-                                action="{{ route('admin.users.destroy', $user) }}"
-                                onsubmit="return confirm('Nonaktifkan pengguna ini?')"
-                            >
+                            @if($user->status === 'PENDING')
 
-                                @csrf
-                                @method('DELETE')
+                                <div class="flex items-center gap-4">
 
-                                <button
-                                    type="submit"
-                                    class="text-sm font-semibold text-[#a65f3e] hover:underline"
+                                    <form
+                                        method="POST"
+                                        action="{{ route('admin.users.verify', $user) }}"
+                                        onsubmit="return confirm('Setujui pengguna ini?')"
+                                    >
+
+                                        @csrf
+                                        @method('PATCH')
+
+                                        <input type="hidden" name="action" value="approve">
+
+                                        <button
+                                            type="submit"
+                                            class="text-sm font-semibold text-[#426b5a] hover:underline"
+                                        >
+                                            Setujui
+                                        </button>
+
+                                    </form>
+
+                                    <form
+                                        method="POST"
+                                        action="{{ route('admin.users.verify', $user) }}"
+                                        onsubmit="return confirm('Tolak pengguna ini?')"
+                                    >
+
+                                        @csrf
+                                        @method('PATCH')
+
+                                        <input type="hidden" name="action" value="reject">
+
+                                        <button
+                                            type="submit"
+                                            class="text-sm font-semibold text-[#a65f3e] hover:underline"
+                                        >
+                                            Tolak
+                                        </button>
+
+                                    </form>
+
+                                </div>
+
+                            @else
+
+                                <form
+                                    method="POST"
+                                    action="{{ route('admin.users.destroy', $user) }}"
+                                    onsubmit="return confirm('Nonaktifkan pengguna ini?')"
                                 >
-                                    Nonaktifkan Pengguna
-                                </button>
 
-                            </form>
+                                    @csrf
+                                    @method('DELETE')
+
+                                    <button
+                                        type="submit"
+                                        class="text-sm font-semibold text-[#a65f3e] hover:underline"
+                                    >
+                                        Nonaktifkan Pengguna
+                                    </button>
+
+                                </form>
+
+                            @endif
 
                         </div>
 

@@ -19,9 +19,12 @@ class EnsureUserActive
             $request->session()->invalidate();
             $request->session()->regenerateToken();
 
-            $message = $user->status === 'PENDING'
-                ? 'Akun menunggu verifikasi admin.'
-                : 'Akun ditolak admin, tidak dapat digunakan.';
+            $message = match ($user->status) {
+                'PENDING' => 'Akun menunggu verifikasi admin.',
+                'REJECTED' => 'Akun ditolak admin, tidak dapat digunakan.',
+                'INACTIVE' => 'Akun dinonaktifkan admin, hubungi admin untuk aktivasi kembali.',
+                default => 'Akun tidak aktif, tidak dapat digunakan.',
+            };
 
             return redirect()->route('login')->withErrors(['email' => $message]);
         }
