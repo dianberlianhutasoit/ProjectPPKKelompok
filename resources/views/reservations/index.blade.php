@@ -158,6 +158,12 @@
 
                                     @endif
 
+                                    @if(in_array($reservation->status, ['REJECTED', 'CANCELLED']) && !empty($reservation->cancel_reason))
+                                        <p class="mt-2 text-xs leading-5 text-[#7b8581]">
+                                            <span class="font-semibold">Alasan:</span> {{ $reservation->cancel_reason }}
+                                        </p>
+                                    @endif
+
                                 </td>
 
 
@@ -251,6 +257,12 @@
                             @endif
 
                         </div>
+
+                        @if(in_array($reservation->status, ['REJECTED', 'CANCELLED']) && !empty($reservation->cancel_reason))
+                            <p class="mt-3 text-xs leading-5 text-[#7b8581]">
+                                <span class="font-semibold">Alasan:</span> {{ $reservation->cancel_reason }}
+                            </p>
+                        @endif
 
 
                         <div class="mt-5 grid grid-cols-2 gap-4 border-t border-[#eeeae4] pt-4">
