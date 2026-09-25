@@ -41,10 +41,8 @@ class Reservation extends Model
 
     public function scopeFilterAndSort($query, array $filters)
     {
-        if (!empty($filters['status'])) {
+        if (!empty($filters['status']) && $filters['status'] !== 'Semua') {
             $query->where('reservations.status', $filters['status']);
-        } else {
-            $query->where('reservations.status', 'PENDING'); 
         }
 
         if (!empty($filters['facility_id'])) {
