@@ -23,7 +23,7 @@ class ReservationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'identity_number' => 'required|string|max:50',
+            // 'identity_number' => 'required|string|max:50',
             'participants'    => 'required|integer|min:1',
             'date'            => 'required|date|after_or_equal:today',
             'start_time'      => [
@@ -72,7 +72,7 @@ class ReservationRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'identity_number.required'  => 'NIM/NIP wajib diisi.',
+            // 'identity_number.required'  => 'NIM/NIP wajib diisi.',
             'participants.required'     => 'Jumlah peserta wajib diisi.',
             'participants.min'          => 'Jumlah peserta minimal 1 orang.',
             'date.required'             => 'Tanggal reservasi wajib diisi.',

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
@@ -82,5 +83,26 @@ class UserController extends Controller
             : 'Akun ' . $user->email . ' ditolak (REJECTED).';
 
         return back()->with('success', $message);
+    }
+
+    // Admin: nonaktifkan akun pengguna
+    public function destroy(User $user)
+    {
+        // Mencegah Admin menonaktifkan akun sendiri
+        if (Auth::id() === $user->id) {
+            return redirect()->route('admin.users.index')
+            ->with('error', 'Anda tidak dapat menonaktifkan akun Anda sendiri.');
+        }
+
+        // Mengubah status akun menjadi REJECTED/Nonaktif
+        $user->update([
+            'status' => 'REJECTED',
+        ]);
+
+        // Opsi jika ingin menghapus permanen dari database:
+        // $user->delete();
+
+        return redirect()->route('admin.users.index')
+        ->with('success', 'Akun ' . $user->email . ' berhasil dinonaktifkan.');
     }
 }

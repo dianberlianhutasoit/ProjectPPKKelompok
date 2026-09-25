@@ -36,6 +36,7 @@ Route::middleware(['auth', 'active', 'role:ADMIN'])->prefix('admin')->name('admi
     Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
     Route::post('/users', [UserController::class, 'store'])->name('users.store');
     Route::patch('/users/{user}/verify', [UserController::class, 'verify'])->name('users.verify');
+    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
 });
 
 // Reservasi khusus USER

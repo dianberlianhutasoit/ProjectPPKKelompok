@@ -73,7 +73,7 @@ class ReservationController extends Controller
         Reservation::create([
             'user_id'         => Auth::id(),
             'facility_id'     => $facility->id,
-            'identity_number' => $validated['identity_number'],
+            // 'identity_number' => $validated['identity_number'],
             'participants'    => $validated['participants'],
             'start_time'      => $start,
             'end_time'        => $end,
