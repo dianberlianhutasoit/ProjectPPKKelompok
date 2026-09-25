@@ -1,18 +1,27 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    // Tambah status INACTIVE biar fasilitas bisa dinonaktifkan (disembunyikan dari publik)
+    // Tambah status INACTIVE pada fasilitas
     public function up(): void
     {
-        DB::statement("ALTER TABLE facilities MODIFY status ENUM('AVAILABLE','MAINTENANCE','INACTIVE') DEFAULT 'AVAILABLE'");
+        Schema::table('facilities', function (Blueprint $table) {
+            $table->string('status')
+                ->default('AVAILABLE')
+                ->change();
+        });
     }
 
-    public function down(): void        
+    public function down(): void
     {
-        DB::statement("ALTER TABLE facilities MODIFY status ENUM('AVAILABLE','MAINTENANCE') DEFAULT 'AVAILABLE'");
+        Schema::table('facilities', function (Blueprint $table) {
+            $table->string('status')
+                ->default('AVAILABLE')
+                ->change();
+        });
     }
 };

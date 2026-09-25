@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
@@ -15,7 +16,14 @@ class UserController extends Controller
         $status = $request->query('status');
 
         $users = User::when($status, fn ($q) => $q->where('status', $status))
-            ->orderByRaw("FIELD(status, 'PENDING', 'ACTIVE', 'REJECTED')")
+           ->orderByRaw("
+                CASE status
+                    WHEN 'PENDING' THEN 1
+                    WHEN 'ACTIVE' THEN 2
+                    WHEN 'REJECTED' THEN 3
+                    ELSE 4
+                END
+            ")
             ->latest()
             ->get();
 
@@ -34,7 +42,7 @@ class UserController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:6|confirmed',
+            'password' => 'required|string|min:8',
             'role' => 'required|in:STAFF,USER',
         ]);
 
@@ -46,7 +54,12 @@ class UserController extends Controller
             'status' => 'ACTIVE',
         ]);
 
-        return redirect()->route('admin.users.index')->with('success', 'Akun ' . $validated['role'] . ' berhasil dibuat dan langsung aktif.');
+        return redirect()
+            ->route('admin.users.index')
+            ->with(
+                'success',
+                'Akun ' . $validated['role'] . ' berhasil dibuat dan langsung aktif.'
+            );
     }
 
     // Admin: setujui atau tolak akun hasil daftar mandiri
@@ -57,7 +70,9 @@ class UserController extends Controller
         ]);
 
         $user->update([
-            'status' => $validated['action'] === 'approve' ? 'ACTIVE' : 'REJECTED',
+            'status' => $validated['action'] === 'approve'
+                ? 'ACTIVE'
+                : 'REJECTED',
         ]);
 
         $message = $validated['action'] === 'approve'
@@ -65,5 +80,26 @@ class UserController extends Controller
             : 'Akun ' . $user->email . ' ditolak (REJECTED).';
 
         return back()->with('success', $message);
+    }
+
+    // Admin: nonaktifkan akun pengguna
+    public function destroy(User $user)
+    {
+        // Mencegah Admin menonaktifkan akun sendiri
+        if (Auth::id() === $user->id) {
+            return redirect()->route('admin.users.index')
+            ->with('error', 'Anda tidak dapat menonaktifkan akun Anda sendiri.');
+        }
+
+        // Mengubah status akun menjadi REJECTED/Nonaktif
+        $user->update([
+            'status' => 'REJECTED',
+        ]);
+
+        // Opsi jika ingin menghapus permanen dari database:
+        // $user->delete();
+
+        return redirect()->route('admin.users.index')
+        ->with('success', 'Akun ' . $user->email . ' berhasil dinonaktifkan.');
     }
 }
