@@ -53,20 +53,21 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
-        // Akun PENDING / REJECTED belum boleh login, langsung logout lagi
+        // Akun selain ACTIVE belum boleh login, langsung logout lagi
         $user = Auth::user();
-        if ($user->status === 'PENDING') {
+        if ($user->status !== 'ACTIVE') {
             Auth::logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
-            return back()->withErrors(['email' => 'Akun menunggu verifikasi admin.'])->onlyInput('email');
-        }
 
-        if ($user->status === 'REJECTED') {
-            Auth::logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
-            return back()->withErrors(['email' => 'Akun ditolak admin, tidak dapat digunakan.'])->onlyInput('email');
+            $message = match ($user->status) {
+                'PENDING' => 'Akun menunggu verifikasi admin.',
+                'REJECTED' => 'Akun ditolak admin, tidak dapat digunakan.',
+                'INACTIVE' => 'Akun dinonaktifkan admin, hubungi admin untuk aktivasi kembali.',
+                default => 'Akun tidak aktif, tidak dapat digunakan.',
+            };
+
+            return back()->withErrors(['email' => $message])->onlyInput('email');
         }
 
         return $this->redirectByRole($user);
