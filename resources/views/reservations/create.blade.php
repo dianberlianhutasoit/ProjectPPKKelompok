@@ -30,7 +30,6 @@
         </div>
     </div>
 
-
     <div class="grid gap-6 lg:grid-cols-[320px_1fr]">
 
         {{-- Facility Information --}}
@@ -79,7 +78,6 @@
                 </div>
 
                 <div class="border-t border-[#eeeae4] pt-5">
-
                     <p class="text-xs font-semibold uppercase tracking-wide text-[#8a9490]">
                         Status
                     </p>
@@ -87,7 +85,6 @@
                     <span class="mt-2 inline-flex rounded-full bg-[#e7f0eb] px-3 py-1.5 text-xs font-bold text-[#376453]">
                         Tersedia
                     </span>
-
                 </div>
 
             </div>
@@ -107,8 +104,8 @@
                 </h2>
             </div>
 
-
             <form
+                id="reservation-form"
                 action="{{ route('reservations.store', $facility) }}"
                 method="POST"
             >
@@ -154,6 +151,11 @@
                             required
                             class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-sm text-[#263634] outline-none transition focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
                         >
+
+                        <div
+                            id="same-day-warning"
+                            class="mt-3 hidden border border-[#e6d0c5] bg-[#fbf0eb] px-4 py-3 text-sm leading-5 text-[#a65f3e]"
+                        ></div>
 
                         @error('date')
                             <p class="mt-1.5 text-xs text-[#a65f3e]">
@@ -296,6 +298,7 @@
                     </a>
 
                     <button
+                        id="submit-reservation"
                         type="submit"
                         class="inline-flex items-center justify-center rounded-lg bg-[#2f625b] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#244d48] hover:shadow-md"
                     >
@@ -311,5 +314,267 @@
     </div>
 
 </div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const dateInput = document.getElementById('date');
+    const startInput = document.getElementById('start_time');
+    const endInput = document.getElementById('end_time');
+    const warning = document.getElementById('same-day-warning');
+    const submitButton = document.getElementById('submit-reservation');
+
+    const pad = (number) => String(number).padStart(2, '0');
+
+
+    function getTodayString() {
+        const now = new Date();
+
+        return [
+            now.getFullYear(),
+            pad(now.getMonth() + 1),
+            pad(now.getDate())
+        ].join('-');
+    }
+
+
+    function formatTime(date) {
+        return `${pad(date.getHours())}:${pad(date.getMinutes())}`;
+    }
+
+
+    function roundUpToNext30Minutes(date) {
+
+        const result = new Date(date);
+
+        result.setSeconds(0, 0);
+
+        const minutes = result.getMinutes();
+
+        if (minutes === 0) {
+            return result;
+        }
+
+        if (minutes <= 30) {
+            result.setMinutes(30, 0, 0);
+        } else {
+            result.setHours(
+                result.getHours() + 1,
+                0,
+                0,
+                0
+            );
+        }
+
+        return result;
+    }
+
+
+    function showWarning(message) {
+
+        warning.textContent = message;
+
+        warning.classList.remove('hidden');
+
+        submitButton.disabled = true;
+
+        submitButton.classList.add(
+            'cursor-not-allowed',
+            'opacity-50'
+        );
+    }
+
+
+    function hideWarning() {
+
+        warning.textContent = '';
+
+        warning.classList.add('hidden');
+
+        submitButton.disabled = false;
+
+        submitButton.classList.remove(
+            'cursor-not-allowed',
+            'opacity-50'
+        );
+    }
+
+
+    function getMinimumStartTime() {
+
+        const now = new Date();
+
+        const minimumDateTime = new Date(
+            now.getTime() + (2 * 60 * 60 * 1000)
+        );
+
+        const roundedMinimum =
+            roundUpToNext30Minutes(minimumDateTime);
+
+        return formatTime(roundedMinimum);
+    }
+
+
+    function updateTimeLimit() {
+
+        hideWarning();
+
+        const selectedDate = dateInput.value;
+        const today = getTodayString();
+
+        if (!selectedDate) {
+            return;
+        }
+
+
+        if (selectedDate === today) {
+
+            const minimumStart =
+                getMinimumStartTime();
+
+            startInput.min = minimumStart;
+
+            if (
+                startInput.value &&
+                startInput.value < minimumStart
+            ) {
+
+                showWarning(
+                    `Untuk reservasi hari ini, jam mulai paling cepat adalah ${minimumStart} karena reservasi harus dilakukan minimal 2 jam sebelumnya.`
+                );
+
+                return;
+            }
+
+        } else {
+
+            startInput.min = '07:00';
+        }
+
+
+        updateEndTime();
+    }
+
+
+    function updateEndTime() {
+
+        if (!startInput.value) {
+
+            endInput.min = '07:30';
+
+            return;
+        }
+
+
+        const [hours, minutes] =
+            startInput.value.split(':').map(Number);
+
+
+        const end = new Date();
+
+        end.setHours(
+            hours,
+            minutes + 30,
+            0,
+            0
+        );
+
+
+        const minimumEnd =
+            formatTime(end);
+
+
+        endInput.min = minimumEnd;
+
+
+        if (
+            endInput.value &&
+            endInput.value < minimumEnd
+        ) {
+
+            endInput.value = minimumEnd;
+        }
+
+
+        validateCurrentSelection();
+    }
+
+
+    function validateCurrentSelection() {
+
+        hideWarning();
+
+        const selectedDate = dateInput.value;
+        const today = getTodayString();
+
+        if (
+            !selectedDate ||
+            !startInput.value
+        ) {
+            return;
+        }
+
+
+        if (selectedDate === today) {
+
+            const minimumStart =
+                getMinimumStartTime();
+
+            if (
+                startInput.value < minimumStart
+            ) {
+
+                showWarning(
+                    `Untuk reservasi hari ini, jam mulai paling cepat adalah ${minimumStart} karena reservasi harus dilakukan minimal 2 jam sebelumnya.`
+                );
+
+                return;
+            }
+        }
+
+
+        if (
+            endInput.value &&
+            endInput.value <= startInput.value
+        ) {
+
+            showWarning(
+                'Jam selesai harus lebih besar dari jam mulai.'
+            );
+
+            return;
+        }
+    }
+
+
+    dateInput.addEventListener(
+        'change',
+        updateTimeLimit
+    );
+
+
+    startInput.addEventListener(
+        'change',
+        function () {
+
+            updateEndTime();
+
+            validateCurrentSelection();
+
+        }
+    );
+
+
+    endInput.addEventListener(
+        'change',
+        validateCurrentSelection
+    );
+
+
+    updateTimeLimit();
+
+});
+</script>
 
 @endsection
