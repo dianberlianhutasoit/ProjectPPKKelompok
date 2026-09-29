@@ -1,326 +1,669 @@
 @extends('layouts.app')
 
-@section('title', 'Daftar Fasilitas')
+@section('title', 'Fasilitas Kampus')
 
 @section('content')
 
-{{-- Header --}}
-<div class="mb-8">
-    <div class="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
-        <div>
-            <div class="mb-3 flex items-center gap-2">
-                <span class="h-2 w-2 rounded-full bg-[#2f625b]"></span>
-                <p class="text-xs font-bold uppercase tracking-[0.14em] text-[#2f625b]">
-                    Campus Facility
-                </p>
-            </div>
+<div class="space-y-10">
 
-            <h1 class="text-3xl font-bold tracking-tight text-[#263634]">
-                Fasilitas Kampus
-            </h1>
+    {{-- =========================================================
+        HERO
+    ========================================================== --}}
+    <section class="relative overflow-hidden rounded-[28px] bg-[#2f625b]">
 
-            <p class="mt-2 max-w-2xl text-sm leading-6 text-[#68736f]">
-                Temukan ruang dan fasilitas kampus yang sesuai dengan kebutuhanmu.
-                Cek informasi dan ketersediaannya sebelum melakukan reservasi.
-            </p>
-        </div>
+        {{-- Decorative background --}}
+        <div class="absolute -right-24 -top-24 h-80 w-80 rounded-full bg-[#dce9c9]/10"></div>
+        <div class="absolute -bottom-32 -left-20 h-96 w-96 rounded-full bg-[#a65f3e]/10"></div>
 
-        @auth
-            @if(auth()->user()->role === 'ADMIN')
-                <a
-                    href="{{ route('facilities.create') }}"
-                    class="inline-flex shrink-0 items-center justify-center gap-2 rounded-lg bg-[#2f625b] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#244d48] hover:shadow-md"
-                >
-                    <span class="text-lg leading-none">+</span>
-                    Tambah fasilitas
-                </a>
-            @endif
-        @endauth
-    </div>
-</div>
+        <div class="relative grid min-h-[390px] lg:grid-cols-[1.05fr_0.95fr]">
 
-{{-- Quick Information --}}
-<div class="mb-7 grid gap-px overflow-hidden border border-[#dedbd3] bg-[#dedbd3] sm:grid-cols-3">
-    <div class="bg-white px-5 py-4">
-        <p class="text-xs font-semibold uppercase tracking-wider text-[#8a9490]">
-            Katalog
-        </p>
-        <p class="mt-1 text-sm font-semibold text-[#263634]">
-            {{ $facilities->count() }} fasilitas
-        </p>
-    </div>
+            {{-- Hero text --}}
+            <div class="flex flex-col justify-center px-7 py-12 sm:px-10 lg:px-14">
 
-    <div class="bg-white px-5 py-4">
-        <p class="text-xs font-semibold uppercase tracking-wider text-[#8a9490]">
-            Jam Operasional
-        </p>
-        <p class="mt-1 text-sm font-semibold text-[#263634]">
-            07:00 — 20:00
-        </p>
-    </div>
+                <div class="inline-flex w-fit items-center gap-2 rounded-full bg-white/10 px-4 py-2 backdrop-blur-sm">
 
-    <div class="bg-white px-5 py-4">
-        <p class="text-xs font-semibold uppercase tracking-wider text-[#8a9490]">
-            Reservasi
-        </p>
-        <p class="mt-1 text-sm font-semibold text-[#263634]">
-            Slot 30 menit
-        </p>
-    </div>
-</div>
+                    <span class="h-2.5 w-2.5 rounded-full bg-[#dce9c9]"></span>
 
-{{-- Filter --}}
-<div class="mb-7 border border-[#dedbd3] bg-white">
-    <div class="border-b border-[#e4e1da] px-5 py-4">
-        <div class="flex items-center gap-3">
-            <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-[#e7f0eb] text-[#2f625b]">
-                <span class="text-sm font-bold">⌕</span>
-            </div>
-            <div>
-                <h2 class="text-sm font-bold text-[#263634]">
-                    Cari fasilitas
-                </h2>
-                <p class="mt-0.5 text-xs text-[#7a8581]">
-                    Gunakan filter untuk menemukan fasilitas dengan lebih cepat.
-                </p>
-            </div>
-        </div>
-    </div>
+                    <span class="text-xs font-bold uppercase tracking-[0.14em] text-white">
+                        Campus Facility
+                    </span>
 
-    <div class="p-5">
-        <form
-            method="GET"
-            action="{{ route('facilities.index') }}"
-            class="grid gap-4 md:grid-cols-4"
-        >
-            {{-- Type --}}
-            <div>
-                <label
-                    for="type"
-                    class="mb-2 block text-xs font-bold uppercase tracking-wide text-[#596460]"
-                >
-                    Tipe
-                </label>
-                <select
-                    id="type"
-                    name="type"
-                    class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-3.5 py-2.5 text-sm text-[#43504d] outline-none transition focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
-                >
-                    <option value="">
-                        Semua tipe
-                    </option>
-                    @foreach($types as $t)
-                        <option
-                            value="{{ $t }}"
-                            @selected(($filters['type'] ?? '') === $t)
-                        >
-                            {{ $t }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-
-            {{-- Location --}}
-            <div>
-                <label
-                    for="location"
-                    class="mb-2 block text-xs font-bold uppercase tracking-wide text-[#596460]"
-                >
-                    Lokasi
-                </label>
-                <input
-                    id="location"
-                    type="text"
-                    name="location"
-                    value="{{ $filters['location'] ?? '' }}"
-                    maxlength="255"
-                    placeholder="Contoh: Gedung A"
-                    class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-3.5 py-2.5 text-sm text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
-                >
-            </div>
-
-            {{-- Capacity --}}
-            <div>
-                <label
-                    for="min_capacity"
-                    class="mb-2 block text-xs font-bold uppercase tracking-wide text-[#596460]"
-                >
-                    Kapasitas minimal
-                </label>
-                <input
-                    id="min_capacity"
-                    type="number"
-                    name="min_capacity"
-                    value="{{ $filters['min_capacity'] ?? '' }}"
-                    min="1"
-                    placeholder="Contoh: 30"
-                    class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-3.5 py-2.5 text-sm text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
-                >
-            </div>
-
-            {{-- Buttons --}}
-            <div class="flex items-end gap-2">
-                <button
-                    type="submit"
-                    class="flex-1 rounded-lg bg-[#2f625b] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#244d48]"
-                >
-                    Cari
-                </button>
-                <a
-                    href="{{ route('facilities.index') }}"
-                    class="rounded-lg border border-[#d5d2ca] bg-white px-4 py-2.5 text-sm font-semibold text-[#596460] transition hover:bg-[#f4f3ef]"
-                >
-                    Reset
-                </a>
-            </div>
-        </form>
-    </div>
-</div>
-
-{{-- Status Legend --}}
-<div class="mb-6 flex flex-wrap items-center justify-between gap-4">
-    <div>
-        <p class="text-sm font-bold text-[#263634]">
-            Daftar fasilitas
-        </p>
-        <p class="mt-1 text-xs text-[#7a8581]">
-            Pilih fasilitas untuk melihat detail dan jadwal ketersediaannya.
-        </p>
-    </div>
-
-    <div class="flex flex-wrap items-center gap-2 text-xs">
-        <span class="flex items-center gap-1.5 rounded-full bg-[#e7f0eb] px-3 py-1.5 font-medium text-[#376453]">
-            <span class="h-1.5 w-1.5 rounded-full bg-[#426b5a]"></span>
-            Tersedia
-        </span>
-
-        <span class="flex items-center gap-1.5 rounded-full bg-[#f4e9dd] px-3 py-1.5 font-medium text-[#99633d]">
-            <span class="h-1.5 w-1.5 rounded-full bg-[#99633d]"></span>
-            Perbaikan
-        </span>
-
-        @auth
-            @if(auth()->user()->role === 'ADMIN')
-                <span class="flex items-center gap-1.5 rounded-full bg-[#eee8e5] px-3 py-1.5 font-medium text-[#765f59]">
-                    <span class="h-1.5 w-1.5 rounded-full bg-[#765f59]"></span>
-                    Nonaktif
-                </span>
-            @endif
-        @endauth
-    </div>
-</div>
-
-{{-- Facility Cards --}}
-@if($facilities->count())
-    <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-        @foreach($facilities as $f)
-            <div class="group flex flex-col border border-[#dedbd3] bg-white transition duration-200 hover:-translate-y-1 hover:border-[#b8c9c3] hover:shadow-[0_10px_25px_rgba(38,54,52,0.08)]">
-                {{-- Card Top --}}
-                <div class="p-5 pb-4">
-                    <div class="mb-5 flex items-start justify-between gap-3">
-                        <div class="min-w-0">
-                            <p class="mb-1 text-[11px] font-bold uppercase tracking-[0.12em] text-[#2f625b]">
-                                {{ $f->type }}
-                            </p>
-                            <h2 class="text-lg font-bold leading-6 text-[#263634]">
-                                {{ $f->name }}
-                            </h2>
-                        </div>
-
-                        {{-- Status --}}
-                        @if($f->status === 'AVAILABLE')
-                            <span class="shrink-0 rounded-full bg-[#e7f0eb] px-2.5 py-1 text-[11px] font-bold text-[#376453]">
-                                Tersedia
-                            </span>
-                        @elseif($f->status === 'MAINTENANCE')
-                            <span class="shrink-0 rounded-full bg-[#f4e9dd] px-2.5 py-1 text-[11px] font-bold text-[#99633d]">
-                                Perbaikan
-                            </span>
-                        @else
-                            <span class="shrink-0 rounded-full bg-[#eee8e5] px-2.5 py-1 text-[11px] font-bold text-[#765f59]">
-                                Nonaktif
-                            </span>
-                        @endif
-                    </div>
-
-                    {{-- Facility Description --}}
-                    @if($f->description)
-                        <p class="line-clamp-2 text-sm leading-6 text-[#68736f]">
-                            {{ $f->description }}
-                        </p>
-                    @else
-                        <p class="text-sm italic leading-6 text-[#a0a0a0]">
-                            Tidak ada deskripsi fasilitas.
-                        </p>
-                    @endif
                 </div>
 
-                {{-- Facility Information --}}
-                <div class="mx-5 border-t border-[#e8e5de] py-4">
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <p class="text-[11px] font-bold uppercase tracking-wide text-[#909995]">
-                                Lokasi
-                            </p>
-                            <p class="mt-1 text-sm font-semibold text-[#43504d]">
-                                {{ $f->location }}
-                            </p>
-                        </div>
 
-                        <div>
-                            <p class="text-[11px] font-bold uppercase tracking-wide text-[#909995]">
-                                Kapasitas
-                            </p>
-                            <p class="mt-1 text-sm font-semibold text-[#43504d]">
-                                {{ $f->capacity }} orang
-                            </p>
-                        </div>
-                    </div>
-                </div>
+                <h1 class="mt-6 max-w-xl text-5xl font-bold leading-tight tracking-tight text-white sm:text-6xl">
 
-                {{-- Action --}}
-                <div class="mt-auto flex items-center justify-between border-t border-[#e8e5de] bg-[#fafaf8] px-5 py-3.5">
+                    Temukan Fasilitas Kampus
+
+                    <span class="block text-[#dce9c9]">
+                        untuk Kebutuhanmu
+                    </span>
+
+                </h1>
+
+
+                <p class="mt-5 max-w-lg text-base leading-7 text-[#e5eeea] sm:text-lg">
+                    Temukan ruang dan fasilitas kampus yang sesuai
+                    dengan kebutuhan kegiatan akademik maupun non-akademik.
+                </p>
+
+
+                <div class="mt-8 flex flex-wrap gap-3">
+
                     <a
-                        href="{{ route('facilities.show', $f) }}"
-                        class="text-sm font-bold text-[#2f625b] transition group-hover:text-[#244d48] hover:underline"
+                        href="#daftar-fasilitas"
+                        class="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3.5 text-base font-bold text-[#2f625b] transition hover:bg-[#f3f1ec]"
                     >
-                        Lihat detail →
+                        Jelajahi Fasilitas
+                        <span class="text-lg">↓</span>
                     </a>
 
+
+                    <div class="inline-flex items-center rounded-full border border-white/25 bg-white/10 px-5 py-3.5 text-base font-medium text-white">
+                        07:00 — 20:00
+                    </div>
+
+
+                    {{-- Admin only --}}
                     @auth
                         @if(auth()->user()->role === 'ADMIN')
+
                             <a
-                                href="{{ route('facilities.edit', $f) }}"
-                                class="text-xs font-semibold text-[#7a8581] transition hover:text-[#2f625b]"
+                                href="{{ route('facilities.create') }}"
+                                class="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-5 py-3.5 text-base font-semibold text-white transition hover:bg-white/20"
                             >
-                                Edit fasilitas
+                                <span class="text-xl leading-none">+</span>
+                                Tambah Fasilitas
                             </a>
+
                         @endif
                     @endauth
+
                 </div>
+
             </div>
-        @endforeach
-    </div>
-@else
-    {{-- Empty State --}}
-    <div class="border border-dashed border-[#cbc8c0] bg-white px-6 py-16 text-center">
-        <div class="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-xl bg-[#e7f0eb] text-[#2f625b]">
-            <span class="text-xl">⌕</span>
+
+
+            {{-- Hero visual --}}
+            <div class="relative hidden min-h-[390px] lg:block">
+
+                <div class="absolute inset-0 flex items-center justify-center px-12">
+
+                    <div class="relative w-full max-w-md">
+
+                        {{-- Building visual --}}
+                        <div class="overflow-hidden rounded-[26px] bg-[#f3f1ec] shadow-2xl">
+
+                            {{-- Roof --}}
+                            <div class="h-9 bg-[#263634]"></div>
+
+
+                            {{-- Building --}}
+                            <div class="grid grid-cols-3 gap-3 bg-[#e8e5dc] p-7">
+
+                                <div class="h-28 rounded-xl bg-[#d4dfd8]"></div>
+
+                                <div class="h-28 rounded-xl bg-[#c5d5cd]"></div>
+
+                                <div class="h-28 rounded-xl bg-[#d4dfd8]"></div>
+
+
+                                <div class="h-20 rounded-xl bg-[#b9cbc2]"></div>
+
+                                <div class="h-20 rounded-xl bg-[#2f625b]"></div>
+
+                                <div class="h-20 rounded-xl bg-[#b9cbc2]"></div>
+
+                            </div>
+
+
+                            {{-- Ground --}}
+                            <div class="h-9 bg-[#dce9c9]"></div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
         </div>
 
-        <h2 class="text-lg font-bold text-[#263634]">
-            Belum ada fasilitas
-        </h2>
+    </section>
 
-        <p class="mx-auto mt-2 max-w-md text-sm leading-6 text-[#7a8581]">
-            Tidak ada fasilitas yang sesuai dengan filter yang dipilih.
-            Coba ubah kata kunci atau gunakan pilihan filter lainnya.
+
+    {{-- =========================================================
+        SEARCH / FILTER
+    ========================================================== --}}
+    <section class="-mt-16 relative z-10 px-4 sm:px-8">
+
+        <div class="rounded-[22px] border border-[#dedbd3] bg-[#f3f1ec] p-3 shadow-[0_12px_35px_rgba(38,54,52,0.10)]">
+
+            <form
+                method="GET"
+                action="{{ route('facilities.index') }}"
+                class="grid grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-[1.3fr_0.8fr_0.8fr_auto]"
+            >
+
+                {{-- Type --}}
+                <div class="relative">
+
+                    <label
+                        for="type"
+                        class="sr-only"
+                    >
+                        Tipe fasilitas
+                    </label>
+
+                    <select
+                        id="type"
+                        name="type"
+                        class="w-full appearance-none rounded-xl border border-[#d5d2ca] bg-white px-4 py-4 pr-10 text-base text-[#43504d] outline-none transition focus:border-[#2f625b] focus:ring-4 focus:ring-[#2f625b]/10"
+                    >
+
+                        <option value="">
+                            Semua tipe fasilitas
+                        </option>
+
+                        @foreach($types as $t)
+
+                            <option
+                                value="{{ $t }}"
+                                @selected(($filters['type'] ?? '') === $t)
+                            >
+                                {{ $t }}
+                            </option>
+
+                        @endforeach
+
+                    </select>
+
+
+                    <span class="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-base text-[#7b8581]">
+                        ↓
+                    </span>
+
+                </div>
+
+
+                {{-- Location --}}
+                <div>
+
+                    <label
+                        for="location"
+                        class="sr-only"
+                    >
+                        Lokasi
+                    </label>
+
+                    <input
+                        id="location"
+                        type="text"
+                        name="location"
+                        value="{{ $filters['location'] ?? '' }}"
+                        maxlength="255"
+                        placeholder="Lokasi fasilitas"
+                        class="w-full rounded-xl border border-[#d5d2ca] bg-white px-4 py-4 text-base text-[#263634] outline-none transition placeholder:text-[#9ba39f] focus:border-[#2f625b] focus:ring-4 focus:ring-[#2f625b]/10"
+                    >
+
+                </div>
+
+
+                {{-- Capacity --}}
+                <div>
+
+                    <label
+                        for="min_capacity"
+                        class="sr-only"
+                    >
+                        Kapasitas minimal
+                    </label>
+
+                    <input
+                        id="min_capacity"
+                        type="number"
+                        name="min_capacity"
+                        value="{{ $filters['min_capacity'] ?? '' }}"
+                        min="1"
+                        placeholder="Kapasitas minimal"
+                        class="w-full rounded-xl border border-[#d5d2ca] bg-white px-4 py-4 text-base text-[#263634] outline-none transition placeholder:text-[#9ba39f] focus:border-[#2f625b] focus:ring-4 focus:ring-[#2f625b]/10"
+                    >
+
+                </div>
+
+
+                {{-- Search --}}
+                <div class="flex gap-2">
+
+                    <button
+                        type="submit"
+                        class="flex-1 rounded-xl bg-[#2f625b] px-6 py-4 text-base font-bold text-white transition hover:bg-[#244d48] hover:shadow-md"
+                    >
+                        Cari
+                    </button>
+
+
+                    @if(
+                        ($filters['type'] ?? '') ||
+                        ($filters['location'] ?? '') ||
+                        ($filters['min_capacity'] ?? '')
+                    )
+
+                        <a
+                            href="{{ route('facilities.index') }}"
+                            class="flex items-center justify-center rounded-xl border border-[#d5d2ca] bg-white px-5 text-base font-semibold text-[#596460] transition hover:bg-[#f4f3ef]"
+                        >
+                            Reset
+                        </a>
+
+                    @endif
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </section>
+
+
+    {{-- =========================================================
+        QUICK INFO
+    ========================================================== --}}
+    <section class="grid gap-4 sm:grid-cols-3">
+
+        {{-- Catalog --}}
+        <div class="rounded-[18px] border border-[#ddd9d0] bg-white px-6 py-6">
+
+            <div class="flex items-center justify-between">
+
+                <div>
+
+                    <p class="text-xs font-bold uppercase tracking-[0.12em] text-[#8a9490]">
+                        Katalog
+                    </p>
+
+                    <p class="mt-2 text-3xl font-bold text-[#263634]">
+                        {{ $facilities->count() }}
+                    </p>
+
+                    <p class="mt-1 text-sm text-[#7b8581]">
+                        Fasilitas tersedia
+                    </p>
+
+                </div>
+
+
+                <div class="flex h-12 w-12 items-center justify-center rounded-full bg-[#e6f0ea] text-xl text-[#2f625b]">
+                    ▦
+                </div>
+
+            </div>
+
+        </div>
+
+
+        {{-- Operating --}}
+        <div class="rounded-[18px] border border-[#ddd9d0] bg-white px-6 py-6">
+
+            <div class="flex items-center justify-between">
+
+                <div>
+
+                    <p class="text-xs font-bold uppercase tracking-[0.12em] text-[#8a9490]">
+                        Operasional
+                    </p>
+
+                    <p class="mt-2 text-3xl font-bold text-[#263634]">
+                        07—20
+                    </p>
+
+                    <p class="mt-1 text-sm text-[#7b8581]">
+                        Jam operasional
+                    </p>
+
+                </div>
+
+
+                <div class="flex h-12 w-12 items-center justify-center rounded-full bg-[#f3f1ec] text-xl text-[#2f625b]">
+                    ◷
+                </div>
+
+            </div>
+
+        </div>
+
+
+        {{-- Reservation --}}
+        <div class="rounded-[18px] border border-[#ddd9d0] bg-white px-6 py-6">
+
+            <div class="flex items-center justify-between">
+
+                <div>
+
+                    <p class="text-xs font-bold uppercase tracking-[0.12em] text-[#8a9490]">
+                        Reservasi
+                    </p>
+
+                    <p class="mt-2 text-3xl font-bold text-[#263634]">
+                        30
+                    </p>
+
+                    <p class="mt-1 text-sm text-[#7b8581]">
+                        Menit per slot
+                    </p>
+
+                </div>
+
+
+                <div class="flex h-12 w-12 items-center justify-center rounded-full bg-[#f4e9dd] text-xl text-[#a65f3e]">
+                    ◫
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    {{-- =========================================================
+        FACILITY HEADER
+    ========================================================== --}}
+    <section
+        id="daftar-fasilitas"
+        class="scroll-mt-28"
+    >
+
+        <p class="text-xs font-bold uppercase tracking-[0.16em] text-[#a65f3e]">
+            Explore
         </p>
 
-        <a href="{{ route('facilities.index') }}" class="mt-5 inline-flex rounded-lg border border-[#d5d2ca] px-4 py-2.5 text-sm font-semibold text-[#596460] transition hover:bg-[#f4f3ef]">
-            Tampilkan semua fasilitas
-        </a>
-    </div>
-@endif
+
+        <div class="mt-2 flex items-center gap-3">
+
+            <h2 class="text-4xl font-bold tracking-tight text-[#263634]">
+                Semua Fasilitas
+            </h2>
+
+
+            <span class="rounded-full bg-[#e6f0ea] px-3.5 py-1.5 text-sm font-bold text-[#2f625b]">
+                {{ $facilities->count() }}
+            </span>
+
+        </div>
+
+
+        <p class="mt-3 text-base leading-7 text-[#68736f]">
+            Pilih fasilitas untuk melihat informasi dan jadwal ketersediaannya.
+        </p>
+
+    </section>
+
+
+    {{-- =========================================================
+        FACILITY CARDS
+    ========================================================== --}}
+    @if($facilities->count())
+
+        <section class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+
+            @foreach($facilities as $f)
+
+                <article
+                    class="group flex flex-col overflow-hidden rounded-[22px] border border-[#ddd9d0] bg-white transition duration-300 hover:-translate-y-1 hover:border-[#b8c9c3] hover:shadow-[0_14px_35px_rgba(38,54,52,0.10)]"
+                >
+
+                    {{-- =================================================
+                        IMAGE PLACEHOLDER
+                    ================================================== --}}
+                    <div class="relative h-56 overflow-hidden bg-[#e6f0ea]">
+
+                        {{-- Background --}}
+                        <div class="absolute inset-0 bg-gradient-to-br from-[#dce9c9] via-[#e6f0ea] to-[#cbdcd4]"></div>
+
+
+                        {{-- Decorative circles --}}
+                        <div class="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/30"></div>
+
+                        <div class="absolute -bottom-16 -left-8 h-44 w-44 rounded-full bg-[#2f625b]/10"></div>
+
+
+                        {{-- Facility icon --}}
+                        <div class="absolute inset-0 flex items-center justify-center">
+
+                            <div class="flex h-28 w-28 items-center justify-center rounded-[28px] bg-white/80 shadow-sm backdrop-blur-sm">
+
+                                @if(str_contains(strtolower($f->type), 'lab'))
+
+                                    <span class="text-6xl text-[#2f625b]">
+                                        ▣
+                                    </span>
+
+                                @elseif(str_contains(strtolower($f->type), 'kelas'))
+
+                                    <span class="text-6xl text-[#2f625b]">
+                                        ▦
+                                    </span>
+
+                                @elseif(
+                                    str_contains(strtolower($f->type), 'meeting') ||
+                                    str_contains(strtolower($f->type), 'rapat')
+                                )
+
+                                    <span class="text-6xl text-[#a65f3e]">
+                                        ◫
+                                    </span>
+
+                                @elseif(
+                                    str_contains(strtolower($f->type), 'olahraga') ||
+                                    str_contains(strtolower($f->type), 'lapangan')
+                                )
+
+                                    <span class="text-6xl text-[#426b5a]">
+                                        ◉
+                                    </span>
+
+                                @else
+
+                                    <span class="text-6xl text-[#2f625b]">
+                                        ▤
+                                    </span>
+
+                                @endif
+
+                            </div>
+
+                        </div>
+
+
+                        {{-- Status --}}
+                        <div class="absolute right-4 top-4">
+
+                            @if($f->status === 'AVAILABLE')
+
+                                <span class="inline-flex items-center gap-2 rounded-full bg-[#2f625b] px-3.5 py-2 text-xs font-bold text-white shadow-sm">
+
+                                    <span class="h-2 w-2 rounded-full bg-[#dce9c9]"></span>
+
+                                    Tersedia
+
+                                </span>
+
+                            @elseif($f->status === 'MAINTENANCE')
+
+                                <span class="inline-flex items-center gap-2 rounded-full bg-[#a65f3e] px-3.5 py-2 text-xs font-bold text-white shadow-sm">
+
+                                    <span class="h-2 w-2 rounded-full bg-[#f4e9dd]"></span>
+
+                                    Perbaikan
+
+                                </span>
+
+                            @else
+
+                                <span class="inline-flex items-center gap-2 rounded-full bg-[#765f59] px-3.5 py-2 text-xs font-bold text-white shadow-sm">
+
+                                    <span class="h-2 w-2 rounded-full bg-[#eee8e5]"></span>
+
+                                    Nonaktif
+
+                                </span>
+
+                            @endif
+
+                        </div>
+
+
+                        {{-- Type --}}
+                        <div class="absolute bottom-4 left-4">
+
+                            <span class="rounded-full bg-white/90 px-3.5 py-2 text-sm font-bold text-[#2f625b] shadow-sm backdrop-blur-sm">
+                                {{ $f->type }}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    {{-- =================================================
+                        CARD CONTENT
+                    ================================================== --}}
+                    <div class="flex flex-1 flex-col p-6">
+
+                        {{-- Name + description --}}
+                        <div>
+
+                            <h3 class="text-2xl font-bold leading-8 text-[#263634]">
+                                {{ $f->name }}
+                            </h3>
+
+
+                            @if($f->description)
+
+                                <p class="mt-3 line-clamp-2 text-base leading-7 text-[#68736f]">
+                                    {{ $f->description }}
+                                </p>
+
+                            @else
+
+                                <p class="mt-3 text-base italic leading-7 text-[#a0a6a3]">
+                                    Tidak ada deskripsi fasilitas.
+                                </p>
+
+                            @endif
+
+                        </div>
+
+
+                        {{-- Information --}}
+                        <div class="mt-6 grid grid-cols-2 gap-3">
+
+                            <div class="rounded-xl bg-[#f5f3ee] px-4 py-3.5">
+
+                                <p class="text-xs font-bold uppercase tracking-[0.1em] text-[#909995]">
+                                    Lokasi
+                                </p>
+
+                                <p class="mt-1.5 line-clamp-1 text-sm font-semibold text-[#43504d]">
+                                    {{ $f->location }}
+                                </p>
+
+                            </div>
+
+
+                            <div class="rounded-xl bg-[#f5f3ee] px-4 py-3.5">
+
+                                <p class="text-xs font-bold uppercase tracking-[0.1em] text-[#909995]">
+                                    Kapasitas
+                                </p>
+
+                                <p class="mt-1.5 text-sm font-semibold text-[#43504d]">
+                                    {{ $f->capacity }} orang
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        {{-- Action --}}
+                        <div class="mt-6 flex items-center justify-between gap-3">
+
+                            <a
+                                href="{{ route('facilities.show', $f) }}"
+                                class="inline-flex items-center gap-2 rounded-full bg-[#e6f0ea] px-5 py-3 text-sm font-bold text-[#2f625b] transition group-hover:bg-[#2f625b] group-hover:text-white"
+                            >
+                                Lihat Detail
+
+                                <span class="text-base transition group-hover:translate-x-1">
+                                    →
+                                </span>
+
+                            </a>
+
+
+                            @auth
+
+                                @if(auth()->user()->role === 'ADMIN')
+
+                                    <a
+                                        href="{{ route('facilities.edit', $f) }}"
+                                        class="text-sm font-semibold text-[#7a8581] transition hover:text-[#2f625b]"
+                                    >
+                                        Edit
+                                    </a>
+
+                                @endif
+
+                            @endauth
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+            @endforeach
+
+        </section>
+
+    @else
+
+        {{-- =========================================================
+            EMPTY STATE
+        ========================================================== --}}
+        <section class="rounded-[24px] border border-dashed border-[#cbc8c0] bg-white px-6 py-16 text-center">
+
+            <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-[#e6f0ea] text-3xl text-[#2f625b]">
+                ⌕
+            </div>
+
+
+            <h2 class="mt-5 text-2xl font-bold text-[#263634]">
+                Belum ada fasilitas
+            </h2>
+
+
+            <p class="mx-auto mt-3 max-w-md text-base leading-7 text-[#7a8581]">
+                Tidak ada fasilitas yang sesuai dengan filter yang dipilih.
+                Coba ubah filter atau tampilkan seluruh fasilitas.
+            </p>
+
+
+            <a
+                href="{{ route('facilities.index') }}"
+                class="mt-7 inline-flex rounded-full bg-[#2f625b] px-6 py-3 text-base font-bold text-white transition hover:bg-[#244d48]"
+            >
+                Tampilkan Semua
+            </a>
+
+        </section>
+
+    @endif
+
+</div>
 
 @endsection

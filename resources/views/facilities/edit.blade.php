@@ -7,6 +7,7 @@
 <div class="mx-auto max-w-4xl">
 
     {{-- Header --}}
+
     <div class="mb-8">
 
         <a
@@ -22,11 +23,11 @@
                 Facility Management
             </p>
 
-            <h1 class="mt-2 text-3xl font-bold tracking-tight text-[#263634]">
+            <h1 class="mt-2 text-4xl font-bold tracking-tight text-[#263634]">
                 Edit Fasilitas
             </h1>
 
-            <p class="mt-2 text-sm leading-6 text-[#68736f]">
+            <p class="mt-2 text-base leading-6 text-[#68736f]">
                 Perbarui informasi fasilitas dan status ketersediaannya.
             </p>
 
@@ -36,6 +37,7 @@
 
 
     {{-- Form --}}
+
     <form
         method="POST"
         action="{{ route('facilities.update', $facility) }}"
@@ -47,6 +49,7 @@
         <div class="grid gap-6 lg:grid-cols-[1fr_280px]">
 
             {{-- Main Form --}}
+
             <div class="border border-[#dedbd3] bg-white">
 
                 <div class="border-b border-[#e4e1da] px-6 py-5">
@@ -55,7 +58,7 @@
                         Facility Information
                     </p>
 
-                    <h2 class="mt-1 text-lg font-bold text-[#263634]">
+                    <h2 class="mt-1 text-2xl font-bold text-[#263634]">
                         Informasi Fasilitas
                     </h2>
 
@@ -65,6 +68,7 @@
                 <div class="space-y-5 p-6">
 
                     {{-- Name --}}
+
                     <div>
 
                         <label
@@ -81,19 +85,22 @@
                             value="{{ old('name', $facility->name) }}"
                             required
                             maxlength="255"
-                            class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-sm text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
+                            class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-base text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
                         >
 
                         @error('name')
+
                             <p class="mt-1.5 text-xs text-[#a65f3e]">
                                 {{ $message }}
                             </p>
+
                         @enderror
 
                     </div>
 
 
                     {{-- Type + Location --}}
+
                     <div class="grid gap-5 sm:grid-cols-2">
 
                         <div>
@@ -112,13 +119,15 @@
                                 value="{{ old('type', $facility->type) }}"
                                 required
                                 maxlength="100"
-                                class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-sm text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
+                                class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-base text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
                             >
 
                             @error('type')
+
                                 <p class="mt-1.5 text-xs text-[#a65f3e]">
                                     {{ $message }}
                                 </p>
+
                             @enderror
 
                         </div>
@@ -140,13 +149,15 @@
                                 value="{{ old('location', $facility->location) }}"
                                 required
                                 maxlength="255"
-                                class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-sm text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
+                                class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-base text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
                             >
 
                             @error('location')
+
                                 <p class="mt-1.5 text-xs text-[#a65f3e]">
                                     {{ $message }}
                                 </p>
+
                             @enderror
 
                         </div>
@@ -155,6 +166,7 @@
 
 
                     {{-- Capacity --}}
+
                     <div>
 
                         <label
@@ -173,7 +185,7 @@
                                 value="{{ old('capacity', $facility->capacity) }}"
                                 required
                                 min="1"
-                                class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 pr-20 text-sm text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
+                                class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 pr-20 text-base text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
                             >
 
                             <span class="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-[#8a9490]">
@@ -183,15 +195,18 @@
                         </div>
 
                         @error('capacity')
+
                             <p class="mt-1.5 text-xs text-[#a65f3e]">
                                 {{ $message }}
                             </p>
+
                         @enderror
 
                     </div>
 
 
                     {{-- Description --}}
+
                     <div>
 
                         <label
@@ -199,9 +214,11 @@
                             class="mb-2 block text-sm font-semibold text-[#43504d]"
                         >
                             Deskripsi
+
                             <span class="font-normal text-[#9aa19e]">
                                 (opsional)
                             </span>
+
                         </label>
 
                         <textarea
@@ -209,19 +226,22 @@
                             name="description"
                             rows="5"
                             placeholder="Jelaskan fasilitas, perlengkapan, atau informasi penting lainnya."
-                            class="w-full resize-none rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-sm leading-6 text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
+                            class="w-full resize-none rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-base leading-6 text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
                         >{{ old('description', $facility->description) }}</textarea>
 
                         @error('description')
+
                             <p class="mt-1.5 text-xs text-[#a65f3e]">
                                 {{ $message }}
                             </p>
+
                         @enderror
 
                     </div>
 
 
                     {{-- Status --}}
+
                     <div>
 
                         <label
@@ -235,7 +255,7 @@
                             id="status"
                             name="status"
                             required
-                            class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-sm text-[#43504d] outline-none transition focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
+                            class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-base text-[#43504d] outline-none transition focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
                         >
 
                             <option
@@ -262,9 +282,11 @@
                         </select>
 
                         @error('status')
+
                             <p class="mt-1.5 text-xs text-[#a65f3e]">
                                 {{ $message }}
                             </p>
+
                         @enderror
 
                     </div>
@@ -273,18 +295,19 @@
 
 
                 {{-- Actions --}}
+
                 <div class="flex flex-col-reverse gap-3 border-t border-[#e4e1da] bg-[#fafaf8] px-6 py-4 sm:flex-row sm:justify-end">
 
                     <a
                         href="{{ route('facilities.show', $facility) }}"
-                        class="inline-flex items-center justify-center rounded-lg border border-[#d5d2ca] bg-white px-5 py-2.5 text-sm font-semibold text-[#596460] transition hover:bg-[#f1f0eb]"
+                        class="inline-flex items-center justify-center rounded-lg border border-[#d5d2ca] bg-white px-5 py-2.5 text-base font-semibold text-[#596460] transition hover:bg-[#f1f0eb]"
                     >
                         Batal
                     </a>
 
                     <button
                         type="submit"
-                        class="inline-flex items-center justify-center rounded-lg bg-[#2f625b] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#244d48] hover:shadow-md"
+                        class="inline-flex items-center justify-center rounded-lg bg-[#2f625b] px-5 py-2.5 text-base font-semibold text-white transition hover:bg-[#244d48] hover:shadow-md"
                     >
                         Simpan Perubahan
                     </button>
@@ -295,17 +318,18 @@
 
 
             {{-- Side Information --}}
+
             <div class="h-fit border border-[#dedbd3] bg-[#2f625b] p-6 text-white">
 
                 <p class="text-xs font-bold uppercase tracking-[0.14em] text-white/60">
                     Facility Status
                 </p>
 
-                <h2 class="mt-3 text-lg font-bold">
+                <h2 class="mt-3 text-2xl font-bold">
                     {{ $facility->name }}
                 </h2>
 
-                <p class="mt-2 text-sm leading-6 text-white/75">
+                <p class="mt-2 text-base leading-6 text-white/75">
                     Pastikan informasi fasilitas tetap sesuai dengan kondisi
                     terbaru di lapangan.
                 </p>
@@ -320,22 +344,31 @@
                     @if($facility->status === 'AVAILABLE')
 
                         <div class="mt-2 inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1.5 text-xs font-semibold">
+
                             <span class="h-2 w-2 rounded-full bg-[#b8d1c3]"></span>
+
                             Tersedia
+
                         </div>
 
                     @elseif($facility->status === 'MAINTENANCE')
 
                         <div class="mt-2 inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1.5 text-xs font-semibold">
+
                             <span class="h-2 w-2 rounded-full bg-[#dfc9b4]"></span>
+
                             Maintenance
+
                         </div>
 
                     @else
 
                         <div class="mt-2 inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1.5 text-xs font-semibold">
+
                             <span class="h-2 w-2 rounded-full bg-[#d8ccc7]"></span>
+
                             Tidak Aktif
+
                         </div>
 
                     @endif
