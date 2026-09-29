@@ -22,6 +22,7 @@
             <div class="relative z-10 flex w-full flex-col justify-between p-10">
 
                 <div>
+
                     <div class="inline-flex items-center rounded-full bg-white/80 px-4 py-2 text-xs font-bold tracking-wide text-[#2f625b]">
                         CAMPUS FACILITY
                     </div>
@@ -30,9 +31,10 @@
                         Kelola fasilitas kampus dengan lebih mudah.
                     </h2>
 
-                    <p class="mt-4 max-w-sm text-sm leading-6 text-[#596460]">
+                    <p class="mt-4 max-w-sm text-base leading-6 text-[#596460]">
                         Temukan fasilitas, cek ketersediaan waktu, dan lakukan reservasi dalam satu sistem.
                     </p>
+
                 </div>
 
 
@@ -66,12 +68,16 @@
                 </div>
 
 
-                <div class="flex items-center gap-3 text-xs text-[#68736f]">
+                <div class="flex items-center gap-3 text-sm text-[#68736f]">
+
                     <span class="h-2 w-2 rounded-full bg-[#2f625b]"></span>
+
                     <span>Campus Facility Reservation System</span>
+
                 </div>
 
             </div>
+
         </div>
 
 
@@ -86,11 +92,11 @@
                         Welcome back
                     </p>
 
-                    <h1 class="mt-2 text-3xl font-bold tracking-tight text-[#263634]">
+                    <h1 class="mt-2 text-4xl font-bold tracking-tight text-[#263634]">
                         Log in
                     </h1>
 
-                    <p class="mt-3 text-sm leading-6 text-[#68736f]">
+                    <p class="mt-3 text-base leading-6 text-[#68736f]">
                         Masuk ke akun Anda untuk mengakses layanan fasilitas kampus.
                     </p>
 
@@ -105,8 +111,10 @@
                     {{-- Email --}}
                     <div>
 
-                        <label for="email"
-                               class="mb-2 block text-sm font-semibold text-[#43504d]">
+                        <label
+                            for="email"
+                            class="mb-2 block text-base font-semibold text-[#43504d]"
+                        >
                             Email
                         </label>
 
@@ -119,7 +127,7 @@
                             autofocus
                             autocomplete="email"
                             placeholder="nama@email.com"
-                            class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-sm text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
+                            class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-base text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
                         >
 
                     </div>
@@ -128,8 +136,10 @@
                     {{-- Password --}}
                     <div>
 
-                        <label for="password"
-                               class="mb-2 block text-sm font-semibold text-[#43504d]">
+                        <label
+                            for="password"
+                            class="mb-2 block text-base font-semibold text-[#43504d]"
+                        >
                             Password
                         </label>
 
@@ -140,7 +150,7 @@
                             required
                             autocomplete="current-password"
                             placeholder="Masukkan password"
-                            class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-sm text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
+                            class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-base text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
                         >
 
                     </div>
@@ -156,8 +166,10 @@
                             class="h-4 w-4 rounded border-[#cbc8c0] text-[#2f625b] focus:ring-[#2f625b]"
                         >
 
-                        <label for="remember"
-                               class="text-sm text-[#68736f]">
+                        <label
+                            for="remember"
+                            class="text-base text-[#68736f]"
+                        >
                             Ingat saya
                         </label>
 
@@ -167,7 +179,8 @@
                     {{-- Button --}}
                     <button
                         type="submit"
-                        class="w-full rounded-lg bg-[#2f625b] px-4 py-3.5 text-sm font-bold text-white transition hover:bg-[#244d48] hover:shadow-md">
+                        class="w-full rounded-lg bg-[#2f625b] px-4 py-3.5 text-base font-bold text-white transition hover:bg-[#244d48] hover:shadow-md"
+                    >
                         Login
                     </button>
 
@@ -177,13 +190,17 @@
                 {{-- Register --}}
                 <div class="mt-8 border-t border-[#e8e5de] pt-6 text-center">
 
-                    <p class="text-sm text-[#68736f]">
+                    <p class="text-base text-[#68736f]">
+
                         Belum memiliki akun?
 
-                        <a href="{{ route('register') }}"
-                           class="font-bold text-[#2f625b] hover:underline">
+                        <a
+                            href="{{ route('register') }}"
+                            class="font-bold text-[#2f625b] hover:underline"
+                        >
                             Daftar sekarang
                         </a>
+
                     </p>
 
                 </div>
