@@ -261,20 +261,13 @@
                                                 </button>
                                             </form>
 
-                                            <form method="POST" action="{{ route('staff.reservations.reject', $reservation) }}" class="flex gap-2">
-                                                @csrf
-                                                @method('PATCH')
-                                                <input
-                                                    type="text"
-                                                    name="cancel_reason"
-                                                    placeholder="Alasan penolakan"
-                                                    required
-                                                    class="min-w-0 w-full rounded-md border border-[#d5d2ca] bg-[#fafaf8] px-2.5 py-2 text-xs outline-none focus:border-[#2f625b] focus:bg-white"
-                                                >
-                                                <button type="submit" class="rounded-md border border-[#d5d2ca] bg-white px-3 py-2 text-xs font-bold text-[#a65f3e] transition hover:bg-[#fbf0eb]">
-                                                    Tolak
-                                                </button>
-                                            </form>
+                                            <button
+                                                type="button"
+                                                onclick="openRejectConfirm({{ $reservation->id }})"
+                                                class="rounded-md border border-[#d5d2ca] bg-white px-3 py-2 text-xs font-bold text-[#a65f3e] transition hover:bg-[#fbf0eb]">
+                                                Tolak
+                                            </button>
+
                                         </div>
                                     @elseif($reservation->status === 'APPROVED')
                                         <form method="POST" action="{{ route('staff.reservations.cancel', $reservation) }}" class="flex gap-2">
@@ -370,25 +363,18 @@
                             <form method="POST" action="{{ route('staff.reservations.approve', $reservation) }}">
                                 @csrf
                                 @method('PATCH')
-                                <button type="submit" class="w-full rounded-lg bg-[#2f625b] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#244d48]">
-                                    Setujui Reservasi
+                                <button type="button" onclick="openRejectConfirm({{ $reservation->id }})" class="inline-flex items-center justify-center rounded-lg bg-[#a65f3e] px-3.5 py-2 text-xs font-semibold text-white transition hover:bg-[#8f4f34]">
+                                    Tolak
                                 </button>
                             </form>
 
-                            <form method="POST" action="{{ route('staff.reservations.reject', $reservation) }}">
-                                @csrf
-                                @method('PATCH')
-                                <input
-                                    type="text"
-                                    name="cancel_reason"
-                                    placeholder="Alasan penolakan"
-                                    required
-                                    class="mb-2 w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-3 py-2.5 text-sm outline-none focus:border-[#2f625b] focus:bg-white"
-                                >
-                                <button type="submit" class="w-full rounded-lg border border-[#d5d2ca] bg-white px-4 py-2.5 text-sm font-bold text-[#a65f3e] transition hover:bg-[#fbf0eb]">
-                                    Tolak Reservasi
-                                </button>
-                            </form>
+                            <button
+                                type="button"
+                                onclick="openRejectConfirm({{ $reservation->id }})"
+                                class="w-full rounded-lg border border-[#d5d2ca] bg-white px-4 py-2.5 text-sm font-bold text-[#a65f3e] transition hover:bg-[#fbf0eb]"
+                            >
+                                Tolak Reservasi
+                            </button>
                         </div>
                     @elseif($reservation->status === 'APPROVED')
                         <div class="mt-5 border-t border-[#eeeae4] pt-4">
@@ -420,4 +406,156 @@
 
 </div>
 
-@endsection
+        {{-- Reject Confirmation Modal --}}
+        <div
+            id="reject-confirm-modal"
+            class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 px-4"
+        >
+            <div class="w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
+
+                <p class="text-xs font-bold uppercase tracking-[0.12em] text-[#a65f3e]">
+                    Konfirmasi
+                </p>
+
+                <h2 class="mt-2 text-xl font-bold text-[#263634]">
+                    Tolak reservasi?
+                </h2>
+
+                <p class="mt-2 text-sm leading-6 text-[#68736f]">
+                    Apakah kamu yakin ingin menolak reservasi ini?
+                </p>
+
+                <div class="mt-6 flex justify-end gap-3">
+
+                    <button
+                        type="button"
+                        onclick="closeRejectConfirm()"
+                        class="rounded-lg border border-[#d5d2ca] bg-white px-4 py-2.5 text-sm font-semibold text-[#596460] hover:bg-[#f1f0eb]"
+                    >
+                        Batal
+                    </button>
+
+                    <button
+                        type="button"
+                        onclick="openRejectReason()"
+                        class="rounded-lg bg-[#a65f3e] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#8f4f34]"
+                    >
+                        Tolak
+                    </button>
+
+                </div>
+
+            </div>
+        </div>
+
+
+        {{-- Reject Reason Modal --}}
+        <div
+            id="reject-reason-modal"
+            class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 px-4"
+        >
+            <div class="w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
+
+                <p class="text-xs font-bold uppercase tracking-[0.12em] text-[#a65f3e]">
+                    Alasan Penolakan
+                </p>
+
+                <h2 class="mt-2 text-xl font-bold text-[#263634]">
+                    Masukkan alasan penolakan
+                </h2>
+
+                <form
+                    id="reject-form"
+                    method="POST"
+                    class="mt-5"
+                >
+
+                    @csrf
+                    @method('PATCH')
+
+                    <label
+                        for="cancel_reason"
+                        class="mb-2 block text-sm font-semibold text-[#43504d]"
+                    >
+                        Alasan
+                    </label>
+
+                    <textarea
+                        id="cancel_reason"
+                        name="cancel_reason"
+                        rows="4"
+                        maxlength="1000"
+                        required
+                        placeholder="Jelaskan alasan penolakan..."
+                        class="w-full resize-none rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-sm leading-6 text-[#263634] outline-none focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
+                    ></textarea>
+
+                    <div class="mt-5 flex justify-end gap-3">
+
+                        <button
+                            type="button"
+                            onclick="closeRejectReason()"
+                            class="rounded-lg border border-[#d5d2ca] bg-white px-4 py-2.5 text-sm font-semibold text-[#596460] hover:bg-[#f1f0eb]"
+                        >
+                            Batal
+                        </button>
+
+                        <button
+                            type="submit"
+                            class="rounded-lg bg-[#a65f3e] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#8f4f34]"
+                        >
+                            Kirim Penolakan
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+
+
+        <script>
+        let selectedReservationId = null;
+
+        function openRejectConfirm(id) {
+            selectedReservationId = id;
+
+            const modal = document.getElementById('reject-confirm-modal');
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeRejectConfirm() {
+            const modal = document.getElementById('reject-confirm-modal');
+
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function openRejectReason() {
+            closeRejectConfirm();
+
+            const modal = document.getElementById('reject-reason-modal');
+            const form = document.getElementById('reject-form');
+
+            form.action = `/staff/reservations/${selectedReservationId}/reject`;
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+
+            document.getElementById('cancel_reason').focus();
+        }
+
+        function closeRejectReason() {
+            const modal = document.getElementById('reject-reason-modal');
+
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+
+            document.getElementById('cancel_reason').value = '';
+        }
+        </script>
+
+        @endsection
