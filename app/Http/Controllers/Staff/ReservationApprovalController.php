@@ -94,7 +94,13 @@ class ReservationApprovalController extends Controller
 
         $reservation = Reservation::findOrFail($id);
 
-        if (!in_array($reservation->status, ['PENDING', 'APPROVED'])) {
+        if ($reservation->status === 'APPROVED') {
+            return back()->withErrors([
+                'reservation' => 'Reservasi yang sudah disetujui (APPROVED) bersifat final dan tidak dapat dibatalkan oleh petugas.'
+            ]);
+        }
+
+        if ($reservation->status !== 'PENDING') {
             return back()->withErrors([
                 'reservation' => 'Reservasi ini tidak dapat dibatalkan oleh petugas.'
             ]);
