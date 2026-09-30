@@ -60,6 +60,36 @@ Route::middleware(['auth', 'active', 'role:USER'])->group(function () {
         ->name('reservations.cancel');
 });
 
+// Laporan kerusakan oleh USER (hanya milik sendiri)
+Route::middleware(['auth', 'active', 'role:USER'])->group(function () {
+    Route::get('/reports', [App\Http\Controllers\ReportController::class, 'index'])
+        ->name('reports.index');
+
+    Route::get('/reports/create', [App\Http\Controllers\ReportController::class, 'create'])
+        ->name('reports.create');
+
+    Route::post('/reports', [App\Http\Controllers\ReportController::class, 'store'])
+        ->name('reports.store');
+
+    Route::get('/reports/{report}', [App\Http\Controllers\ReportController::class, 'show'])
+        ->name('reports.show');
+});
+
+// Pemrosesan laporan oleh STAFF
+Route::middleware(['auth', 'active', 'role:STAFF'])
+    ->prefix('staff')
+    ->name('staff.')
+    ->group(function () {
+        Route::get('/reports', [App\Http\Controllers\ReportController::class, 'staffIndex'])
+            ->name('reports.index');
+
+        Route::get('/reports/{report}', [App\Http\Controllers\ReportController::class, 'show'])
+            ->name('reports.show');
+
+        Route::patch('/reports/{report}', [App\Http\Controllers\ReportController::class, 'update'])
+            ->name('reports.update');
+    });
+
 // Pengelolaan reservasi oleh STAFF
 Route::middleware(['auth', 'active', 'role:STAFF'])
     ->prefix('staff')
