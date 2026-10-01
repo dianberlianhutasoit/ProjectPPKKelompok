@@ -31,9 +31,10 @@ Route::resource('facilities', FacilityController::class)
     ->except(['index', 'show'])
     ->middleware(['auth', 'active', 'role:ADMIN']);
 
-// Detail fasilitas harus login
+// Detail fasilitas + slot ketersediaan bisa dilihat guest.
+// Guest hanya dapat slot AVAILABLE/RESERVED/MAINTENANCE (tanpa data pemohon).
+// INACTIVE tetap 404 untuk non-ADMIN (ditangani di controller).
 Route::get('/facilities/{facility}', [FacilityController::class, 'show'])
-    ->middleware('auth')
     ->name('facilities.show');
 
 // Cuma admin: kelola akun & verifikasi pendaftar baru
