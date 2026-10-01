@@ -19,10 +19,6 @@
 
         <div class="mt-6">
 
-            <p class="text-xs font-bold uppercase tracking-[0.14em] text-[#2f625b]">
-                Facility Management
-            </p>
-
             <h1 class="mt-2 text-4xl font-bold tracking-tight text-[#263634]">
                 Tambah Fasilitas
             </h1>
@@ -53,10 +49,6 @@
             <div class="border border-[#dedbd3] bg-white">
 
                 <div class="border-b border-[#e4e1da] px-6 py-5">
-
-                    <p class="text-xs font-bold uppercase tracking-[0.12em] text-[#2f625b]">
-                        Facility Information
-                    </p>
 
                     <h2 class="mt-1 text-2xl font-bold text-[#263634]">
                         Informasi Fasilitas
@@ -267,7 +259,7 @@
                             </option>
 
                             <option value="MAINTENANCE" @selected(old('status') === 'MAINTENANCE')>
-                                Maintenance
+                                Dalam Perbaikan
                             </option>
 
                             <option value="INACTIVE" @selected(old('status') === 'INACTIVE')>
@@ -366,7 +358,7 @@
                         </p>
 
                         <p class="mt-1 text-xs leading-5 text-white/60">
-                            Gunakan Maintenance ketika fasilitas sedang tidak
+                            Gunakan Dalam Perbaikan ketika fasilitas sedang tidak
                             dapat digunakan sementara.
                         </p>
 

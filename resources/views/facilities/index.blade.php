@@ -497,7 +497,7 @@
 
                                     <span class="h-2 w-2 rounded-full bg-[#f4e9dd]"></span>
 
-                                    Perbaikan
+                                    Dalam Perbaikan
 
                                 </span>
 

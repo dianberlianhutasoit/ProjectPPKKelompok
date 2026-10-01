@@ -403,6 +403,21 @@
                                         Reservasi
                                     </p>
 
+                                    @auth
+
+                                        @if(auth()->user()->role === 'USER')
+
+                                            <a
+                                                href="{{ route('reports.create', ['facility_id' => $facility->id]) }}"
+                                                class="inline-flex items-center justify-center rounded-lg border border-[#d5d2ca] bg-white px-5 py-2.5 text-base font-semibold text-[#a65f3e] transition hover:bg-[#fbf0eb]"
+                                            >
+                                                Lapor Kerusakan
+                                            </a>
+
+                                        @endif
+
+                                    @endauth
+
                                 </a>
 
                             @else
@@ -455,7 +470,6 @@
                             </a>
 
                         @endauth
-
 
                     @elseif($slot['status'] === 'RESERVED')
 
@@ -521,8 +535,6 @@
     </div>
 
 </div>
-
-
 
 {{-- Bottom Note --}}
 <div class="mt-5 flex items-start gap-3 border border-[#dedbd3] bg-[#fafaf8] px-5 py-4">
