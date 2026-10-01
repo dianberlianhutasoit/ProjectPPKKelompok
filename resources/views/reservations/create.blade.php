@@ -366,6 +366,13 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 
+    function getCurrentTimeString() {
+
+        return formatTime(new Date());
+
+    }
+
+
     function roundUpToNext30Minutes(date) {
 
         const result = new Date(date);
@@ -460,21 +467,30 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (selectedDate === today) {
 
-            const minimumStart =
-                getMinimumStartTime();
+            const minimumStart = getMinimumStartTime();
+            const currentTime = getCurrentTimeString();
 
             startInput.min = minimumStart;
 
-            if (
-                startInput.value &&
-                startInput.value < minimumStart
-            ) {
+            if (startInput.value) {
 
-                showWarning(
-                    `Pengajuan reservasi harus dilakukan paling lambat 2 jam sebelum pelaksanaan kegiatan.`
-                );
+                if (startInput.value < currentTime) {
 
-                return;
+                    showWarning(
+                        'Waktu yang Anda pilih sudah lewat dari waktu sekarang.'
+                    );
+
+                    return;
+
+                } else if (startInput.value < minimumStart) {
+
+                    showWarning(
+                        'Pengajuan reservasi harus dilakukan paling lambat 2 jam sebelum pelaksanaan kegiatan.'
+                    );
+
+                    return;
+
+                }
 
             }
 
@@ -549,15 +565,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (selectedDate === today) {
 
-            const minimumStart =
-                getMinimumStartTime();
+            const minimumStart = getMinimumStartTime();
+            const currentTime = getCurrentTimeString();
 
-            if (
-                startInput.value < minimumStart
-            ) {
+            if (startInput.value < currentTime) {
 
                 showWarning(
-                    `Pengajuan reservasi harus dilakukan paling lambat 2 jam sebelum pelaksanaan kegiatan.`
+                    'Waktu yang Anda pilih sudah lewat dari waktu sekarang.'
+                );
+
+                return;
+
+            } else if (startInput.value < minimumStart) {
+
+                showWarning(
+                    'Pengajuan reservasi harus dilakukan paling lambat 2 jam sebelum pelaksanaan kegiatan.'
                 );
 
                 return;
