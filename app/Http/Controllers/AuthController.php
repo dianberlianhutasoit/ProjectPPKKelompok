@@ -19,10 +19,21 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         // Cek input di server biar aman (tanpa unique:users,email karena
-        // email REJECTED boleh daftar ulang — pengecekan manual di bawah)
+        // email REJECTED boleh daftar ulang — pengecekan manual di bawah).
+        // Domain email wajib milik UNDIP — dicek exact setelah @, bukan contains.
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email',
+            'email' => [
+                'required',
+                'email',
+                function ($attribute, $value, $fail) {
+                    $domain = strtolower(substr(strrchr($value, '@') ?: '', 1));
+
+                    if (! in_array($domain, ['students.undip.ac.id', 'undip.ac.id'], true)) {
+                        $fail('Gunakan email resmi Universitas Diponegoro.');
+                    }
+                },
+            ],
             'password' => 'required|string|min:8|confirmed',
         ]);
 

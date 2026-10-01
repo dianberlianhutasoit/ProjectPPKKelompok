@@ -155,9 +155,22 @@
                             value="{{ old('email') }}"
                             required
                             autocomplete="email"
-                            placeholder="nama@email.com"
+                            placeholder="nama@students.undip.ac.id"
                             class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-2.5 text-base text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
                         >
+
+                        @error('email')
+                            <p class="mt-1.5 text-sm font-medium text-[#a65f3e]">
+                                {{ $message }}
+                            </p>
+                        @enderror
+
+                        <p
+                            id="email-domain-warning"
+                            class="mt-1.5 hidden text-sm font-medium text-[#a65f3e]"
+                        >
+                            Gunakan email resmi Universitas Diponegoro.
+                        </p>
 
                     </div>
 
@@ -244,5 +257,35 @@
     </div>
 
 </div>
+
+<script>
+    // Peringatan ringan domain UNDIP — server tetap sumber kebenaran utama.
+    (function () {
+        const emailInput = document.getElementById('email');
+        const warning = document.getElementById('email-domain-warning');
+        const allowed = ['students.undip.ac.id', 'undip.ac.id'];
+
+        function isUndipEmail(value) {
+            const at = value.lastIndexOf('@');
+            if (at < 0) return true; // belum diketik lengkap, jangan ganggu
+            return allowed.includes(value.slice(at + 1).toLowerCase());
+        }
+
+        function checkDomain() {
+            const value = emailInput.value.trim();
+            const ok = value === '' || isUndipEmail(value);
+            warning.classList.toggle('hidden', ok);
+            return ok;
+        }
+
+        emailInput.addEventListener('input', checkDomain);
+        emailInput.closest('form').addEventListener('submit', function (e) {
+            if (!checkDomain()) {
+                e.preventDefault();
+                emailInput.focus();
+            }
+        });
+    })();
+</script>
 
 @endsection
