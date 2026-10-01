@@ -109,6 +109,13 @@ class ReservationController extends Controller
             ]);
         }
 
+        // USER hanya boleh cancel paling lambat 2 jam sebelum start_time.
+        if (Carbon::now()->greaterThan(Carbon::parse($reservation->start_time)->subHours(2))) {
+            return back()->withErrors([
+                'reservation' => 'Reservasi hanya dapat dibatalkan paling lambat 2 jam sebelum waktu penggunaan.'
+            ]);
+        }
+
         $reservation->update([
             'status'        => 'CANCELLED',
             'cancel_reason' => 'Dibatalkan oleh pengguna.',
