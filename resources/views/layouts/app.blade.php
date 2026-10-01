@@ -36,7 +36,7 @@
                 {{-- Fasilitas --}}
                 <a
                     href="{{ route('facilities.index') }}"
-                    class="relative py-2 font-medium transition
+                    class="relative hidden py-2 transition sm:inline
                     {{ request()->routeIs('facilities.*')
                         ? 'font-bold text-[#2f625b] after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:bg-[#2f625b]'
                         : 'text-[#596460] hover:text-[#2f625b]' }}"
@@ -66,14 +66,22 @@
                     {{-- User --}}
                     @if(auth()->user()->role === 'USER')
 
-                        <a
-                            href="{{ route('reservations.index') }}"
+                        <a href="{{ route('reservations.index') }}"
                             class="relative hidden py-2 transition sm:inline
                             {{ request()->routeIs('reservations.*')
                                 ? 'font-bold text-[#2f625b] after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:bg-[#2f625b]'
                                 : 'text-[#596460] hover:text-[#2f625b]' }}"
                         >
                             Reservasi Saya
+                        </a>
+
+                        <a href="{{ route('reports.index') }}"
+                            class="relative hidden py-2 transition sm:inline
+                            {{ request()->routeIs('reports.*')
+                                ? 'font-bold text-[#2f625b] after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:bg-[#2f625b]'
+                                : 'text-[#596460] hover:text-[#2f625b]' }}"
+                        >
+                            Laporan Saya
                         </a>
 
                     @endif
@@ -90,6 +98,15 @@
                                 : 'text-[#596460] hover:text-[#2f625b]' }}"
                         >
                             Reservasi
+                        </a>
+
+                        <a href="{{ route('staff.reports.index') }}"
+                            class="relative hidden py-2 transition sm:inline
+                            {{ request()->routeIs('staff.reports.*')
+                                ? 'font-bold text-[#2f625b] after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:bg-[#2f625b]'
+                                : 'text-[#596460] hover:text-[#2f625b]' }}"
+                        >
+                            Laporan
                         </a>
 
                     @endif
