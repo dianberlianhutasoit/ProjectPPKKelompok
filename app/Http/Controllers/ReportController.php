@@ -6,6 +6,7 @@ use App\Models\Facility;
 use App\Models\Report;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ReportController extends Controller
 {
@@ -77,7 +78,7 @@ class ReportController extends Controller
         return response()->json($reports);
     }
 
-    // STAFF: perbarui status + resolution_note
+    // STAFF: perbarui status + resolution_note (+ sinkron status fasilitas)
     public function update(Request $request, Report $report)
     {
         $validated = $request->validate([
@@ -85,7 +86,43 @@ class ReportController extends Controller
             'resolution_note' => 'nullable|string|max:2000',
         ]);
 
-        $report->update($validated);
+        if (in_array($validated['status'], ['COMPLETED', 'REJECTED'], true) && blank($validated['resolution_note'] ?? null)) {
+            return back()
+                ->withErrors(['resolution_note' => 'Catatan penyelesaian wajib diisi untuk status COMPLETED atau REJECTED.'])
+                ->withInput();
+        }
+
+        DB::transaction(function () use ($report, $validated) {
+            $report->update($validated);
+
+            $facility = $report->facility;
+
+            // INACTIVE permanen: jangan ubah status fasilitas.
+            if (! $facility || $facility->status === 'INACTIVE') {
+                return;
+            }
+
+            if ($validated['status'] === 'PROCESSING') {
+                if ($facility->status === 'AVAILABLE') {
+                    $facility->update(['status' => 'MAINTENANCE']);
+                }
+
+                return;
+            }
+
+            // COMPLETED/REJECTED: kembalikan AVAILABLE hanya jika
+            // tidak ada laporan PROCESSING lain untuk fasilitas yang sama.
+            if ($facility->status === 'MAINTENANCE') {
+                $otherProcessing = Report::where('facility_id', $facility->id)
+                    ->where('id', '!=', $report->id)
+                    ->where('status', 'PROCESSING')
+                    ->exists();
+
+                if (! $otherProcessing) {
+                    $facility->update(['status' => 'AVAILABLE']);
+                }
+            }
+        });
 
         return back()->with('success', 'Status laporan berhasil diperbarui.');
     }
