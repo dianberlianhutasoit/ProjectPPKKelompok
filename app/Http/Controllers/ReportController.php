@@ -18,15 +18,21 @@ class ReportController extends Controller
             ->orderByDesc('created_at')
             ->get();
 
-        return response()->json($reports);
+        return view('reports.index', compact('reports'));
     }
 
     // USER: context form (daftar fasilitas untuk dropdown frontend)
-    public function create()
+    public function create(Request $request)
     {
-        $facilities = Facility::orderBy('name')->get(['id', 'name']);
+       $facilities = Facility::orderBy('name')->get();
 
-        return response()->json($facilities);
+        $selectedFacility = null;
+
+        if ($request->filled('facility_id')) {
+            $selectedFacility = Facility::find($request->facility_id);
+        }
+
+        return view('reports.create', compact('facilities', 'selectedFacility'));
     }
 
     // USER: simpan laporan, user_id selalu dari Auth
@@ -36,7 +42,7 @@ class ReportController extends Controller
             'facility_id' => 'required|exists:facilities,id',
             'category' => 'required|string|max:255',
             'description' => 'required|string',
-            'photo' => 'nullable|image|max:2048',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         $photoPath = null;
@@ -65,7 +71,7 @@ class ReportController extends Controller
 
         $report->load(['user', 'facility']);
 
-        return response()->json($report);
+        return view('reports.show', compact('report'));
     }
 
     // STAFF: daftar semua laporan
@@ -75,7 +81,18 @@ class ReportController extends Controller
             ->orderByDesc('created_at')
             ->get();
 
-        return response()->json($reports);
+        return view('staff.reports.index', compact('reports'));
+    }
+
+    // STAFF: detail laporan untuk dikelola
+    public function staffShow(Report $report)
+    {
+        $report->load(['user', 'facility']);
+
+        return view(
+            'staff.reports.show',
+            compact('report')
+        );
     }
 
     // STAFF: perbarui status + resolution_note (+ sinkron status fasilitas)

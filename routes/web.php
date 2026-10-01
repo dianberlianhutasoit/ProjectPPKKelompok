@@ -81,14 +81,27 @@ Route::middleware(['auth', 'active', 'role:STAFF'])
     ->prefix('staff')
     ->name('staff.')
     ->group(function () {
-        Route::get('/reports', [App\Http\Controllers\ReportController::class, 'staffIndex'])
-            ->name('reports.index');
 
-        Route::get('/reports/{report}', [App\Http\Controllers\ReportController::class, 'show'])
-            ->name('reports.show');
+        // Daftar semua laporan
+        Route::get('/reports', [
+            App\Http\Controllers\ReportController::class,
+            'staffIndex'
+        ])->name('reports.index');
 
-        Route::patch('/reports/{report}', [App\Http\Controllers\ReportController::class, 'update'])
-            ->name('reports.update');
+
+        // Detail + form pengelolaan laporan
+        Route::get('/reports/{report}', [
+            App\Http\Controllers\ReportController::class,
+            'staffShow'
+        ])->name('reports.show');
+
+
+        // Simpan perubahan status + catatan resolusi
+        Route::patch('/reports/{report}', [
+            App\Http\Controllers\ReportController::class,
+            'update'
+        ])->name('reports.update');
+
     });
 
 // Pengelolaan reservasi oleh STAFF
