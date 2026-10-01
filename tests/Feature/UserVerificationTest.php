@@ -33,6 +33,220 @@ class UserVerificationTest extends TestCase
         ]);
     }
 
+    public function test_admin_cannot_reject_without_reason(): void
+    {
+        $admin = $this->makeAdmin();
+        $user = $this->makePendingUser('tolak_' . uniqid() . '@students.undip.ac.id');
+
+        $response = $this->actingAs($admin)->patch(
+            route('admin.users.verify', $user),
+            ['action' => 'reject']
+        );
+
+        $response->assertSessionHasErrors('rejection_reason');
+        $this->assertEquals('PENDING', $user->refresh()->status);
+        $this->assertNull($user->refresh()->rejection_reason);
+    }
+
+    public function test_admin_can_reject_with_reason(): void
+    {
+        $admin = $this->makeAdmin();
+        $user = $this->makePendingUser('tolak_' . uniqid() . '@students.undip.ac.id');
+
+        $response = $this->actingAs($admin)->patch(
+            route('admin.users.verify', $user),
+            ['action' => 'reject', 'rejection_reason' => 'Gunakan email domain kampus UNDIP.']
+        );
+
+        $response->assertSessionHasNoErrors();
+        $response->assertSessionHas('success');
+        $this->assertEquals('REJECTED', $user->refresh()->status);
+        $this->assertEquals('Gunakan email domain kampus UNDIP.', $user->refresh()->rejection_reason);
+    }
+
+    public function test_rejected_user_cannot_login(): void
+    {
+        $email = 'ditolak_' . uniqid() . '@students.undip.ac.id';
+        $user = $this->makePendingUser($email);
+        $user->update(['status' => 'REJECTED', 'rejection_reason' => 'Gunakan email domain kampus UNDIP.']);
+
+        $response = $this->post('/login', [
+            'email' => $email,
+            'password' => 'password123',
+        ]);
+
+        $response->assertSessionHasErrors('email');
+        $this->assertGuest();
+    }
+
+    public function test_rejected_login_message_contains_reason(): void
+    {
+        $email = 'ditolak_' . uniqid() . '@students.undip.ac.id';
+        $user = $this->makePendingUser($email);
+        $user->update(['status' => 'REJECTED', 'rejection_reason' => 'Gunakan email domain kampus UNDIP.']);
+
+        $response = $this->post('/login', [
+            'email' => $email,
+            'password' => 'password123',
+        ]);
+
+        $response->assertSessionHasErrors([
+            'email' => 'Pendaftaran akun ditolak. Alasan: Gunakan email domain kampus UNDIP. Silakan daftar ulang setelah memperbaiki data.',
+        ]);
+    }
+
+    public function test_rejected_login_without_reason_uses_fallback_message(): void
+    {
+        $email = 'ditolak_' . uniqid() . '@students.undip.ac.id';
+        $user = $this->makePendingUser($email);
+        $user->update(['status' => 'REJECTED', 'rejection_reason' => null]);
+
+        $response = $this->post('/login', [
+            'email' => $email,
+            'password' => 'password123',
+        ]);
+
+        $response->assertSessionHasErrors([
+            'email' => 'Pendaftaran akun ditolak oleh admin.',
+        ]);
+    }
+
+    public function test_rejected_user_can_reregister_with_same_email(): void
+    {
+        $email = 'ulang_' . uniqid() . '@students.undip.ac.id';
+        $user = $this->makePendingUser($email);
+        $user->update(['status' => 'REJECTED', 'rejection_reason' => 'Data tidak valid.']);
+
+        $countBefore = User::count();
+
+        $response = $this->post('/register', [
+            'name' => 'Nama Baru',
+            'email' => $email,
+            'password' => 'passwordbaru123',
+            'password_confirmation' => 'passwordbaru123',
+        ]);
+
+        $response->assertRedirect(route('login'));
+        $response->assertSessionHas('success');
+        $this->assertEquals($countBefore, User::count());
+    }
+
+    public function test_reregister_reuses_record_and_updates_data(): void
+    {
+        $email = 'ulang_' . uniqid() . '@students.undip.ac.id';
+        $user = $this->makePendingUser($email);
+        $user->update(['status' => 'REJECTED', 'rejection_reason' => 'Data tidak valid.']);
+        $oldId = $user->id;
+
+        $this->post('/register', [
+            'name' => 'Nama Baru',
+            'email' => $email,
+            'password' => 'passwordbaru123',
+            'password_confirmation' => 'passwordbaru123',
+        ]);
+
+        $fresh = $user->refresh();
+
+        $this->assertEquals($oldId, $fresh->id);
+        $this->assertEquals('Nama Baru', $fresh->name);
+        $this->assertEquals('USER', $fresh->role);
+        $this->assertTrue(Hash::check('passwordbaru123', $fresh->password));
+        $this->assertFalse(Hash::check('password123', $fresh->password));
+        $this->assertEquals('PENDING', $fresh->status);
+        $this->assertNull($fresh->rejection_reason);
+    }
+
+    public function test_pending_email_cannot_reregister(): void
+    {
+        $email = 'pending_' . uniqid() . '@students.undip.ac.id';
+        $this->makePendingUser($email);
+        $countBefore = User::count();
+
+        $response = $this->post('/register', [
+            'name' => 'Nama Lain',
+            'email' => $email,
+            'password' => 'passwordbaru123',
+            'password_confirmation' => 'passwordbaru123',
+        ]);
+
+        $response->assertSessionHasErrors([
+            'email' => 'Email ini sudah terdaftar dan masih menunggu verifikasi admin.',
+        ]);
+        $this->assertEquals($countBefore, User::count());
+    }
+
+    public function test_active_email_cannot_reregister(): void
+    {
+        $email = 'aktif_' . uniqid() . '@students.undip.ac.id';
+        $user = $this->makePendingUser($email);
+        $user->update(['status' => 'ACTIVE']);
+        $countBefore = User::count();
+
+        $response = $this->post('/register', [
+            'name' => 'Nama Lain',
+            'email' => $email,
+            'password' => 'passwordbaru123',
+            'password_confirmation' => 'passwordbaru123',
+        ]);
+
+        $response->assertSessionHasErrors([
+            'email' => 'Email ini sudah terdaftar. Silakan login.',
+        ]);
+        $this->assertEquals($countBefore, User::count());
+    }
+
+    public function test_inactive_email_cannot_reregister(): void
+    {
+        $email = 'nonaktif_' . uniqid() . '@students.undip.ac.id';
+        $user = $this->makePendingUser($email);
+        $user->update(['status' => 'INACTIVE']);
+        $countBefore = User::count();
+
+        $response = $this->post('/register', [
+            'name' => 'Nama Lain',
+            'email' => $email,
+            'password' => 'passwordbaru123',
+            'password_confirmation' => 'passwordbaru123',
+        ]);
+
+        $response->assertSessionHasErrors([
+            'email' => 'Akun dengan email ini dinonaktifkan. Silakan hubungi admin.',
+        ]);
+        $this->assertEquals($countBefore, User::count());
+    }
+
+    public function test_reregistered_user_can_login_after_approve(): void
+    {
+        $admin = $this->makeAdmin();
+        $email = 'ulang_' . uniqid() . '@students.undip.ac.id';
+        $user = $this->makePendingUser($email);
+        $user->update(['status' => 'REJECTED', 'rejection_reason' => 'Data tidak valid.']);
+
+        $this->post('/register', [
+            'name' => 'Nama Baru',
+            'email' => $email,
+            'password' => 'passwordbaru123',
+            'password_confirmation' => 'passwordbaru123',
+        ]);
+
+        $this->actingAs($admin)->patch(
+            route('admin.users.verify', $user),
+            ['action' => 'approve']
+        );
+
+        $fresh = $user->refresh();
+        $this->assertEquals('ACTIVE', $fresh->status);
+        $this->assertNull($fresh->rejection_reason);
+
+        $response = $this->post('/login', [
+            'email' => $email,
+            'password' => 'passwordbaru123',
+        ]);
+
+        $response->assertRedirect(route('dashboard'));
+        $this->assertAuthenticated();
+    }
+
     public function test_register_with_students_domain_creates_pending_user(): void
     {
         $email = 'maba_' . uniqid() . '@students.undip.ac.id';

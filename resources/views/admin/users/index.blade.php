@@ -52,6 +52,14 @@
 
     @endif
 
+    @if($errors->any())
+
+        <div class="mb-5 border border-[#e6d0c5] bg-[#fbf0eb] px-4 py-3 text-sm font-medium text-[#a65f3e]">
+            {{ $errors->first() }}
+        </div>
+
+    @endif
+
 
     @if($users->count())
 
@@ -194,6 +202,14 @@
 
                                     @endif
 
+                                    @if($user->status === 'REJECTED' && $user->rejection_reason)
+
+                                        <p class="mt-2 text-xs italic leading-5 text-[#a65f3e]">
+                                            Alasan: {{ $user->rejection_reason }}
+                                        </p>
+
+                                    @endif
+
                                 </td>
 
 
@@ -245,29 +261,13 @@
                                             </form>
 
 
-                                            <form
-                                                method="POST"
-                                                action="{{ route('admin.users.verify', $user) }}"
-                                                onsubmit="return confirm('Tolak pengguna ini?')"
+                                            <button
+                                                type="button"
+                                                onclick="openRejectReason({{ $user->id }})"
+                                                class="text-sm font-semibold text-[#a65f3e] hover:underline"
                                             >
-
-                                                @csrf
-                                                @method('PATCH')
-
-                                                <input
-                                                    type="hidden"
-                                                    name="action"
-                                                    value="reject"
-                                                >
-
-                                                <button
-                                                    type="submit"
-                                                    class="text-sm font-semibold text-[#a65f3e] hover:underline"
-                                                >
-                                                    Tolak
-                                                </button>
-
-                                            </form>
+                                                Tolak
+                                            </button>
 
                                         </div>
 
@@ -387,6 +387,14 @@
                                     Ditolak
                                 </p>
 
+                                @if($user->rejection_reason)
+
+                                    <p class="mt-1 text-sm italic leading-5 text-[#a65f3e]">
+                                        Alasan: {{ $user->rejection_reason }}
+                                    </p>
+
+                                @endif
+
                             @endif
 
                         </div>
@@ -440,29 +448,13 @@
                                     </form>
 
 
-                                    <form
-                                        method="POST"
-                                        action="{{ route('admin.users.verify', $user) }}"
-                                        onsubmit="return confirm('Tolak pengguna ini?')"
+                                    <button
+                                        type="button"
+                                        onclick="openRejectReason({{ $user->id }})"
+                                        class="text-sm font-semibold text-[#a65f3e] hover:underline"
                                     >
-
-                                        @csrf
-                                        @method('PATCH')
-
-                                        <input
-                                            type="hidden"
-                                            name="action"
-                                            value="reject"
-                                        >
-
-                                        <button
-                                            type="submit"
-                                            class="text-sm font-semibold text-[#a65f3e] hover:underline"
-                                        >
-                                            Tolak
-                                        </button>
-
-                                    </form>
+                                        Tolak
+                                    </button>
 
                                 </div>
 
@@ -537,5 +529,102 @@
     @endif
 
 </div>
+
+{{-- Modal alasan penolakan (dipakai desktop & mobile) --}}
+<div
+    id="reject-reason-modal"
+    class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 px-4"
+>
+    <div class="w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
+
+        <p class="text-xs font-bold uppercase tracking-[0.12em] text-[#a65f3e]">
+            Alasan Penolakan
+        </p>
+
+        <h2 class="mt-2 text-2xl font-bold text-[#263634]">
+            Masukkan alasan penolakan
+        </h2>
+
+        <p class="mt-2 text-base leading-6 text-[#68736f]">
+            Berikan alasan agar pendaftar mengetahui mengapa akunnya ditolak.
+        </p>
+
+        <form
+            id="reject-form"
+            method="POST"
+            class="mt-5"
+        >
+            @csrf
+            @method('PATCH')
+
+            <input
+                type="hidden"
+                name="action"
+                value="reject"
+            >
+
+            <label
+                for="rejection_reason"
+                class="mb-2 block text-base font-semibold text-[#43504d]"
+            >
+                Alasan
+            </label>
+
+            <textarea
+                id="rejection_reason"
+                name="rejection_reason"
+                rows="4"
+                maxlength="1000"
+                required
+                placeholder="Jelaskan alasan penolakan..."
+                class="w-full resize-none rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-base leading-6 text-[#263634] outline-none focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
+            ></textarea>
+
+            <div class="mt-5 flex justify-end gap-3">
+
+                <button
+                    type="button"
+                    onclick="closeRejectReason()"
+                    class="rounded-lg border border-[#d5d2ca] bg-white px-4 py-2.5 text-base font-semibold text-[#596460] transition hover:bg-[#f1f0eb]"
+                >
+                    Batal
+                </button>
+
+                <button
+                    type="submit"
+                    class="rounded-lg bg-[#a65f3e] px-4 py-2.5 text-base font-semibold text-white transition hover:bg-[#8f4f34]"
+                >
+                    Tolak Akun
+                </button>
+
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<script>
+    function openRejectReason(id) {
+        const modal = document.getElementById('reject-reason-modal');
+        const form = document.getElementById('reject-form');
+        const reasonInput = document.getElementById('rejection_reason');
+
+        form.action = `/admin/users/${id}/verify`;
+        reasonInput.value = '';
+
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+
+        setTimeout(() => {
+            reasonInput.focus();
+        }, 100);
+    }
+
+    function closeRejectReason() {
+        const modal = document.getElementById('reject-reason-modal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+</script>
 
 @endsection

@@ -101,7 +101,9 @@ class AuthController extends Controller
 
             $message = match ($user->status) {
                 'PENDING' => 'Akun menunggu verifikasi admin.',
-                'REJECTED' => 'Akun ditolak admin, tidak dapat digunakan.',
+                'REJECTED' => $user->rejection_reason
+                    ? 'Pendaftaran akun ditolak. Alasan: ' . $user->rejection_reason . ' Silakan daftar ulang setelah memperbaiki data.'
+                    : 'Pendaftaran akun ditolak oleh admin.',
                 'INACTIVE' => 'Akun dinonaktifkan admin, hubungi admin untuk aktivasi kembali.',
                 default => 'Akun tidak aktif, tidak dapat digunakan.',
             };
