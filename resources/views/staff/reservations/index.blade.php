@@ -306,30 +306,8 @@
                                         </div>
 
                                     @elseif($reservation->status === 'APPROVED')
-                                        <form
-                                            method="POST"
-                                            action="{{ route('staff.reservations.cancel', $reservation) }}"
-                                            class="flex gap-2"
-                                        >
-                                            @csrf
-                                            @method('PATCH')
 
-                                            <input
-                                                type="text"
-                                                name="cancel_reason"
-                                                placeholder="Alasan pembatalan"
-                                                required
-                                                class="min-w-0 w-full rounded-md border border-[#d5d2ca] bg-[#fafaf8] px-2.5 py-2 text-sm outline-none focus:border-[#2f625b] focus:bg-white"
-                                            >
-
-                                            <button
-                                                type="submit"
-                                                class="rounded-md border border-[#d5d2ca] bg-white px-3 py-2 text-sm font-bold text-[#a65f3e] transition hover:bg-[#fbf0eb]"
-                                                onclick="return confirm('Batalkan reservasi ini?')"
-                                            >
-                                                Batalkan
-                                            </button>
-                                        </form>
+                                        <span class="text-xs text-[#9aa19e]">—</span>
 
                                     @else
 
@@ -475,11 +453,10 @@
                                 @method('PATCH')
 
                                 <button
-                                    type="button"
-                                    onclick="openRejectConfirm({{ $reservation->id }})"
-                                    class="inline-flex items-center justify-center rounded-lg bg-[#a65f3e] px-3.5 py-2 text-sm font-semibold text-white transition hover:bg-[#8f4f34]"
+                                    type="submit"
+                                    class="w-full rounded-lg bg-[#2f625b] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#244d48]"
                                 >
-                                    Tolak
+                                    Setujui
                                 </button>
                             </form>
 
@@ -490,37 +467,6 @@
                             >
                                 Tolak Reservasi
                             </button>
-
-                        </div>
-
-                    @elseif($reservation->status === 'APPROVED')
-
-                        <div class="mt-5 border-t border-[#eeeae4] pt-4">
-
-                            <form
-                                method="POST"
-                                action="{{ route('staff.reservations.cancel', $reservation) }}"
-                            >
-                                @csrf
-                                @method('PATCH')
-
-                                <input
-                                    type="text"
-                                    name="cancel_reason"
-                                    placeholder="Alasan pembatalan"
-                                    required
-                                    class="mb-2 w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-3 py-2.5 text-base outline-none focus:border-[#2f625b] focus:bg-white"
-                                >
-
-                                <button
-                                    type="submit"
-                                    class="w-full rounded-lg border border-[#d5d2ca] bg-white px-4 py-2.5 text-sm font-bold text-[#a65f3e] transition hover:bg-[#fbf0eb]"
-                                    onclick="return confirm('Batalkan reservasi ini?')"
-                                >
-                                    Batalkan Reservasi
-                                </button>
-
-                            </form>
 
                         </div>
 
