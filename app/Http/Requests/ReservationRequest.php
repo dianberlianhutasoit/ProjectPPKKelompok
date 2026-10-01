@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
+use Carbon\Carbon;
 
 class ReservationRequest extends FormRequest
 {
@@ -42,6 +43,26 @@ class ReservationRequest extends FormRequest
     }
 
     /**
+     * Batas awal reservasi hari ini: sekarang + 2 jam,
+     * dibulatkan ke slot 30 menit berikutnya.
+     * Contoh: 10:10 -> 12:10 -> 12:30.
+     */
+    public static function roundedMinimumStart(?Carbon $now = null): Carbon
+    {
+        $minimum = ($now ?? Carbon::now())->copy()->addHours(2)->second(0);
+
+        if ($minimum->minute === 0) {
+            return $minimum;
+        }
+
+        if ($minimum->minute <= 30) {
+            return $minimum->minute(30);
+        }
+
+        return $minimum->addHour()->minute(0)->second(0);
+    }
+
+    /**
      * Logika Tambahan milikmu: Validasi kelipatan 30 menit.
      */
     public function withValidator(Validator $validator): void
@@ -60,6 +81,24 @@ class ReservationRequest extends FormRequest
                     }
                 } catch (\Exception $e) {
                     // Abaikan jika format jam tidak valid, akan ditangani oleh rule date_format
+                }
+            }
+
+            // Reservasi hari yang sama: minimal 2 jam dari sekarang.
+            $date = $this->input('date');
+
+            if ($date && $startTime && $date === Carbon::now()->toDateString()) {
+                $minimum = self::roundedMinimumStart();
+
+                // Slot mulai valid terakhir 19:30 (selesai maks 20:00).
+                if ($minimum->format('H:i') > '19:30') {
+                    $validator->errors()->add('date', 'Batas reservasi hari ini sudah lewat (minimal 2 jam sebelum pelaksanaan, jam operasional 07:00–20:00). Silakan pilih tanggal lain.');
+
+                    return;
+                }
+
+                if ($startTime < $minimum->format('H:i')) {
+                    $validator->errors()->add('start_time', 'Untuk hari ini, reservasi minimal 2 jam dari sekarang. Slot paling awal yang valid: ' . $minimum->format('H:i') . '.');
                 }
             }
         });
