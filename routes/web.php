@@ -31,9 +31,10 @@ Route::resource('facilities', FacilityController::class)
     ->except(['index', 'show'])
     ->middleware(['auth', 'active', 'role:ADMIN']);
 
-// Detail fasilitas harus login
+// Detail fasilitas + slot ketersediaan bisa dilihat guest.
+// Guest hanya dapat slot AVAILABLE/RESERVED/MAINTENANCE (tanpa data pemohon).
+// INACTIVE tetap 404 untuk non-ADMIN (ditangani di controller).
 Route::get('/facilities/{facility}', [FacilityController::class, 'show'])
-    ->middleware('auth')
     ->name('facilities.show');
 
 // Cuma admin: kelola akun & verifikasi pendaftar baru
@@ -59,6 +60,49 @@ Route::middleware(['auth', 'active', 'role:USER'])->group(function () {
     Route::patch('/reservations/{reservation}/cancel', [ReservationController::class, 'cancel'])
         ->name('reservations.cancel');
 });
+
+// Laporan kerusakan oleh USER (hanya milik sendiri)
+Route::middleware(['auth', 'active', 'role:USER'])->group(function () {
+    Route::get('/reports', [App\Http\Controllers\ReportController::class, 'index'])
+        ->name('reports.index');
+
+    Route::get('/reports/create', [App\Http\Controllers\ReportController::class, 'create'])
+        ->name('reports.create');
+
+    Route::post('/reports', [App\Http\Controllers\ReportController::class, 'store'])
+        ->name('reports.store');
+
+    Route::get('/reports/{report}', [App\Http\Controllers\ReportController::class, 'show'])
+        ->name('reports.show');
+});
+
+// Pemrosesan laporan oleh STAFF
+Route::middleware(['auth', 'active', 'role:STAFF'])
+    ->prefix('staff')
+    ->name('staff.')
+    ->group(function () {
+
+        // Daftar semua laporan
+        Route::get('/reports', [
+            App\Http\Controllers\ReportController::class,
+            'staffIndex'
+        ])->name('reports.index');
+
+
+        // Detail + form pengelolaan laporan
+        Route::get('/reports/{report}', [
+            App\Http\Controllers\ReportController::class,
+            'staffShow'
+        ])->name('reports.show');
+
+
+        // Simpan perubahan status + catatan resolusi
+        Route::patch('/reports/{report}', [
+            App\Http\Controllers\ReportController::class,
+            'update'
+        ])->name('reports.update');
+
+    });
 
 // Pengelolaan reservasi oleh STAFF
 Route::middleware(['auth', 'active', 'role:STAFF'])

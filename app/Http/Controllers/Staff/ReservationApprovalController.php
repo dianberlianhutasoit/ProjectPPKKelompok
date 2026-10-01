@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Staff;
 
 use App\Http\Controllers\Controller;
 use App\Models\Reservation;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -94,9 +95,23 @@ class ReservationApprovalController extends Controller
 
         $reservation = Reservation::findOrFail($id);
 
-        if (!in_array($reservation->status, ['PENDING', 'APPROVED'])) {
+        // PENDING diproses lewat Setujui/Tolak, bukan pembatalan darurat.
+        if ($reservation->status === 'PENDING') {
+            return back()->withErrors([
+                'reservation' => 'Reservasi PENDING diproses melalui Setujui / Tolak, bukan pembatalan darurat.'
+            ]);
+        }
+
+        if ($reservation->status !== 'APPROVED') {
             return back()->withErrors([
                 'reservation' => 'Reservasi ini tidak dapat dibatalkan oleh petugas.'
+            ]);
+        }
+
+        // Pembatalan paling lambat 30 menit sebelum start_time.
+        if (Carbon::now()->greaterThan(Carbon::parse($reservation->start_time)->subMinutes(30))) {
+            return back()->withErrors([
+                'reservation' => 'Reservasi hanya dapat dibatalkan oleh petugas paling lambat 30 menit sebelum waktu penggunaan.'
             ]);
         }
 
@@ -105,6 +120,6 @@ class ReservationApprovalController extends Controller
             'cancel_reason' => $validated['cancel_reason'],
         ]);
 
-        return back()->with('success', 'Reservasi berhasil dibatalkan oleh petugas.');
+        return back()->with('success', 'Reservasi yang disetujui berhasil dibatalkan oleh petugas.');
     }
 }

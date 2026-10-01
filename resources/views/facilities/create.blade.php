@@ -7,7 +7,9 @@
 <div class="mx-auto max-w-4xl">
 
     {{-- Header --}}
+
     <div class="mb-8">
+
         <a
             href="{{ route('facilities.index') }}"
             class="inline-flex items-center gap-2 text-sm font-semibold text-[#2f625b] hover:underline"
@@ -16,23 +18,23 @@
         </a>
 
         <div class="mt-6">
-            <p class="text-xs font-bold uppercase tracking-[0.14em] text-[#2f625b]">
-                Facility Management
-            </p>
 
-            <h1 class="mt-2 text-3xl font-bold tracking-tight text-[#263634]">
+            <h1 class="mt-2 text-4xl font-bold tracking-tight text-[#263634]">
                 Tambah Fasilitas
             </h1>
 
-            <p class="mt-2 max-w-2xl text-sm leading-6 text-[#68736f]">
+            <p class="mt-2 max-w-2xl text-base leading-6 text-[#68736f]">
                 Tambahkan fasilitas baru beserta informasi dasar yang akan
                 ditampilkan pada katalog kampus.
             </p>
+
         </div>
+
     </div>
 
 
     {{-- Form --}}
+
     <form
         method="POST"
         action="{{ route('facilities.store') }}"
@@ -43,23 +45,24 @@
         <div class="grid gap-6 lg:grid-cols-[1fr_280px]">
 
             {{-- Main Form --}}
+
             <div class="border border-[#dedbd3] bg-white">
 
                 <div class="border-b border-[#e4e1da] px-6 py-5">
-                    <p class="text-xs font-bold uppercase tracking-[0.12em] text-[#2f625b]">
-                        Facility Information
-                    </p>
 
-                    <h2 class="mt-1 text-lg font-bold text-[#263634]">
+                    <h2 class="mt-1 text-2xl font-bold text-[#263634]">
                         Informasi Fasilitas
                     </h2>
+
                 </div>
 
 
                 <div class="space-y-5 p-6">
 
                     {{-- Name --}}
+
                     <div>
+
                         <label
                             for="name"
                             class="mb-2 block text-sm font-semibold text-[#43504d]"
@@ -75,21 +78,26 @@
                             required
                             maxlength="255"
                             placeholder="Contoh: Ruang Seminar Gedung A"
-                            class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-sm text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
+                            class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-base text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
                         >
 
                         @error('name')
+
                             <p class="mt-1.5 text-xs text-[#a65f3e]">
                                 {{ $message }}
                             </p>
+
                         @enderror
+
                     </div>
 
 
                     {{-- Type + Location --}}
+
                     <div class="grid gap-5 sm:grid-cols-2">
 
                         <div>
+
                             <label
                                 for="type"
                                 class="mb-2 block text-sm font-semibold text-[#43504d]"
@@ -105,18 +113,22 @@
                                 required
                                 maxlength="100"
                                 placeholder="Contoh: Ruang Kelas"
-                                class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-sm text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
+                                class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-base text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
                             >
 
                             @error('type')
+
                                 <p class="mt-1.5 text-xs text-[#a65f3e]">
                                     {{ $message }}
                                 </p>
+
                             @enderror
+
                         </div>
 
 
                         <div>
+
                             <label
                                 for="location"
                                 class="mb-2 block text-sm font-semibold text-[#43504d]"
@@ -132,21 +144,26 @@
                                 required
                                 maxlength="255"
                                 placeholder="Contoh: Gedung A Lantai 2"
-                                class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-sm text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
+                                class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-base text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
                             >
 
                             @error('location')
+
                                 <p class="mt-1.5 text-xs text-[#a65f3e]">
                                     {{ $message }}
                                 </p>
+
                             @enderror
+
                         </div>
 
                     </div>
 
 
                     {{-- Capacity --}}
+
                     <div>
+
                         <label
                             for="capacity"
                             class="mb-2 block text-sm font-semibold text-[#43504d]"
@@ -155,6 +172,7 @@
                         </label>
 
                         <div class="relative">
+
                             <input
                                 id="capacity"
                                 type="number"
@@ -163,32 +181,40 @@
                                 required
                                 min="1"
                                 placeholder="Contoh: 50"
-                                class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 pr-20 text-sm text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
+                                class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 pr-20 text-base text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
                             >
 
                             <span class="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-[#8a9490]">
                                 orang
                             </span>
+
                         </div>
 
                         @error('capacity')
+
                             <p class="mt-1.5 text-xs text-[#a65f3e]">
                                 {{ $message }}
                             </p>
+
                         @enderror
+
                     </div>
 
 
                     {{-- Description --}}
+
                     <div>
+
                         <label
                             for="description"
                             class="mb-2 block text-sm font-semibold text-[#43504d]"
                         >
                             Deskripsi
+
                             <span class="font-normal text-[#9aa19e]">
                                 (opsional)
                             </span>
+
                         </label>
 
                         <textarea
@@ -196,19 +222,24 @@
                             name="description"
                             rows="5"
                             placeholder="Jelaskan fasilitas, perlengkapan, atau informasi penting lainnya."
-                            class="w-full resize-none rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-sm leading-6 text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
+                            class="w-full resize-none rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-base leading-6 text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
                         >{{ old('description') }}</textarea>
 
                         @error('description')
+
                             <p class="mt-1.5 text-xs text-[#a65f3e]">
                                 {{ $message }}
                             </p>
+
                         @enderror
+
                     </div>
 
 
                     {{-- Status --}}
+
                     <div>
+
                         <label
                             for="status"
                             class="mb-2 block text-sm font-semibold text-[#43504d]"
@@ -220,7 +251,7 @@
                             id="status"
                             name="status"
                             required
-                            class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-sm text-[#43504d] outline-none transition focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
+                            class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-base text-[#43504d] outline-none transition focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
                         >
 
                             <option value="AVAILABLE" @selected(old('status', 'AVAILABLE') === 'AVAILABLE')>
@@ -228,7 +259,7 @@
                             </option>
 
                             <option value="MAINTENANCE" @selected(old('status') === 'MAINTENANCE')>
-                                Maintenance
+                                Dalam Perbaikan
                             </option>
 
                             <option value="INACTIVE" @selected(old('status') === 'INACTIVE')>
@@ -238,28 +269,32 @@
                         </select>
 
                         @error('status')
+
                             <p class="mt-1.5 text-xs text-[#a65f3e]">
                                 {{ $message }}
                             </p>
+
                         @enderror
+
                     </div>
 
                 </div>
 
 
                 {{-- Form Actions --}}
+
                 <div class="flex flex-col-reverse gap-3 border-t border-[#e4e1da] bg-[#fafaf8] px-6 py-4 sm:flex-row sm:justify-end">
 
                     <a
                         href="{{ route('facilities.index') }}"
-                        class="inline-flex items-center justify-center rounded-lg border border-[#d5d2ca] bg-white px-5 py-2.5 text-sm font-semibold text-[#596460] transition hover:bg-[#f1f0eb]"
+                        class="inline-flex items-center justify-center rounded-lg border border-[#d5d2ca] bg-white px-5 py-2.5 text-base font-semibold text-[#596460] transition hover:bg-[#f1f0eb]"
                     >
                         Batal
                     </a>
 
                     <button
                         type="submit"
-                        class="inline-flex items-center justify-center rounded-lg bg-[#2f625b] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#244d48] hover:shadow-md"
+                        class="inline-flex items-center justify-center rounded-lg bg-[#2f625b] px-5 py-2.5 text-base font-semibold text-white transition hover:bg-[#244d48] hover:shadow-md"
                     >
                         Simpan Fasilitas
                     </button>
@@ -270,17 +305,18 @@
 
 
             {{-- Side Information --}}
+
             <div class="h-fit border border-[#dedbd3] bg-[#2f625b] p-6 text-white">
 
                 <p class="text-xs font-bold uppercase tracking-[0.14em] text-white/60">
                     Panduan
                 </p>
 
-                <h2 class="mt-3 text-lg font-bold">
+                <h2 class="mt-3 text-2xl font-bold">
                     Tambahkan informasi yang jelas
                 </h2>
 
-                <p class="mt-2 text-sm leading-6 text-white/75">
+                <p class="mt-2 text-base leading-6 text-white/75">
                     Informasi fasilitas akan digunakan pengguna untuk
                     menentukan ruang yang sesuai sebelum melakukan reservasi.
                 </p>
@@ -289,7 +325,8 @@
                 <div class="mt-6 space-y-4 border-t border-white/15 pt-5">
 
                     <div>
-                        <p class="text-sm font-semibold">
+
+                        <p class="text-base font-semibold">
                             Nama & tipe
                         </p>
 
@@ -297,29 +334,34 @@
                             Gunakan nama yang mudah dikenali dan tipe fasilitas
                             yang sesuai.
                         </p>
+
                     </div>
 
 
                     <div>
-                        <p class="text-sm font-semibold">
+
+                        <p class="text-base font-semibold">
                             Kapasitas
                         </p>
 
                         <p class="mt-1 text-xs leading-5 text-white/60">
                             Masukkan jumlah maksimal pengguna fasilitas.
                         </p>
+
                     </div>
 
 
                     <div>
-                        <p class="text-sm font-semibold">
+
+                        <p class="text-base font-semibold">
                             Status
                         </p>
 
                         <p class="mt-1 text-xs leading-5 text-white/60">
-                            Gunakan Maintenance ketika fasilitas sedang tidak
+                            Gunakan Dalam Perbaikan ketika fasilitas sedang tidak
                             dapat digunakan sementara.
                         </p>
+
                     </div>
 
                 </div>

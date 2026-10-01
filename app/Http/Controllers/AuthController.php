@@ -15,14 +15,53 @@ class AuthController extends Controller
     }
 
     // Daftar akun baru — khusus USER, status awal PENDING (nunggu verifikasi admin)
+    // Email yang pernah REJECTED boleh daftar ulang: pakai record lama, tanpa INSERT baru
     public function register(Request $request)
     {
-        // Cek input di server biar aman
+        // Cek input di server biar aman (tanpa unique:users,email karena
+        // email REJECTED boleh daftar ulang — pengecekan manual di bawah).
+        // Domain email wajib milik UNDIP — dicek exact setelah @, bukan contains.
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
+            'email' => [
+                'required',
+                'email',
+                function ($attribute, $value, $fail) {
+                    $domain = strtolower(substr(strrchr($value, '@') ?: '', 1));
+
+                    if (! in_array($domain, ['students.undip.ac.id', 'undip.ac.id'], true)) {
+                        $fail('Gunakan email resmi Universitas Diponegoro.');
+                    }
+                },
+            ],
             'password' => 'required|string|min:8|confirmed',
         ]);
+
+        $existing = User::where('email', $validated['email'])->first();
+
+        if ($existing) {
+            // Registrasi ulang: pakai record lama, update data terbaru,
+            // kembalikan ke PENDING dan hapus alasan penolakan lama
+            if ($existing->status === 'REJECTED') {
+                $existing->update([
+                    'name' => $validated['name'],
+                    'password' => Hash::make($validated['password']),
+                    'role' => 'USER',
+                    'status' => 'PENDING',
+                    'rejection_reason' => null,
+                ]);
+
+                return redirect()->route('login')->with('success', 'Registrasi ulang berhasil. Akun menunggu verifikasi admin sebelum bisa login.');
+            }
+
+            $message = match ($existing->status) {
+                'PENDING' => 'Email ini sudah terdaftar dan masih menunggu verifikasi admin.',
+                'INACTIVE' => 'Akun dengan email ini dinonaktifkan. Silakan hubungi admin.',
+                default => 'Email ini sudah terdaftar. Silakan login.',
+            };
+
+            return back()->withErrors(['email' => $message])->onlyInput('email');
+        }
 
         User::create([
             'name' => $validated['name'],
@@ -53,20 +92,23 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
-        // Akun PENDING / REJECTED belum boleh login, langsung logout lagi
+        // Akun selain ACTIVE belum boleh login, langsung logout lagi
         $user = Auth::user();
-        if ($user->status === 'PENDING') {
+        if ($user->status !== 'ACTIVE') {
             Auth::logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
-            return back()->withErrors(['email' => 'Akun menunggu verifikasi admin.'])->onlyInput('email');
-        }
 
-        if ($user->status === 'REJECTED') {
-            Auth::logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
-            return back()->withErrors(['email' => 'Akun ditolak admin, tidak dapat digunakan.'])->onlyInput('email');
+            $message = match ($user->status) {
+                'PENDING' => 'Akun menunggu verifikasi admin.',
+                'REJECTED' => $user->rejection_reason
+                    ? 'Pendaftaran akun ditolak. Alasan: ' . $user->rejection_reason . ' Silakan daftar ulang setelah memperbaiki data.'
+                    : 'Pendaftaran akun ditolak oleh admin.',
+                'INACTIVE' => 'Akun dinonaktifkan admin, hubungi admin untuk aktivasi kembali.',
+                default => 'Akun tidak aktif, tidak dapat digunakan.',
+            };
+
+            return back()->withErrors(['email' => $message])->onlyInput('email');
         }
 
         return $this->redirectByRole($user);

@@ -16,6 +16,7 @@ class User extends Authenticatable
         'password',
         'role',
         'status',
+        'rejection_reason',
     ];
 
     protected $hidden = [
@@ -28,5 +29,10 @@ class User extends Authenticatable
         return [
             'password' => 'hashed',
         ];
+    }
+
+    public function reports()
+    {
+        return $this->hasMany(Report::class);
     }
 }

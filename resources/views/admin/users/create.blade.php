@@ -11,7 +11,7 @@
 
         <a
             href="{{ route('admin.users.index') }}"
-            class="inline-flex items-center gap-2 text-sm font-semibold text-[#2f625b] hover:underline"
+            class="inline-flex items-center gap-2 text-base font-semibold text-[#2f625b] hover:underline"
         >
             ← Kembali ke pengguna
         </a>
@@ -22,17 +22,17 @@
                 Administration
             </p>
 
-            <h1 class="mt-2 text-3xl font-bold tracking-tight text-[#263634]">
+            <h1 class="mt-2 text-4xl font-bold tracking-tight text-[#263634]">
                 Tambah Pengguna
             </h1>
 
-            <p class="mt-2 text-sm leading-6 text-[#68736f]">
+            <p class="mt-2 text-base leading-6 text-[#68736f]">
                 Buat akun baru untuk pengguna atau staff sistem.
             </p>
 
         </div>
-
     </div>
+
 
     <div class="grid gap-6 lg:grid-cols-[280px_1fr]">
 
@@ -43,11 +43,11 @@
                 Account Setup
             </p>
 
-            <h2 class="mt-3 text-xl font-bold leading-7">
+            <h2 class="mt-3 text-2xl font-bold leading-7">
                 Akun Pengguna
             </h2>
 
-            <p class="mt-2 text-sm leading-6 text-white/65">
+            <p class="mt-2 text-base leading-6 text-white/65">
                 Pastikan data akun yang dimasukkan sudah benar sebelum dibuat.
             </p>
 
@@ -57,7 +57,7 @@
                     Informasi
                 </p>
 
-                <ul class="mt-3 space-y-3 text-sm leading-5 text-white/75">
+                <ul class="mt-3 space-y-3 text-base leading-6 text-white/75">
 
                     <li class="flex gap-2">
                         <span class="text-white/45">01</span>
@@ -77,8 +77,8 @@
                 </ul>
 
             </div>
-
         </div>
+
 
         {{-- Form --}}
         <div class="border border-[#dedbd3] bg-white">
@@ -89,11 +89,12 @@
                     User Information
                 </p>
 
-                <h2 class="mt-1 text-lg font-bold text-[#263634]">
+                <h2 class="mt-1 text-2xl font-bold text-[#263634]">
                     Data Akun
                 </h2>
 
             </div>
+
 
             <form
                 method="POST"
@@ -109,7 +110,7 @@
 
                         <label
                             for="name"
-                            class="mb-2 block text-sm font-semibold text-[#43504d]"
+                            class="mb-2 block text-base font-semibold text-[#43504d]"
                         >
                             Nama Lengkap
                         </label>
@@ -122,7 +123,7 @@
                             required
                             autofocus
                             placeholder="Masukkan nama lengkap"
-                            class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-sm text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
+                            class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-base text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
                         >
 
                         @error('name')
@@ -133,12 +134,13 @@
 
                     </div>
 
+
                     {{-- Email --}}
                     <div>
 
                         <label
                             for="email"
-                            class="mb-2 block text-sm font-semibold text-[#43504d]"
+                            class="mb-2 block text-base font-semibold text-[#43504d]"
                         >
                             Email
                         </label>
@@ -150,7 +152,7 @@
                             value="{{ old('email') }}"
                             required
                             placeholder="contoh@undip.ac.id"
-                            class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-sm text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
+                            class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-base text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
                         >
 
                         @error('email')
@@ -161,12 +163,13 @@
 
                     </div>
 
+
                     {{-- Password --}}
                     <div>
 
                         <label
                             for="password"
-                            class="mb-2 block text-sm font-semibold text-[#43504d]"
+                            class="mb-2 block text-base font-semibold text-[#43504d]"
                         >
                             Password Awal
                         </label>
@@ -177,10 +180,10 @@
                             name="password"
                             required
                             placeholder="Masukkan password awal"
-                            class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-sm text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
+                            class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-base text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
                         >
 
-                        <p class="mt-1.5 text-xs text-[#8a9490]">
+                        <p class="mt-1.5 text-sm text-[#8a9490]">
                             Password ini dapat diberikan kepada pengguna untuk login pertama kali.
                         </p>
 
@@ -192,12 +195,13 @@
 
                     </div>
 
+
                     {{-- Role --}}
                     <div>
 
                         <label
                             for="role"
-                            class="mb-2 block text-sm font-semibold text-[#43504d]"
+                            class="mb-2 block text-base font-semibold text-[#43504d]"
                         >
                             Role
                         </label>
@@ -206,7 +210,7 @@
                             id="role"
                             name="role"
                             required
-                            class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-sm text-[#263634] outline-none transition focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
+                            class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-base text-[#263634] outline-none transition focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
                         >
 
                             <option value="">
@@ -244,6 +248,7 @@
 
                     </div>
 
+
                     {{-- Active --}}
                     <div class="border border-[#e4e1da] bg-[#fafaf8] p-4">
 
@@ -259,11 +264,11 @@
 
                             <span>
 
-                                <span class="block text-sm font-semibold text-[#43504d]">
+                                <span class="block text-base font-semibold text-[#43504d]">
                                     Aktifkan akun
                                 </span>
 
-                                <span class="mt-1 block text-xs leading-5 text-[#7b8581]">
+                                <span class="mt-1 block text-sm leading-5 text-[#7b8581]">
                                     Pengguna dapat langsung menggunakan akun setelah dibuat.
                                 </span>
 
@@ -281,19 +286,20 @@
 
                 </div>
 
+
                 {{-- Actions --}}
                 <div class="flex flex-col-reverse gap-3 border-t border-[#e4e1da] bg-[#fafaf8] px-6 py-4 sm:flex-row sm:justify-end">
 
                     <a
                         href="{{ route('admin.users.index') }}"
-                        class="inline-flex items-center justify-center rounded-lg border border-[#d5d2ca] bg-white px-5 py-2.5 text-sm font-semibold text-[#596460] transition hover:bg-[#f1f0eb]"
+                        class="inline-flex items-center justify-center rounded-lg border border-[#d5d2ca] bg-white px-5 py-2.5 text-base font-semibold text-[#596460] transition hover:bg-[#f1f0eb]"
                     >
                         Batal
                     </a>
 
                     <button
                         type="submit"
-                        class="inline-flex items-center justify-center rounded-lg bg-[#2f625b] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#244d48] hover:shadow-md"
+                        class="inline-flex items-center justify-center rounded-lg bg-[#2f625b] px-5 py-2.5 text-base font-semibold text-white transition hover:bg-[#244d48] hover:shadow-md"
                     >
                         Buat Akun
                     </button>

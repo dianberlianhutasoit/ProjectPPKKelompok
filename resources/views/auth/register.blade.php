@@ -24,15 +24,11 @@
                 {{-- Text --}}
                 <div>
 
-                    <div class="inline-flex items-center rounded-full bg-white/80 px-4 py-2 text-xs font-bold tracking-wide text-[#2f625b]">
-                        CAMPUS FACILITY
-                    </div>
-
                     <h2 class="mt-7 max-w-sm text-4xl font-bold leading-tight tracking-tight text-[#263634]">
                         Satu akun untuk berbagai kebutuhan fasilitas kampus.
                     </h2>
 
-                    <p class="mt-4 max-w-sm text-sm leading-6 text-[#596460]">
+                    <p class="mt-4 max-w-sm text-base leading-6 text-[#596460]">
                         Daftarkan akun Anda untuk melihat ketersediaan fasilitas dan mengajukan reservasi dengan mudah.
                     </p>
 
@@ -69,7 +65,7 @@
                 </div>
 
 
-                <div class="flex items-center gap-3 text-xs text-[#68736f]">
+                <div class="flex items-center gap-3 text-sm text-[#68736f]">
 
                     <span class="h-2 w-2 rounded-full bg-[#2f625b]"></span>
 
@@ -96,11 +92,11 @@
                         Get started
                     </p>
 
-                    <h1 class="mt-2 text-3xl font-bold tracking-tight text-[#263634]">
+                    <h1 class="mt-2 text-4xl font-bold tracking-tight text-[#263634]">
                         Create account
                     </h1>
 
-                    <p class="mt-3 text-sm leading-6 text-[#68736f]">
+                    <p class="mt-3 text-base leading-6 text-[#68736f]">
                         Buat akun untuk mulai menggunakan layanan fasilitas kampus.
                     </p>
 
@@ -118,7 +114,7 @@
 
                         <label
                             for="name"
-                            class="mb-1.5 block text-sm font-semibold text-[#43504d]"
+                            class="mb-1.5 block text-base font-semibold text-[#43504d]"
                         >
                             Nama Lengkap
                         </label>
@@ -132,7 +128,7 @@
                             autofocus
                             autocomplete="name"
                             placeholder="Masukkan nama lengkap"
-                            class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-2.5 text-sm text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
+                            class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-2.5 text-base text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
                         >
 
                     </div>
@@ -143,7 +139,7 @@
 
                         <label
                             for="email"
-                            class="mb-1.5 block text-sm font-semibold text-[#43504d]"
+                            class="mb-1.5 block text-base font-semibold text-[#43504d]"
                         >
                             Email
                         </label>
@@ -155,9 +151,22 @@
                             value="{{ old('email') }}"
                             required
                             autocomplete="email"
-                            placeholder="nama@email.com"
-                            class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-2.5 text-sm text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
+                            placeholder="nama@students.undip.ac.id"
+                            class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-2.5 text-base text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
                         >
+
+                        @error('email')
+                            <p class="mt-1.5 text-sm font-medium text-[#a65f3e]">
+                                {{ $message }}
+                            </p>
+                        @enderror
+
+                        <p
+                            id="email-domain-warning"
+                            class="mt-1.5 hidden text-sm font-medium text-[#a65f3e]"
+                        >
+                            Gunakan email resmi Universitas Diponegoro.
+                        </p>
 
                     </div>
 
@@ -167,7 +176,7 @@
 
                         <label
                             for="password"
-                            class="mb-1.5 block text-sm font-semibold text-[#43504d]"
+                            class="mb-1.5 block text-base font-semibold text-[#43504d]"
                         >
                             Password
                         </label>
@@ -179,7 +188,7 @@
                             required
                             autocomplete="new-password"
                             placeholder="Masukkan password"
-                            class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-2.5 text-sm text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
+                            class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-2.5 text-base text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
                         >
 
                     </div>
@@ -190,7 +199,7 @@
 
                         <label
                             for="password_confirmation"
-                            class="mb-1.5 block text-sm font-semibold text-[#43504d]"
+                            class="mb-1.5 block text-base font-semibold text-[#43504d]"
                         >
                             Konfirmasi Password
                         </label>
@@ -202,7 +211,7 @@
                             required
                             autocomplete="new-password"
                             placeholder="Ulangi password"
-                            class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-2.5 text-sm text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
+                            class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-2.5 text-base text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
                         >
 
                     </div>
@@ -211,7 +220,7 @@
                     {{-- Submit --}}
                     <button
                         type="submit"
-                        class="mt-2 w-full rounded-lg bg-[#2f625b] px-4 py-3.5 text-sm font-bold text-white transition hover:bg-[#244d48] hover:shadow-md"
+                        class="mt-2 w-full rounded-lg bg-[#2f625b] px-4 py-3.5 text-base font-bold text-white transition hover:bg-[#244d48] hover:shadow-md"
                     >
                         Create account
                     </button>
@@ -222,7 +231,7 @@
                 {{-- Login --}}
                 <div class="mt-7 border-t border-[#e8e5de] pt-5 text-center">
 
-                    <p class="text-sm text-[#68736f]">
+                    <p class="text-base text-[#68736f]">
 
                         Already have an account?
 
@@ -244,5 +253,35 @@
     </div>
 
 </div>
+
+<script>
+    // Peringatan ringan domain UNDIP — server tetap sumber kebenaran utama.
+    (function () {
+        const emailInput = document.getElementById('email');
+        const warning = document.getElementById('email-domain-warning');
+        const allowed = ['students.undip.ac.id', 'undip.ac.id'];
+
+        function isUndipEmail(value) {
+            const at = value.lastIndexOf('@');
+            if (at < 0) return true; // belum diketik lengkap, jangan ganggu
+            return allowed.includes(value.slice(at + 1).toLowerCase());
+        }
+
+        function checkDomain() {
+            const value = emailInput.value.trim();
+            const ok = value === '' || isUndipEmail(value);
+            warning.classList.toggle('hidden', ok);
+            return ok;
+        }
+
+        emailInput.addEventListener('input', checkDomain);
+        emailInput.closest('form').addEventListener('submit', function (e) {
+            if (!checkDomain()) {
+                e.preventDefault();
+                emailInput.focus();
+            }
+        });
+    })();
+</script>
 
 @endsection

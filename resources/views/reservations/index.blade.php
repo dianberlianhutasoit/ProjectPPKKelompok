@@ -1,3 +1,4 @@
+```blade
 @extends('layouts.app')
 
 @section('title', 'Reservasi Saya - Campus Facility System')
@@ -8,34 +9,32 @@
 
     {{-- Header --}}
     <div class="mb-7 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-
         <div>
-            <p class="text-xs font-bold uppercase tracking-[0.14em] text-[#2f625b]">
-                My Reservations
+            <p class="text-xs font-bold uppercase tracking-[0.18em] text-[#2f625b]">
+                Aktivitas Anda
             </p>
 
-            <h1 class="mt-2 text-3xl font-bold tracking-tight text-[#263634]">
+            <h1 class="mt-2 text-4xl font-bold tracking-tight text-[#263634]">
                 Reservasi Saya
             </h1>
 
-            <p class="mt-2 text-sm leading-6 text-[#68736f]">
-                Lihat status dan riwayat pengajuan reservasi fasilitas kamu.
+            <p class="mt-2 max-w-2xl text-base leading-7 text-[#68736f]">
+                Pantau status dan riwayat reservasi fasilitas kampus Anda.
             </p>
         </div>
 
         <a
             href="{{ route('facilities.index') }}"
-            class="inline-flex w-fit items-center justify-center rounded-lg bg-[#2f625b] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#244d48]"
+            class="inline-flex items-center justify-center rounded-xl bg-[#2f625b] px-5 py-3 text-base font-semibold text-white transition hover:bg-[#244d48]"
         >
-            + Buat Reservasi
+            Cari Fasilitas
         </a>
-
     </div>
 
 
     {{-- Success Message --}}
     @if(session('success'))
-        <div class="mb-5 border border-[#cfe0d7] bg-[#edf5f0] px-4 py-3 text-sm font-medium text-[#426b5a]">
+        <div class="mb-6 rounded-2xl border border-[#cfe1d6] bg-[#e6f0ea] px-5 py-4 text-sm font-medium text-[#426b5a]">
             {{ session('success') }}
         </div>
     @endif
@@ -43,42 +42,61 @@
 
     {{-- Error Message --}}
     @if(session('error'))
-        <div class="mb-5 border border-[#e6d0c5] bg-[#fbf0eb] px-4 py-3 text-sm font-medium text-[#a65f3e]">
+        <div class="mb-6 rounded-2xl border border-[#e4d1ca] bg-[#f3e8e5] px-5 py-4 text-sm font-medium text-[#765f59]">
             {{ session('error') }}
         </div>
     @endif
 
 
-    @if($reservations->count())
+    {{-- Validation Errors --}}
+    @if($errors->any())
+        <div class="mb-6 rounded-2xl border border-[#e4d1ca] bg-[#f3e8e5] px-5 py-4">
+            <p class="mb-2 text-sm font-bold text-[#765f59]">
+                Terjadi kesalahan:
+            </p>
 
-        <div class="overflow-hidden border border-[#dedbd3] bg-white">
+            <ul class="list-disc space-y-1 pl-5 text-sm text-[#765f59]">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
-            {{-- Desktop Table --}}
+
+    {{-- Reservation Container --}}
+    <div class="overflow-hidden rounded-[28px] border border-[#ddd9d0] bg-white shadow-sm">
+
+        @if($reservations->count())
+
+            {{-- =====================================================
+                DESKTOP TABLE
+            ====================================================== --}}
             <div class="hidden overflow-x-auto md:block">
 
                 <table class="w-full text-left">
 
                     <thead class="border-b border-[#e4e1da] bg-[#f7f6f2]">
                         <tr>
+
+                            {{-- Facility --}}
                             <th class="px-5 py-4 text-xs font-bold uppercase tracking-wide text-[#737d79]">
                                 Fasilitas
                             </th>
 
+                            {{-- Schedule --}}
                             <th class="px-5 py-4 text-xs font-bold uppercase tracking-wide text-[#737d79]">
                                 Jadwal
                             </th>
 
-                            <th class="px-5 py-4 text-xs font-bold uppercase tracking-wide text-[#737d79]">
-                                Peserta
-                            </th>
-
+                            {{-- Status --}}
                             <th class="px-5 py-4 text-xs font-bold uppercase tracking-wide text-[#737d79]">
                                 Status
                             </th>
 
-                            <th class="px-5 py-4 text-xs font-bold uppercase tracking-wide text-[#737d79]">
-                                Aksi
-                            </th>
+                            {{-- Empty header for arrow --}}
+                            <th class="w-12 px-4 py-4"></th>
+
                         </tr>
                     </thead>
 
@@ -89,28 +107,32 @@
 
                             <tr class="transition hover:bg-[#fafaf8]">
 
-                                {{-- Facility --}}
+                                {{-- =================================================
+                                    FACILITY
+                                ================================================== --}}
                                 <td class="px-5 py-5 align-top">
 
-                                    <p class="font-bold text-[#263634]">
+                                    <p class="text-base font-bold text-[#263634]">
                                         {{ $reservation->facility->name ?? '-' }}
                                     </p>
 
-                                    <p class="mt-1 text-xs text-[#7b8581]">
+                                    <p class="mt-1 text-sm text-[#7b8581]">
                                         {{ $reservation->facility->location ?? '-' }}
                                     </p>
 
                                 </td>
 
 
-                                {{-- Schedule --}}
+                                {{-- =================================================
+                                    SCHEDULE
+                                ================================================== --}}
                                 <td class="px-5 py-5 align-top">
 
-                                    <p class="font-semibold text-[#43504d]">
+                                    <p class="text-base font-semibold text-[#43504d]">
                                         {{ \Carbon\Carbon::parse($reservation->start_time)->translatedFormat('d M Y') }}
                                     </p>
 
-                                    <p class="mt-1 text-xs text-[#7b8581]">
+                                    <p class="mt-1 text-sm text-[#7b8581]">
                                         {{ \Carbon\Carbon::parse($reservation->start_time)->format('H:i') }}
                                         –
                                         {{ \Carbon\Carbon::parse($reservation->end_time)->format('H:i') }}
@@ -119,17 +141,9 @@
                                 </td>
 
 
-                                {{-- Participants --}}
-                                <td class="px-5 py-5 align-top">
-
-                                    <span class="text-sm font-semibold text-[#43504d]">
-                                        {{ $reservation->participants }} orang
-                                    </span>
-
-                                </td>
-
-
-                                {{-- Status --}}
+                                {{-- =================================================
+                                    STATUS
+                                ================================================== --}}
                                 <td class="px-5 py-5 align-top">
 
                                     @if($reservation->status === 'APPROVED')
@@ -158,44 +172,22 @@
 
                                     @endif
 
-                                    @if(in_array($reservation->status, ['REJECTED', 'CANCELLED']) && !empty($reservation->cancel_reason))
-                                        <p class="mt-2 text-xs leading-5 text-[#7b8581]">
-                                            <span class="font-semibold">Alasan:</span> {{ $reservation->cancel_reason }}
-                                        </p>
-                                    @endif
-
                                 </td>
 
 
-                                {{-- Action --}}
-                                <td class="px-5 py-5 align-top">
+                                {{-- =================================================
+                                    DETAIL ARROW
+                                ================================================== --}}
+                                <td class="w-12 px-4 py-5 text-right align-middle">
 
-                                    @if($reservation->status === 'PENDING')
-
-                                        <form
-                                            method="POST"
-                                            action="{{ route('reservations.cancel', $reservation) }}"
-                                            onsubmit="return confirm('Batalkan reservasi ini?')"
+                                    <button
+                                        type="button"
+                                        onclick="openReservationDetail({{ $reservation->id }})"
+                                        class="inline-flex h-9 w-9 items-center justify-center rounded-full text-xl font-medium text-[#2f625b] transition hover:bg-[#e6f0ea] hover:text-[#244d48]"
+                                        aria-label="Lihat detail reservasi"
+                                    >
                                         >
-                                            @csrf
-                                            @method('PATCH')
-
-                                            <button
-                                                type="submit"
-                                                class="text-sm font-semibold text-[#a65f3e] hover:underline"
-                                            >
-                                                Batalkan
-                                            </button>
-
-                                        </form>
-
-                                    @else
-
-                                        <span class="text-xs text-[#9aa19e]">
-                                            —
-                                        </span>
-
-                                    @endif
+                                    </button>
 
                                 </td>
 
@@ -210,125 +202,100 @@
             </div>
 
 
-            {{-- Mobile Cards --}}
-            <div class="divide-y divide-[#ece9e3] md:hidden">
+            {{-- =====================================================
+                MOBILE CARDS
+            ====================================================== --}}
+            <div class="space-y-4 p-4 md:hidden">
 
                 @foreach($reservations as $reservation)
 
-                    <div class="p-5">
+                    <div class="rounded-2xl border border-[#e4e1da] bg-[#fafaf8] p-5">
 
-                        <div class="flex items-start justify-between gap-4">
-
-                            <div>
-                                <h2 class="font-bold text-[#263634]">
-                                    {{ $reservation->facility->name ?? '-' }}
-                                </h2>
-
-                                <p class="mt-1 text-xs text-[#7b8581]">
-                                    {{ $reservation->facility->location ?? '-' }}
-                                </p>
-                            </div>
-
-
-                            @if($reservation->status === 'APPROVED')
-
-                                <span class="shrink-0 rounded-full bg-[#e6f0ea] px-2.5 py-1 text-[11px] font-bold text-[#426b5a]">
-                                    Disetujui
-                                </span>
-
-                            @elseif($reservation->status === 'REJECTED')
-
-                                <span class="shrink-0 rounded-full bg-[#f3e8e5] px-2.5 py-1 text-[11px] font-bold text-[#765f59]">
-                                    Ditolak
-                                </span>
-
-                            @elseif($reservation->status === 'CANCELLED')
-
-                                <span class="shrink-0 rounded-full bg-[#eeeeeb] px-2.5 py-1 text-[11px] font-bold text-[#737a77]">
-                                    Dibatalkan
-                                </span>
-
-                            @else
-
-                                <span class="shrink-0 rounded-full bg-[#f4e9dd] px-2.5 py-1 text-[11px] font-bold text-[#99633d]">
-                                    Menunggu
-                                </span>
-
-                            @endif
-
-                        </div>
-
-                        @if(in_array($reservation->status, ['REJECTED', 'CANCELLED']) && !empty($reservation->cancel_reason))
-                            <p class="mt-3 text-xs leading-5 text-[#7b8581]">
-                                <span class="font-semibold">Alasan:</span> {{ $reservation->cancel_reason }}
+                        {{-- Facility --}}
+                        <div>
+                            <p class="text-base font-bold text-[#263634]">
+                                {{ $reservation->facility->name ?? '-' }}
                             </p>
-                        @endif
+
+                            <p class="mt-1 text-sm text-[#7b8581]">
+                                {{ $reservation->facility->location ?? '-' }}
+                            </p>
+                        </div>
 
 
-                        <div class="mt-5 grid grid-cols-2 gap-4 border-t border-[#eeeae4] pt-4">
+                        {{-- Schedule --}}
+                        <div class="mt-4">
 
-                            <div>
-                                <p class="text-[11px] font-semibold uppercase tracking-wide text-[#8a9490]">
-                                    Tanggal
-                                </p>
+                            <p class="text-xs font-bold uppercase tracking-wide text-[#7b8581]">
+                                Jadwal
+                            </p>
 
-                                <p class="mt-1 text-sm font-semibold text-[#43504d]">
-                                    {{ \Carbon\Carbon::parse($reservation->start_time)->translatedFormat('d M Y') }}
-                                </p>
-                            </div>
+                            <p class="mt-1 text-sm font-semibold text-[#43504d]">
+                                {{ \Carbon\Carbon::parse($reservation->start_time)->translatedFormat('d M Y') }}
+                            </p>
 
+                            <p class="mt-1 text-sm text-[#7b8581]">
+                                {{ \Carbon\Carbon::parse($reservation->start_time)->format('H:i') }}
+                                –
+                                {{ \Carbon\Carbon::parse($reservation->end_time)->format('H:i') }}
+                            </p>
 
-                            <div>
-                                <p class="text-[11px] font-semibold uppercase tracking-wide text-[#8a9490]">
-                                    Waktu
-                                </p>
-
-                                <p class="mt-1 text-sm font-semibold text-[#43504d]">
-                                    {{ \Carbon\Carbon::parse($reservation->start_time)->format('H:i') }}
-                                    –
-                                    {{ \Carbon\Carbon::parse($reservation->end_time)->format('H:i') }}
-                                </p>
-                            </div>
+                        </div>
 
 
-                            <div>
-                                <p class="text-[11px] font-semibold uppercase tracking-wide text-[#8a9490]">
-                                    Peserta
-                                </p>
+                        {{-- Status --}}
+                        <div class="mt-4">
 
-                                <p class="mt-1 text-sm font-semibold text-[#43504d]">
-                                    {{ $reservation->participants }} orang
-                                </p>
+                            <p class="text-xs font-bold uppercase tracking-wide text-[#7b8581]">
+                                Status
+                            </p>
+
+                            <div class="mt-2">
+
+                                @if($reservation->status === 'APPROVED')
+
+                                    <span class="inline-flex items-center rounded-full bg-[#e6f0ea] px-3 py-1 text-xs font-bold text-[#426b5a]">
+                                        Disetujui
+                                    </span>
+
+                                @elseif($reservation->status === 'REJECTED')
+
+                                    <span class="inline-flex items-center rounded-full bg-[#f3e8e5] px-3 py-1 text-xs font-bold text-[#765f59]">
+                                        Ditolak
+                                    </span>
+
+                                @elseif($reservation->status === 'CANCELLED')
+
+                                    <span class="inline-flex items-center rounded-full bg-[#eeeeeb] px-3 py-1 text-xs font-bold text-[#737a77]">
+                                        Dibatalkan
+                                    </span>
+
+                                @else
+
+                                    <span class="inline-flex items-center rounded-full bg-[#f4e9dd] px-3 py-1 text-xs font-bold text-[#99633d]">
+                                        Menunggu
+                                    </span>
+
+                                @endif
+
                             </div>
 
                         </div>
 
 
-                        @if($reservation->status === 'PENDING')
+                        {{-- Detail Arrow --}}
+                        <div class="mt-5 flex justify-end border-t border-[#eeeae4] pt-4">
 
-                            <div class="mt-5 border-t border-[#eeeae4] pt-4">
-
-                                <form
-                                    method="POST"
-                                    action="{{ route('reservations.cancel', $reservation) }}"
-                                    onsubmit="return confirm('Batalkan reservasi ini?')"
+                            <button
+                                type="button"
+                                onclick="openReservationDetail({{ $reservation->id }})"
+                                class="inline-flex h-9 w-9 items-center justify-center rounded-full text-xl font-medium text-[#2f625b] transition hover:bg-[#e6f0ea] hover:text-[#244d48]"
+                                aria-label="Lihat detail reservasi"
+                            >
                                 >
+                            </button>
 
-                                    @csrf
-                                    @method('PATCH')
-
-                                    <button
-                                        type="submit"
-                                        class="text-sm font-semibold text-[#a65f3e] hover:underline"
-                                    >
-                                        Batalkan Reservasi
-                                    </button>
-
-                                </form>
-
-                            </div>
-
-                        @endif
+                        </div>
 
                     </div>
 
@@ -336,48 +303,335 @@
 
             </div>
 
-        </div>
+        @else
 
+            {{-- =====================================================
+                EMPTY STATE
+            ====================================================== --}}
+            <div class="px-6 py-16 text-center">
 
-        {{-- Pagination --}}
-        @if(method_exists($reservations, 'links'))
+                <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#e6f0ea] text-3xl">
+                    📅
+                </div>
 
-            <div class="mt-5">
-                {{ $reservations->links() }}
+                <h2 class="mt-5 text-2xl font-bold text-[#263634]">
+                    Belum Ada Reservasi
+                </h2>
+
+                <p class="mx-auto mt-2 max-w-md text-base leading-7 text-[#68736f]">
+                    Anda belum memiliki reservasi fasilitas. Cari fasilitas yang tersedia dan lakukan reservasi sekarang.
+                </p>
+
+                <a
+                    href="{{ route('facilities.index') }}"
+                    class="mt-6 inline-flex items-center justify-center rounded-xl bg-[#2f625b] px-5 py-3 text-base font-semibold text-white transition hover:bg-[#244d48]"
+                >
+                    Cari Fasilitas
+                </a>
+
             </div>
 
         @endif
 
-
-    @else
-
-        {{-- Empty State --}}
-        <div class="border border-[#dedbd3] bg-white px-6 py-14 text-center">
-
-            <div class="mx-auto flex h-14 w-14 items-center justify-center bg-[#e6f0ea] text-2xl text-[#2f625b]">
-                +
-            </div>
-
-            <h2 class="mt-5 text-lg font-bold text-[#263634]">
-                Belum ada reservasi
-            </h2>
-
-            <p class="mx-auto mt-2 max-w-md text-sm leading-6 text-[#7a8581]">
-                Kamu belum memiliki pengajuan reservasi fasilitas.
-                Pilih fasilitas yang tersedia untuk membuat reservasi.
-            </p>
-
-            <a
-                href="{{ route('facilities.index') }}"
-                class="mt-6 inline-flex items-center justify-center rounded-lg bg-[#2f625b] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#244d48]"
-            >
-                Lihat Fasilitas
-            </a>
-
-        </div>
-
-    @endif
+    </div>
 
 </div>
 
+
+{{-- =============================================================
+    RESERVATION DETAIL MODALS
+============================================================= --}}
+
+@foreach($reservations as $reservation)
+
+    <div
+        id="reservation-detail-{{ $reservation->id }}"
+        class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 px-4 py-6"
+        onclick="closeReservationDetail({{ $reservation->id }})"
+    >
+
+        <div
+            class="max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-[28px] bg-white shadow-2xl"
+            onclick="event.stopPropagation()"
+        >
+
+            {{-- Modal Header --}}
+            <div class="flex items-start justify-between border-b border-[#e4e1da] px-6 py-5">
+
+                <div>
+                    <p class="text-xs font-bold uppercase tracking-[0.15em] text-[#2f625b]">
+                        Reservasi
+                    </p>
+
+                    <h2 class="mt-1 text-2xl font-bold text-[#263634]">
+                        Detail Reservasi
+                    </h2>
+                </div>
+
+                <button
+                    type="button"
+                    onclick="closeReservationDetail({{ $reservation->id }})"
+                    class="inline-flex h-9 w-9 items-center justify-center rounded-full text-xl text-[#68736f] transition hover:bg-[#f3f1ec] hover:text-[#263634]"
+                    aria-label="Tutup"
+                >
+                </button>
+
+            </div>
+
+
+            {{-- Modal Content --}}
+            <div class="space-y-5 px-6 py-6">
+
+                {{-- Facility --}}
+                <div>
+                    <p class="text-xs font-bold uppercase tracking-wide text-[#7b8581]">
+                        Fasilitas
+                    </p>
+
+                    <p class="mt-1 text-base font-bold text-[#263634]">
+                        {{ $reservation->facility->name ?? '-' }}
+                    </p>
+                </div>
+
+
+                {{-- Location --}}
+                <div>
+                    <p class="text-xs font-bold uppercase tracking-wide text-[#7b8581]">
+                        Lokasi
+                    </p>
+
+                    <p class="mt-1 text-sm text-[#43504d]">
+                        {{ $reservation->facility->location ?? '-' }}
+                    </p>
+                </div>
+
+
+                {{-- Date --}}
+                <div>
+                    <p class="text-xs font-bold uppercase tracking-wide text-[#7b8581]">
+                        Tanggal
+                    </p>
+
+                    <p class="mt-1 text-sm font-semibold text-[#43504d]">
+                        {{ \Carbon\Carbon::parse($reservation->start_time)->translatedFormat('d F Y') }}
+                    </p>
+                </div>
+
+
+                {{-- Time --}}
+                <div>
+                    <p class="text-xs font-bold uppercase tracking-wide text-[#7b8581]">
+                        Waktu
+                    </p>
+
+                    <p class="mt-1 text-sm font-semibold text-[#43504d]">
+                        {{ \Carbon\Carbon::parse($reservation->start_time)->format('H:i') }}
+                        –
+                        {{ \Carbon\Carbon::parse($reservation->end_time)->format('H:i') }}
+                    </p>
+                </div>
+
+
+                {{-- Participants --}}
+                <div>
+                    <p class="text-xs font-bold uppercase tracking-wide text-[#7b8581]">
+                        Jumlah Peserta
+                    </p>
+
+                    <p class="mt-1 text-sm font-semibold text-[#43504d]">
+                        {{ $reservation->participants ?? '-' }} orang
+                    </p>
+                </div>
+
+
+                {{-- Purpose --}}
+                <div>
+                    <p class="text-xs font-bold uppercase tracking-wide text-[#7b8581]">
+                        Tujuan Reservasi
+                    </p>
+
+                    <div class="mt-2 rounded-xl bg-[#f7f6f2] px-4 py-3">
+                        <p class="text-sm leading-6 text-[#43504d]">
+                            {{ $reservation->purpose ?? '-' }}
+                        </p>
+                    </div>
+                </div>
+
+
+                {{-- Status --}}
+                <div>
+                    <p class="text-xs font-bold uppercase tracking-wide text-[#7b8581]">
+                        Status
+                    </p>
+
+                    <div class="mt-2">
+
+                        @if($reservation->status === 'APPROVED')
+
+                            <span class="inline-flex items-center rounded-full bg-[#e6f0ea] px-3 py-1 text-xs font-bold text-[#426b5a]">
+                                Disetujui
+                            </span>
+
+                        @elseif($reservation->status === 'REJECTED')
+
+                            <span class="inline-flex items-center rounded-full bg-[#f3e8e5] px-3 py-1 text-xs font-bold text-[#765f59]">
+                                Ditolak
+                            </span>
+
+                        @elseif($reservation->status === 'CANCELLED')
+
+                            <span class="inline-flex items-center rounded-full bg-[#eeeeeb] px-3 py-1 text-xs font-bold text-[#737a77]">
+                                Dibatalkan
+                            </span>
+
+                        @else
+
+                            <span class="inline-flex items-center rounded-full bg-[#f4e9dd] px-3 py-1 text-xs font-bold text-[#99633d]">
+                                Menunggu Persetujuan
+                            </span>
+
+                        @endif
+
+                    </div>
+
+                </div>
+
+
+                {{-- Rejection / Cancellation Reason --}}
+                @if(
+                    !empty($reservation->cancel_reason) ||
+                    !empty($reservation->rejection_reason) ||
+                    !empty($reservation->reason)
+                )
+
+                    <div>
+
+                        <p class="text-xs font-bold uppercase tracking-wide text-[#7b8581]">
+                            Alasan
+                        </p>
+
+                        <div class="mt-2 rounded-xl bg-[#f3e8e5] px-4 py-3">
+
+                            <p class="text-sm leading-6 text-[#765f59]">
+                                {{
+                                    $reservation->cancel_reason
+                                    ?? $reservation->rejection_reason
+                                    ?? $reservation->reason
+                                }}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                @endif
+
+            </div>
+
+
+            {{-- Modal Footer --}}
+            <div class="flex flex-col-reverse gap-3 border-t border-[#e4e1da] px-6 py-5 sm:flex-row sm:items-center sm:justify-end">
+
+                {{-- Close --}}
+                <button
+                    type="button"
+                    onclick="closeReservationDetail({{ $reservation->id }})"
+                    class="inline-flex items-center justify-center rounded-xl border border-[#d9d6cf] bg-white px-5 py-3 text-sm font-semibold text-[#43504d] transition hover:bg-[#f7f6f2]"
+                >
+                    Tutup
+                </button>
+
+
+                {{-- Cancel --}}
+                @if($reservation->status === 'PENDING')
+
+                    <form
+                        method="POST"
+                        action="{{ route('reservations.cancel', $reservation->id) }}"
+                        onsubmit="return confirm('Apakah Anda yakin ingin membatalkan reservasi ini?')"
+                    >
+
+                        @csrf
+                        @method('PATCH')
+
+                        <button
+                            type="submit"
+                            class="inline-flex w-full items-center justify-center rounded-xl bg-[#765f59] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#624d48] sm:w-auto"
+                        >
+                            Batalkan Reservasi
+                        </button>
+
+                    </form>
+
+                @endif
+
+            </div>
+
+        </div>
+
+    </div>
+
+@endforeach
+
+
+{{-- =============================================================
+    MODAL SCRIPT
+============================================================= --}}
+
+<script>
+
+    function openReservationDetail(id) {
+
+        const modal = document.getElementById('reservation-detail-' + id);
+
+        if (!modal) {
+            return;
+        }
+
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+
+        document.body.classList.add('overflow-hidden');
+    }
+
+
+    function closeReservationDetail(id) {
+
+        const modal = document.getElementById('reservation-detail-' + id);
+
+        if (!modal) {
+            return;
+        }
+
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+
+        document.body.classList.remove('overflow-hidden');
+    }
+
+
+    document.addEventListener('keydown', function(event) {
+
+        if (event.key !== 'Escape') {
+            return;
+        }
+
+        document.querySelectorAll('[id^="reservation-detail-"]').forEach(function(modal) {
+
+            if (!modal.classList.contains('hidden')) {
+
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+
+            }
+
+        });
+
+        document.body.classList.remove('overflow-hidden');
+
+    });
+
+</script>
+
 @endsection
+```

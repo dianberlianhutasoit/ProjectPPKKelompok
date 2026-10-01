@@ -8,9 +8,10 @@
 
     {{-- Header --}}
     <div class="mb-7">
+
         <a
             href="{{ route('facilities.show', $facility) }}"
-            class="inline-flex items-center gap-2 text-sm font-semibold text-[#2f625b] hover:underline"
+            class="inline-flex items-center gap-2 text-base font-semibold text-[#2f625b] hover:underline"
         >
             ← Kembali ke fasilitas
         </a>
@@ -20,16 +21,16 @@
                 Reservation
             </p>
 
-            <h1 class="mt-2 text-3xl font-bold tracking-tight text-[#263634]">
+            <h1 class="mt-2 text-4xl font-bold tracking-tight text-[#263634]">
                 Ajukan Reservasi
             </h1>
 
-            <p class="mt-2 text-sm leading-6 text-[#68736f]">
+            <p class="mt-2 text-base leading-6 text-[#68736f]">
                 Lengkapi informasi penggunaan fasilitas yang ingin kamu reservasi.
             </p>
         </div>
-    </div>
 
+    </div>
 
     <div class="grid gap-6 lg:grid-cols-[320px_1fr]">
 
@@ -41,7 +42,7 @@
                     Fasilitas
                 </p>
 
-                <h2 class="mt-1 text-lg font-bold text-[#263634]">
+                <h2 class="mt-1 text-2xl font-bold text-[#263634]">
                     {{ $facility->name }}
                 </h2>
             </div>
@@ -53,7 +54,7 @@
                         Tipe
                     </p>
 
-                    <p class="mt-1 text-sm font-semibold text-[#43504d]">
+                    <p class="mt-1 text-base font-semibold text-[#43504d]">
                         {{ $facility->type }}
                     </p>
                 </div>
@@ -63,7 +64,7 @@
                         Lokasi
                     </p>
 
-                    <p class="mt-1 text-sm font-semibold text-[#43504d]">
+                    <p class="mt-1 text-base font-semibold text-[#43504d]">
                         {{ $facility->location }}
                     </p>
                 </div>
@@ -73,7 +74,7 @@
                         Kapasitas
                     </p>
 
-                    <p class="mt-1 text-sm font-semibold text-[#43504d]">
+                    <p class="mt-1 text-base font-semibold text-[#43504d]">
                         {{ $facility->capacity }} orang
                     </p>
                 </div>
@@ -98,17 +99,19 @@
         <div class="border border-[#dedbd3] bg-white">
 
             <div class="border-b border-[#e4e1da] px-6 py-5">
+
                 <p class="text-xs font-bold uppercase tracking-[0.12em] text-[#2f625b]">
                     Reservation Form
                 </p>
 
-                <h2 class="mt-1 text-lg font-bold text-[#263634]">
+                <h2 class="mt-1 text-2xl font-bold text-[#263634]">
                     Detail Reservasi
                 </h2>
+
             </div>
 
-
             <form
+                id="reservation-form"
                 action="{{ route('reservations.store', $facility) }}"
                 method="POST"
             >
@@ -119,9 +122,10 @@
 
                     {{-- Nama Pemohon --}}
                     <div>
+
                         <label
                             for="applicant_name"
-                            class="mb-2 block text-sm font-semibold text-[#43504d]"
+                            class="mb-2 block text-base font-semibold text-[#43504d]"
                         >
                             Nama Pemohon
                         </label>
@@ -131,16 +135,18 @@
                             type="text"
                             value="{{ auth()->user()->name }}"
                             readonly
-                            class="w-full cursor-not-allowed rounded-lg border border-[#d5d2ca] bg-[#f4f4f1] px-4 py-3 text-sm text-[#68736f] outline-none"
+                            class="w-full cursor-not-allowed rounded-lg border border-[#d5d2ca] bg-[#f4f4f1] px-4 py-3 text-base text-[#68736f] outline-none"
                         >
+
                     </div>
 
 
                     {{-- Date --}}
                     <div>
+
                         <label
                             for="date"
-                            class="mb-2 block text-sm font-semibold text-[#43504d]"
+                            class="mb-2 block text-base font-semibold text-[#43504d]"
                         >
                             Tanggal Reservasi
                         </label>
@@ -152,14 +158,20 @@
                             value="{{ old('date', request('date', now()->toDateString())) }}"
                             min="{{ now()->toDateString() }}"
                             required
-                            class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-sm text-[#263634] outline-none transition focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
+                            class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-base text-[#263634] outline-none transition focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
                         >
+
+                        <div
+                            id="same-day-warning"
+                            class="mt-3 hidden border border-[#e6d0c5] bg-[#fbf0eb] px-4 py-3 text-base leading-5 text-[#a65f3e]"
+                        ></div>
 
                         @error('date')
                             <p class="mt-1.5 text-xs text-[#a65f3e]">
                                 {{ $message }}
                             </p>
                         @enderror
+
                     </div>
 
 
@@ -167,9 +179,10 @@
                     <div class="grid gap-5 sm:grid-cols-2">
 
                         <div>
+
                             <label
                                 for="start_time"
-                                class="mb-2 block text-sm font-semibold text-[#43504d]"
+                                class="mb-2 block text-base font-semibold text-[#43504d]"
                             >
                                 Jam Mulai
                             </label>
@@ -183,7 +196,7 @@
                                 max="19:30"
                                 step="1800"
                                 required
-                                class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-sm text-[#263634] outline-none transition focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
+                                class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-base text-[#263634] outline-none transition focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
                             >
 
                             @error('start_time')
@@ -191,13 +204,15 @@
                                     {{ $message }}
                                 </p>
                             @enderror
+
                         </div>
 
 
                         <div>
+
                             <label
                                 for="end_time"
-                                class="mb-2 block text-sm font-semibold text-[#43504d]"
+                                class="mb-2 block text-base font-semibold text-[#43504d]"
                             >
                                 Jam Selesai
                             </label>
@@ -211,7 +226,7 @@
                                 max="20:00"
                                 step="1800"
                                 required
-                                class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-sm text-[#263634] outline-none transition focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
+                                class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-base text-[#263634] outline-none transition focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
                             >
 
                             @error('end_time')
@@ -219,6 +234,7 @@
                                     {{ $message }}
                                 </p>
                             @enderror
+
                         </div>
 
                     </div>
@@ -226,9 +242,10 @@
 
                     {{-- Participants --}}
                     <div>
+
                         <label
                             for="participants"
-                            class="mb-2 block text-sm font-semibold text-[#43504d]"
+                            class="mb-2 block text-base font-semibold text-[#43504d]"
                         >
                             Jumlah Peserta
                         </label>
@@ -241,7 +258,7 @@
                             min="1"
                             max="{{ $facility->capacity }}"
                             required
-                            class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-sm text-[#263634] outline-none transition focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
+                            class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-base text-[#263634] outline-none transition focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
                         >
 
                         <p class="mt-1.5 text-xs text-[#8a9490]">
@@ -253,14 +270,16 @@
                                 {{ $message }}
                             </p>
                         @enderror
+
                     </div>
 
 
                     {{-- Purpose --}}
                     <div>
+
                         <label
                             for="purpose"
-                            class="mb-2 block text-sm font-semibold text-[#43504d]"
+                            class="mb-2 block text-base font-semibold text-[#43504d]"
                         >
                             Keperluan / Tujuan Kegiatan
                         </label>
@@ -272,7 +291,7 @@
                             required
                             maxlength="255"
                             placeholder="Jelaskan tujuan penggunaan fasilitas..."
-                            class="w-full resize-none rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-sm leading-6 text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
+                            class="w-full resize-none rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-3 text-base leading-6 text-[#263634] outline-none transition placeholder:text-[#a2aaa7] focus:border-[#2f625b] focus:bg-white focus:ring-4 focus:ring-[#2f625b]/10"
                         >{{ old('purpose') }}</textarea>
 
                         @error('purpose')
@@ -280,6 +299,7 @@
                                 {{ $message }}
                             </p>
                         @enderror
+
                     </div>
 
                 </div>
@@ -290,14 +310,15 @@
 
                     <a
                         href="{{ route('facilities.show', $facility) }}"
-                        class="inline-flex items-center justify-center rounded-lg border border-[#d5d2ca] bg-white px-5 py-2.5 text-sm font-semibold text-[#596460] transition hover:bg-[#f1f0eb]"
+                        class="inline-flex items-center justify-center rounded-lg border border-[#d5d2ca] bg-white px-5 py-2.5 text-base font-semibold text-[#596460] transition hover:bg-[#f1f0eb]"
                     >
                         Batal
                     </a>
 
                     <button
+                        id="submit-reservation"
                         type="submit"
-                        class="inline-flex items-center justify-center rounded-lg bg-[#2f625b] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#244d48] hover:shadow-md"
+                        class="inline-flex items-center justify-center rounded-lg bg-[#2f625b] px-5 py-2.5 text-base font-semibold text-white transition hover:bg-[#244d48] hover:shadow-md"
                     >
                         Ajukan Reservasi
                     </button>
@@ -311,5 +332,303 @@
     </div>
 
 </div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const dateInput = document.getElementById('date');
+    const startInput = document.getElementById('start_time');
+    const endInput = document.getElementById('end_time');
+    const warning = document.getElementById('same-day-warning');
+    const submitButton = document.getElementById('submit-reservation');
+
+    const pad = (number) => String(number).padStart(2, '0');
+
+
+    function getTodayString() {
+
+        const now = new Date();
+
+        return [
+            now.getFullYear(),
+            pad(now.getMonth() + 1),
+            pad(now.getDate())
+        ].join('-');
+
+    }
+
+
+    function formatTime(date) {
+
+        return `${pad(date.getHours())}:${pad(date.getMinutes())}`;
+
+    }
+
+
+    function getCurrentTimeString() {
+
+        return formatTime(new Date());
+
+    }
+
+
+    function roundUpToNext30Minutes(date) {
+
+        const result = new Date(date);
+
+        result.setSeconds(0, 0);
+
+        const minutes = result.getMinutes();
+
+        if (minutes === 0) {
+            return result;
+        }
+
+        if (minutes <= 30) {
+
+            result.setMinutes(30, 0, 0);
+
+        } else {
+
+            result.setHours(
+                result.getHours() + 1,
+                0,
+                0,
+                0
+            );
+
+        }
+
+        return result;
+
+    }
+
+
+    function showWarning(message) {
+
+        warning.textContent = message;
+
+        warning.classList.remove('hidden');
+
+        submitButton.disabled = true;
+
+        submitButton.classList.add(
+            'cursor-not-allowed',
+            'opacity-50'
+        );
+
+    }
+
+
+    function hideWarning() {
+
+        warning.textContent = '';
+
+        warning.classList.add('hidden');
+
+        submitButton.disabled = false;
+
+        submitButton.classList.remove(
+            'cursor-not-allowed',
+            'opacity-50'
+        );
+
+    }
+
+
+    function getMinimumStartTime() {
+
+        const now = new Date();
+
+        const minimumDateTime = new Date(
+            now.getTime() + (2 * 60 * 60 * 1000)
+        );
+
+        const roundedMinimum =
+            roundUpToNext30Minutes(minimumDateTime);
+
+        return formatTime(roundedMinimum);
+
+    }
+
+
+    function updateTimeLimit() {
+
+        hideWarning();
+
+        const selectedDate = dateInput.value;
+        const today = getTodayString();
+
+        if (!selectedDate) {
+            return;
+        }
+
+
+        if (selectedDate === today) {
+
+            const minimumStart = getMinimumStartTime();
+            const currentTime = getCurrentTimeString();
+
+            startInput.min = minimumStart;
+
+            if (startInput.value) {
+
+                if (startInput.value < currentTime) {
+
+                    showWarning(
+                        'Waktu yang Anda pilih sudah lewat dari waktu sekarang.'
+                    );
+
+                    return;
+
+                } else if (startInput.value < minimumStart) {
+
+                    showWarning(
+                        'Pengajuan reservasi harus dilakukan paling lambat 2 jam sebelum pelaksanaan kegiatan.'
+                    );
+
+                    return;
+
+                }
+
+            }
+
+        } else {
+
+            startInput.min = '07:00';
+
+        }
+
+        updateEndTime();
+
+    }
+
+
+    function updateEndTime() {
+
+        if (!startInput.value) {
+
+            endInput.min = '07:30';
+
+            return;
+
+        }
+
+
+        const [hours, minutes] =
+            startInput.value.split(':').map(Number);
+
+        const end = new Date();
+
+        end.setHours(
+            hours,
+            minutes + 30,
+            0,
+            0
+        );
+
+        const minimumEnd =
+            formatTime(end);
+
+        endInput.min = minimumEnd;
+
+
+        if (
+            endInput.value &&
+            endInput.value < minimumEnd
+        ) {
+
+            endInput.value = minimumEnd;
+
+        }
+
+        validateCurrentSelection();
+
+    }
+
+
+    function validateCurrentSelection() {
+
+        hideWarning();
+
+        const selectedDate = dateInput.value;
+        const today = getTodayString();
+
+        if (
+            !selectedDate ||
+            !startInput.value
+        ) {
+            return;
+        }
+
+
+        if (selectedDate === today) {
+
+            const minimumStart = getMinimumStartTime();
+            const currentTime = getCurrentTimeString();
+
+            if (startInput.value < currentTime) {
+
+                showWarning(
+                    'Waktu yang Anda pilih sudah lewat dari waktu sekarang.'
+                );
+
+                return;
+
+            } else if (startInput.value < minimumStart) {
+
+                showWarning(
+                    'Pengajuan reservasi harus dilakukan paling lambat 2 jam sebelum pelaksanaan kegiatan.'
+                );
+
+                return;
+
+            }
+
+        }
+
+
+        if (
+            endInput.value &&
+            endInput.value <= startInput.value
+        ) {
+
+            showWarning(
+                'Jam selesai harus lebih besar dari jam mulai.'
+            );
+
+        }
+
+    }
+
+
+    dateInput.addEventListener(
+        'change',
+        updateTimeLimit
+    );
+
+
+    startInput.addEventListener(
+        'change',
+        function () {
+
+            updateEndTime();
+            validateCurrentSelection();
+
+        }
+    );
+
+
+    endInput.addEventListener(
+        'change',
+        validateCurrentSelection
+    );
+
+
+    updateTimeLimit();
+
+});
+</script>
 
 @endsection

@@ -63,43 +63,42 @@ class UserController extends Controller
     }
 
     // Admin: setujui atau tolak akun hasil daftar mandiri
+    // Tolak wajib menyertakan alasan, setuju menghapus alasan lama
     public function verify(Request $request, User $user)
     {
         $validated = $request->validate([
             'action' => 'required|in:approve,reject',
+            'rejection_reason' => 'required_if:action,reject|nullable|string|max:1000',
         ]);
 
-        $user->update([
-            'status' => $validated['action'] === 'approve'
-                ? 'ACTIVE'
-                : 'REJECTED',
-        ]);
+        if ($validated['action'] === 'approve') {
+            $user->update([
+                'status' => 'ACTIVE',
+                'rejection_reason' => null,
+            ]);
 
-        $message = $validated['action'] === 'approve'
-            ? 'Akun ' . $user->email . ' diverifikasi (ACTIVE).'
-            : 'Akun ' . $user->email . ' ditolak (REJECTED).';
+            $message = 'Akun ' . $user->email . ' diverifikasi (ACTIVE).';
+        } else {
+            $user->update([
+                'status' => 'REJECTED',
+                'rejection_reason' => trim($validated['rejection_reason']),
+            ]);
+
+            $message = 'Akun ' . $user->email . ' ditolak (REJECTED).';
+        }
 
         return back()->with('success', $message);
     }
 
-    // Admin: nonaktifkan akun pengguna
+    // Admin: nonaktifkan akun (soft — status jadi INACTIVE, record tetap ada untuk riwayat)
     public function destroy(User $user)
     {
-        // Mencegah Admin menonaktifkan akun sendiri
-        if (Auth::id() === $user->id) {
-            return redirect()->route('admin.users.index')
-            ->with('error', 'Anda tidak dapat menonaktifkan akun Anda sendiri.');
+        if ($user->id === Auth::id()) {
+            return back()->with('error', 'Tidak dapat menonaktifkan akun sendiri.');
         }
 
-        // Mengubah status akun menjadi REJECTED/Nonaktif
-        $user->update([
-            'status' => 'REJECTED',
-        ]);
+        $user->update(['status' => 'INACTIVE']);
 
-        // Opsi jika ingin menghapus permanen dari database:
-        // $user->delete();
-
-        return redirect()->route('admin.users.index')
-        ->with('success', 'Akun ' . $user->email . ' berhasil dinonaktifkan.');
+        return back()->with('success', 'Akun ' . $user->email . ' dinonaktifkan (INACTIVE).');
     }
 }

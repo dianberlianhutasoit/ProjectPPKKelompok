@@ -151,4 +151,34 @@ class FacilityController extends Controller
 
         return redirect()->route('facilities.index')->with('success', 'Fasilitas dinonaktifkan (INACTIVE).');
     }
+/**
+ * Menampilkan form edit fasilitas (Admin).
+ */
+public function edit(Facility $facility)
+{
+    // Mengambil tipe fasilitas unik dari DB untuk pilihan dropdown
+    $types = Facility::select('type')->distinct()->pluck('type');
+
+    return view('facilities.edit', compact('facility', 'types'));
+}
+
+/**
+ * Memproses pembaruan data fasilitas di database.
+ */
+public function update(Request $request, Facility $facility)
+{
+    $validated = $request->validate([
+        'name'        => 'required|string|max:255',
+        'type'        => 'required|string|max:255',
+        'location'    => 'required|string|max:255',
+        'capacity'    => 'required|integer|min:1',
+        'description' => 'nullable|string',
+        'status'      => 'required|in:AVAILABLE,MAINTENANCE,INACTIVE',
+    ]);
+
+    $facility->update($validated);
+
+    return redirect()->route('facilities.index')
+        ->with('success', 'Fasilitas ' . $facility->name . ' berhasil diperbarui.');
+}
 }
