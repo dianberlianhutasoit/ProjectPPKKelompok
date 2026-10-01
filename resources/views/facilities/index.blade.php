@@ -20,17 +20,6 @@
             {{-- Hero text --}}
             <div class="flex flex-col justify-center px-7 py-12 sm:px-10 lg:px-14">
 
-                <div class="inline-flex w-fit items-center gap-2 rounded-full bg-white/10 px-4 py-2 backdrop-blur-sm">
-
-                    <span class="h-2.5 w-2.5 rounded-full bg-[#dce9c9]"></span>
-
-                    <span class="text-xs font-bold uppercase tracking-[0.14em] text-white">
-                        Campus Facility
-                    </span>
-
-                </div>
-
-
                 <h1 class="mt-6 max-w-xl text-5xl font-bold leading-tight tracking-tight text-white sm:text-6xl">
 
                     Temukan Fasilitas Kampus

@@ -23,10 +23,6 @@
 
                 <div>
 
-                    <div class="inline-flex items-center rounded-full bg-white/80 px-4 py-2 text-xs font-bold tracking-wide text-[#2f625b]">
-                        CAMPUS FACILITY
-                    </div>
-
                     <h2 class="mt-7 max-w-sm text-4xl font-bold leading-tight tracking-tight text-[#263634]">
                         Kelola fasilitas kampus dengan lebih mudah.
                     </h2>
