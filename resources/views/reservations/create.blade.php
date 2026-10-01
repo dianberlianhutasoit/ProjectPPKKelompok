@@ -471,7 +471,7 @@ document.addEventListener('DOMContentLoaded', function () {
             ) {
 
                 showWarning(
-                    `Untuk reservasi hari ini, jam mulai paling cepat adalah ${minimumStart} karena reservasi harus dilakukan minimal 2 jam sebelumnya.`
+                    `Pengajuan reservasi harus dilakukan paling lambat 2 jam sebelum pelaksanaan kegiatan.`
                 );
 
                 return;
@@ -557,7 +557,7 @@ document.addEventListener('DOMContentLoaded', function () {
             ) {
 
                 showWarning(
-                    `Untuk reservasi hari ini, jam mulai paling cepat adalah ${minimumStart} karena reservasi harus dilakukan minimal 2 jam sebelumnya.`
+                    `Pengajuan reservasi harus dilakukan paling lambat 2 jam sebelum pelaksanaan kegiatan.`
                 );
 
                 return;
