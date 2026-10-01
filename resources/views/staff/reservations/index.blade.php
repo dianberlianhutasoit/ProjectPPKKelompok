@@ -307,7 +307,30 @@
 
                                     @elseif($reservation->status === 'APPROVED')
 
-                                        <span class="text-xs text-[#9aa19e]">—</span>
+                                        <form
+                                            method="POST"
+                                            action="{{ route('staff.reservations.cancel', $reservation) }}"
+                                            class="flex w-48 flex-col gap-2"
+                                        >
+                                            @csrf
+                                            @method('PATCH')
+
+                                            <input
+                                                type="text"
+                                                name="cancel_reason"
+                                                required
+                                                maxlength="1000"
+                                                placeholder="Alasan pembatalan..."
+                                                class="w-full rounded-md border border-[#d5d2ca] bg-[#fafaf8] px-3 py-2 text-sm text-[#263634] outline-none focus:border-[#2f625b]"
+                                            >
+
+                                            <button
+                                                type="submit"
+                                                class="w-full rounded-md border border-[#d5d2ca] bg-white px-3 py-2 text-sm font-bold text-[#a65f3e] transition hover:bg-[#fbf0eb]"
+                                            >
+                                                Batalkan
+                                            </button>
+                                        </form>
 
                                     @else
 
@@ -469,6 +492,33 @@
                             </button>
 
                         </div>
+
+                    @elseif($reservation->status === 'APPROVED')
+
+                        <form
+                            method="POST"
+                            action="{{ route('staff.reservations.cancel', $reservation) }}"
+                            class="mt-5 flex flex-col gap-2 border-t border-[#eeeae4] pt-4"
+                        >
+                            @csrf
+                            @method('PATCH')
+
+                            <input
+                                type="text"
+                                name="cancel_reason"
+                                required
+                                maxlength="1000"
+                                placeholder="Alasan pembatalan..."
+                                class="w-full rounded-lg border border-[#d5d2ca] bg-[#fafaf8] px-4 py-2.5 text-sm text-[#263634] outline-none focus:border-[#2f625b]"
+                            >
+
+                            <button
+                                type="submit"
+                                class="w-full rounded-lg border border-[#d5d2ca] bg-white px-4 py-2.5 text-sm font-bold text-[#a65f3e] transition hover:bg-[#fbf0eb]"
+                            >
+                                Batalkan
+                            </button>
+                        </form>
 
                     @endif
 
