@@ -15,14 +15,42 @@ class AuthController extends Controller
     }
 
     // Daftar akun baru — khusus USER, status awal PENDING (nunggu verifikasi admin)
+    // Email yang pernah REJECTED boleh daftar ulang: pakai record lama, tanpa INSERT baru
     public function register(Request $request)
     {
-        // Cek input di server biar aman
+        // Cek input di server biar aman (tanpa unique:users,email karena
+        // email REJECTED boleh daftar ulang — pengecekan manual di bawah)
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
+            'email' => 'required|email',
             'password' => 'required|string|min:8|confirmed',
         ]);
+
+        $existing = User::where('email', $validated['email'])->first();
+
+        if ($existing) {
+            // Registrasi ulang: pakai record lama, update data terbaru,
+            // kembalikan ke PENDING dan hapus alasan penolakan lama
+            if ($existing->status === 'REJECTED') {
+                $existing->update([
+                    'name' => $validated['name'],
+                    'password' => Hash::make($validated['password']),
+                    'role' => 'USER',
+                    'status' => 'PENDING',
+                    'rejection_reason' => null,
+                ]);
+
+                return redirect()->route('login')->with('success', 'Registrasi ulang berhasil. Akun menunggu verifikasi admin sebelum bisa login.');
+            }
+
+            $message = match ($existing->status) {
+                'PENDING' => 'Email ini sudah terdaftar dan masih menunggu verifikasi admin.',
+                'INACTIVE' => 'Akun dengan email ini dinonaktifkan. Silakan hubungi admin.',
+                default => 'Email ini sudah terdaftar. Silakan login.',
+            };
+
+            return back()->withErrors(['email' => $message])->onlyInput('email');
+        }
 
         User::create([
             'name' => $validated['name'],
