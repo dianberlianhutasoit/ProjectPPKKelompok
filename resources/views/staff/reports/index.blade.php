@@ -6,7 +6,6 @@
 
 <div class="mx-auto max-w-7xl">
 
-    {{-- Header --}}
     <div class="mb-7">
 
         <p class="text-xs font-bold uppercase tracking-[0.14em] text-[#2f625b]">
@@ -24,8 +23,6 @@
 
     </div>
 
-
-    {{-- Success --}}
     @if(session('success'))
 
         <div class="mb-5 border border-[#cfe0d7] bg-[#edf5f0] px-4 py-3 text-base font-medium text-[#426b5a]">
@@ -34,8 +31,6 @@
 
     @endif
 
-
-    {{-- Error --}}
     @if($errors->any())
 
         <div class="mb-5 border border-[#e6d0c5] bg-[#fbf0eb] px-4 py-3 text-base font-medium text-[#a65f3e]">
@@ -44,12 +39,8 @@
 
     @endif
 
-
     @if($reports->count())
 
-        {{-- ========================= --}}
-        {{-- DESKTOP --}}
-        {{-- ========================= --}}
         <div class="hidden overflow-hidden border border-[#dedbd3] bg-white md:block">
 
             <div class="overflow-x-auto">
@@ -88,14 +79,12 @@
 
                     </thead>
 
-
                     <tbody class="divide-y divide-[#ece9e3]">
 
                         @foreach($reports as $report)
 
                             <tr class="transition hover:bg-[#fafaf8]">
 
-                                {{-- Pelapor --}}
                                 <td class="px-5 py-5 align-top">
 
                                     <p class="text-base font-bold text-[#263634]">
@@ -108,8 +97,6 @@
 
                                 </td>
 
-
-                                {{-- Fasilitas --}}
                                 <td class="px-5 py-5 align-top">
 
                                     <p class="text-base font-semibold text-[#43504d]">
@@ -122,8 +109,6 @@
 
                                 </td>
 
-
-                                {{-- Kerusakan --}}
                                 <td class="max-w-[280px] px-5 py-5 align-top">
 
                                     <p class="text-sm font-bold text-[#2f625b]">
@@ -136,8 +121,6 @@
 
                                 </td>
 
-
-                                {{-- Status Laporan --}}
                                 <td class="px-5 py-5 align-top">
 
                                     @if($report->status === 'NEW')
@@ -184,8 +167,6 @@
 
                                 </td>
 
-
-                                {{-- Status Fasilitas --}}
                                 <td class="px-5 py-5 align-top">
 
                                     @if(($report->facility->status ?? null) === 'MAINTENANCE')
@@ -222,8 +203,6 @@
 
                                 </td>
 
-
-                                {{-- Aksi --}}
                                 <td class="px-5 py-5 align-top">
 
                                     <a
@@ -247,10 +226,6 @@
 
         </div>
 
-
-        {{-- ========================= --}}
-        {{-- MOBILE --}}
-        {{-- ========================= --}}
         <div class="divide-y divide-[#ece9e3] border border-[#dedbd3] bg-white md:hidden">
 
             @foreach($reports as $report)
@@ -275,8 +250,6 @@
 
                         </div>
 
-
-                        {{-- Status Laporan --}}
                         @if($report->status === 'NEW')
 
                             <span class="shrink-0 rounded-full bg-[#f4e9dd] px-2.5 py-1 text-xs font-bold text-[#99633d]">
@@ -305,14 +278,10 @@
 
                     </div>
 
-
-                    {{-- Description --}}
                     <p class="mt-4 text-base leading-6 text-[#596460]">
                         {{ \Illuminate\Support\Str::limit($report->description, 150) }}
                     </p>
 
-
-                    {{-- Facility Status --}}
                     <div class="mt-4 border-t border-[#eeeae4] pt-4">
 
                         <p class="text-xs font-bold uppercase tracking-wide text-[#68736f]">
@@ -345,8 +314,6 @@
 
                     </div>
 
-
-                    {{-- Resolution Note --}}
                     @if($report->resolution_note)
 
                         <div class="mt-4 border-t border-[#eeeae4] pt-4">
@@ -363,8 +330,6 @@
 
                     @endif
 
-
-                    {{-- Action --}}
                     <a
                         href="{{ route('staff.reports.show', $report) }}"
                         class="mt-5 inline-flex w-full items-center justify-center rounded-lg bg-[#2f625b] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#244d48]"
@@ -377,7 +342,6 @@
             @endforeach
 
         </div>
-
 
     @else
 
