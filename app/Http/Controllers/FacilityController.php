@@ -14,7 +14,7 @@ class FacilityController extends Controller
     {
         $query = Facility::query();
 
-        // INACTIVE disembunyikan dari non-ADMIN.
+        // Hide inactive facilities from non-admins.
         if (! Auth::check() || Auth::user()->role !== 'ADMIN') {
             $query->where('status', '!=', 'INACTIVE');
         }
@@ -63,14 +63,14 @@ class FacilityController extends Controller
 
     public function show(Request $request, Facility $facility)
     {
-        // INACTIVE dianggap tidak ada untuk non-ADMIN.
+        // Inactive facilities return 404 for non-admins.
         if ($facility->status === 'INACTIVE' && (! Auth::check() || Auth::user()->role !== 'ADMIN')) {
             abort(404);
         }
 
         $selectedDate = $request->input('date', now()->toDateString());
 
-        // Slot diblokir oleh reservasi PENDING/APPROVED.
+        // Pending and approved reservations occupy slots.
         $reservations = Reservation::where('facility_id', $facility->id)
             ->whereIn('status', ['PENDING', 'APPROVED'])
             ->whereDate('start_time', $selectedDate)
@@ -79,7 +79,7 @@ class FacilityController extends Controller
 
         $slots = [];
 
-        // Jam operasional 07:00-20:00.
+        // Daily reservation window: 07:00-20:00.
         $start = Carbon::createFromFormat('Y-m-d H:i', $selectedDate.' 07:00');
         $end = Carbon::createFromFormat('Y-m-d H:i', $selectedDate.' 20:00');
 
@@ -89,7 +89,7 @@ class FacilityController extends Controller
 
             $status = 'AVAILABLE';
 
-            // MAINTENANCE: semua slot dianggap maintenance.
+            // Maintenance blocks every slot.
             if ($facility->status === 'MAINTENANCE') {
                 $status = 'MAINTENANCE';
             } else {
@@ -118,7 +118,7 @@ class FacilityController extends Controller
         return view('facilities.show', compact('facility', 'selectedDate', 'slots'));
     }
 
-    // Nonaktifkan saja (INACTIVE) agar riwayat pinjam/lapor tetap terjaga.
+    // Keep reservation and report history when deactivating a facility.
     public function destroy(Facility $facility)
     {
         $facility->update(['status' => 'INACTIVE']);

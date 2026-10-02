@@ -52,7 +52,7 @@ class ReportTest extends TestCase
         $other = $this->makeUser('USER');
 
         $response = $this->actingAs($user)->post(route('reports.store'), [
-            'user_id' => $other->id, // spoof: harus diabaikan
+            'user_id' => $other->id, // Client-supplied owner IDs are ignored.
             'facility_id' => $facility->id,
             'category' => 'Kelistrikan',
             'description' => 'Lampu mati',
@@ -75,7 +75,6 @@ class ReportTest extends TestCase
         $ownReport = $this->makeReport($user);
         $otherReport = $this->makeReport($other);
 
-        // index hanya milik sendiri (Blade view)
         $index = $this->actingAs($user)->get(route('reports.index'));
         $index->assertOk();
         $index->assertViewIs('reports.index');
@@ -85,12 +84,10 @@ class ReportTest extends TestCase
         $this->assertTrue($reports->contains('id', $ownReport->id));
         $this->assertFalse($reports->contains('id', $otherReport->id));
 
-        // show milik sendiri bisa dibuka
         $this->actingAs($user)->get(route('reports.show', $ownReport))
             ->assertOk()
             ->assertViewIs('reports.show');
 
-        // show milik orang lain ditolak
         $this->actingAs($user)->get(route('reports.show', $otherReport))->assertForbidden();
     }
 
@@ -127,14 +124,11 @@ class ReportTest extends TestCase
         $user = $this->makeUser('USER');
         $report = $this->makeReport($user);
 
-        // guest diarahkan ke login
         $this->get(route('reports.index'))->assertRedirect(route('login'));
         $this->get(route('staff.reports.index'))->assertRedirect(route('login'));
 
-        // USER tidak boleh akses area STAFF
         $this->actingAs($user)->get(route('staff.reports.index'))->assertForbidden();
 
-        // STAFF tidak boleh akses area USER
         $staff = $this->makeUser('STAFF');
         $this->actingAs($staff)->post(route('reports.store'), [
             'facility_id' => $report->facility_id,
@@ -142,7 +136,6 @@ class ReportTest extends TestCase
             'description' => 'Y',
         ])->assertForbidden();
 
-        // ADMIN tidak diberi akses STAFF
         $admin = $this->makeUser('ADMIN');
         $this->actingAs($admin)->get(route('staff.reports.index'))->assertForbidden();
     }

@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    // Tambah status INACTIVE pada fasilitas
     public function up(): void
     {
         Schema::table('facilities', function (Blueprint $table) {

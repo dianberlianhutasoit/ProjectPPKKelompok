@@ -33,7 +33,7 @@ class ReportController extends Controller
         return view('reports.create', compact('facilities', 'selectedFacility'));
     }
 
-    // user_id selalu dari Auth, bukan dari input.
+    // Set the report owner from the signed-in user.
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -60,7 +60,7 @@ class ReportController extends Controller
         return redirect()->route('reports.index')->with('success', 'Laporan berhasil dibuat.');
     }
 
-    // USER hanya boleh melihat miliknya; STAFF boleh semua.
+    // Users can view only their own reports.
     public function show(Report $report)
     {
         if (strtoupper(Auth::user()->role) === 'USER' && $report->user_id !== Auth::id()) {
@@ -106,7 +106,7 @@ class ReportController extends Controller
 
             $facility = $report->facility;
 
-            // INACTIVE permanen: jangan ubah status fasilitas.
+            // Leave inactive facilities unchanged.
             if (! $facility || $facility->status === 'INACTIVE') {
                 return;
             }
@@ -119,8 +119,7 @@ class ReportController extends Controller
                 return;
             }
 
-            // COMPLETED/REJECTED: kembalikan AVAILABLE hanya jika
-            // tidak ada laporan PROCESSING lain untuk fasilitas yang sama.
+            // Restore availability when no other report is processing.
             if ($facility->status === 'MAINTENANCE') {
                 $otherProcessing = Report::where('facility_id', $facility->id)
                     ->where('id', '!=', $report->id)

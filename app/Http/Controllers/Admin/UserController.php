@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    // PENDING tampil paling atas.
+    // Show pending accounts first.
     public function index(Request $request)
     {
         $status = $request->query('status');
@@ -50,7 +50,7 @@ class UserController extends Controller
             ->with('success', 'Akun '.$validated['role'].' berhasil dibuat dan langsung aktif.');
     }
 
-    // Tolak wajib menyertakan alasan; setuju menghapus alasan lama.
+    // Rejection needs a reason; approval clears any old one.
     public function verify(Request $request, User $user)
     {
         $validated = $request->validate([
@@ -77,7 +77,7 @@ class UserController extends Controller
         return back()->with('success', $message);
     }
 
-    // Nonaktifkan akun (INACTIVE, record tetap ada untuk riwayat).
+    // Keep account history when deactivating it.
     public function destroy(User $user)
     {
         if ($user->id === Auth::id()) {

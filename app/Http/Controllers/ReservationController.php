@@ -34,7 +34,7 @@ class ReservationController extends Controller
         $start = Carbon::createFromFormat('Y-m-d H:i', $validated['date'].' '.$validated['start_time']);
         $end = Carbon::createFromFormat('Y-m-d H:i', $validated['date'].' '.$validated['end_time']);
 
-        // Validasi kelipatan 30 menit
+        // Reservations use 30-minute slots.
         if ($start->minute % 30 !== 0 || $end->minute % 30 !== 0) {
             return back()
                 ->withErrors(['start_time' => 'Jam reservasi harus menggunakan interval 30 menit.'])
@@ -53,7 +53,7 @@ class ReservationController extends Controller
                 ->withInput();
         }
 
-        // Anti-overlap: tolak jika bentrok dengan reservasi PENDING/APPROVED.
+        // Reject overlaps with pending or approved reservations.
         $overlap = Reservation::where('facility_id', $facility->id)
             ->whereIn('status', ['PENDING', 'APPROVED'])
             ->where('start_time', '<', $end)
@@ -103,7 +103,7 @@ class ReservationController extends Controller
             ]);
         }
 
-        // USER hanya boleh cancel paling lambat 2 jam sebelum start_time.
+        // Users can cancel up to two hours before the start.
         if (Carbon::now()->greaterThan(Carbon::parse($reservation->start_time)->subHours(2))) {
             return back()->withErrors([
                 'reservation' => 'Reservasi hanya dapat dibatalkan paling lambat 2 jam sebelum waktu penggunaan.',

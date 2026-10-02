@@ -230,7 +230,7 @@
 </div>
 
 <script>
-    // Peringatan ringan domain UNDIP — server tetap sumber kebenaran utama.
+    // The server validates email domains on submission.
     (function () {
         const emailInput = document.getElementById('email');
         const warning = document.getElementById('email-domain-warning');
@@ -238,7 +238,7 @@
 
         function isUndipEmail(value) {
             const at = value.lastIndexOf('@');
-            if (at < 0) return true; // belum diketik lengkap, jangan ganggu
+            if (at < 0) return true;
             return allowed.includes(value.slice(at + 1).toLowerCase());
         }
 

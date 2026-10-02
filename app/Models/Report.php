@@ -13,7 +13,7 @@ class Report extends Model
         'description',
         'photo',
         'status',
-        'resolution_note'
+        'resolution_note',
     ];
 
     public function user()

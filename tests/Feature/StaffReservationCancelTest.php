@@ -77,7 +77,7 @@ class StaffReservationCancelTest extends TestCase
 
     public function test_staff_can_cancel_approved_more_than_30_minutes_before_start(): void
     {
-        Carbon::setTestNow(Carbon::create(2026, 10, 5, 14, 29)); // 31 menit sebelum 15:00
+        Carbon::setTestNow(Carbon::create(2026, 10, 5, 14, 29));
         $staff = $this->makeStaff();
         $reservation = $this->makeReservation('APPROVED', Carbon::create(2026, 10, 5, 15, 0));
 
@@ -90,7 +90,7 @@ class StaffReservationCancelTest extends TestCase
 
     public function test_staff_can_cancel_approved_exactly_30_minutes_before_start(): void
     {
-        Carbon::setTestNow(Carbon::create(2026, 10, 5, 14, 30)); // tepat 30 menit sebelum 15:00
+        Carbon::setTestNow(Carbon::create(2026, 10, 5, 14, 30));
         $staff = $this->makeStaff();
         $reservation = $this->makeReservation('APPROVED', Carbon::create(2026, 10, 5, 15, 0));
 
@@ -102,7 +102,7 @@ class StaffReservationCancelTest extends TestCase
 
     public function test_staff_cannot_cancel_approved_less_than_30_minutes_before_start(): void
     {
-        Carbon::setTestNow(Carbon::create(2026, 10, 5, 14, 31)); // 29 menit sebelum 15:00
+        Carbon::setTestNow(Carbon::create(2026, 10, 5, 14, 31));
         $staff = $this->makeStaff();
         $reservation = $this->makeReservation('APPROVED', Carbon::create(2026, 10, 5, 15, 0));
 
@@ -114,7 +114,7 @@ class StaffReservationCancelTest extends TestCase
 
     public function test_staff_cannot_cancel_approved_after_start(): void
     {
-        Carbon::setTestNow(Carbon::create(2026, 10, 5, 15, 30)); // reservasi sudah dimulai
+        Carbon::setTestNow(Carbon::create(2026, 10, 5, 15, 30));
         $staff = $this->makeStaff();
         $reservation = $this->makeReservation('APPROVED', Carbon::create(2026, 10, 5, 15, 0));
 
@@ -126,7 +126,7 @@ class StaffReservationCancelTest extends TestCase
 
     public function test_staff_cancel_approved_without_reason_rejected(): void
     {
-        Carbon::setTestNow(Carbon::create(2026, 10, 5, 14, 0)); // di dalam batas waktu agar yang diuji murni alasan
+        Carbon::setTestNow(Carbon::create(2026, 10, 5, 14, 0));
         $staff = $this->makeStaff();
         $reservation = $this->makeReservation('APPROVED', Carbon::create(2026, 10, 5, 15, 0));
 

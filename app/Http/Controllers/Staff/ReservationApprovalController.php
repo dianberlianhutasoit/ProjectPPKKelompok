@@ -37,7 +37,7 @@ class ReservationApprovalController extends Controller
                 ->lockForUpdate()
                 ->firstOrFail();
 
-            // Tolak jika bentrok dengan reservasi PENDING/APPROVED lain (sama seperti saat pengajuan).
+            // Reject overlaps with other pending or approved reservations.
             $overlap = Reservation::where('facility_id', $reservation->facility_id)
                 ->where('id', '!=', $reservation->id)
                 ->whereIn('status', ['PENDING', 'APPROVED'])
@@ -110,7 +110,7 @@ class ReservationApprovalController extends Controller
             ]);
         }
 
-        // Pembatalan petugas paling lambat 30 menit sebelum start_time.
+        // Staff can cancel up to 30 minutes before the start.
         if (Carbon::now()->greaterThan(Carbon::parse($reservation->start_time)->subMinutes(30))) {
             return back()->withErrors([
                 'reservation' => 'Reservasi hanya dapat dibatalkan oleh petugas paling lambat 30 menit sebelum waktu penggunaan.',

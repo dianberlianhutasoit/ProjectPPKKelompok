@@ -16,7 +16,7 @@ class CheckRole
             return redirect('/login');
         }
 
-        // Perbandingan case-insensitive.
+        // Role names are case-insensitive.
         $userRole = strtoupper($user->role);
         $allowedRoles = array_map('strtoupper', $roles);
 

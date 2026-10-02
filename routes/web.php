@@ -28,8 +28,8 @@ Route::resource('facilities', FacilityController::class)
     ->except(['index', 'show'])
     ->middleware(['auth', 'active', 'role:ADMIN']);
 
-// Guest hanya mendapat slot AVAILABLE/RESERVED/MAINTENANCE (tanpa data pemohon).
-// INACTIVE tetap 404 untuk non-ADMIN (ditangani di controller).
+// Guests see availability without requester details.
+// Inactive facilities return 404 for non-admins.
 Route::get('/facilities/{facility}', [FacilityController::class, 'show'])
     ->name('facilities.show');
 
@@ -41,7 +41,7 @@ Route::middleware(['auth', 'active', 'role:ADMIN'])->prefix('admin')->name('admi
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
 });
 
-// Reservasi dan laporan USER (milik sendiri).
+// Signed-in users manage their own reservations and reports.
 Route::middleware(['auth', 'active', 'role:USER'])->group(function () {
     Route::get('/facilities/{facility}/reservations/create', [ReservationController::class, 'create'])
         ->name('reservations.create');
@@ -70,7 +70,6 @@ Route::middleware(['auth', 'active', 'role:USER'])->group(function () {
         ->name('reports.show');
 });
 
-// Area STAFF: kelola laporan dan reservasi.
 Route::middleware(['auth', 'active', 'role:STAFF'])
     ->prefix('staff')
     ->name('staff.')

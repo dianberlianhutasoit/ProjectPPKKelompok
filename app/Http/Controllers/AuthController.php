@@ -14,10 +14,10 @@ class AuthController extends Controller
         return view('auth.register');
     }
 
-    // Registrasi mandiri selalu USER/PENDING. Email REJECTED boleh daftar ulang pada record lama.
+    // Self-registration creates USER/PENDING accounts.
     public function register(Request $request)
     {
-        // Domain email wajib UNDIP (exact match setelah @).
+        // Only UNDIP email addresses are allowed.
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => [
@@ -37,7 +37,7 @@ class AuthController extends Controller
         $existing = User::where('email', $validated['email'])->first();
 
         if ($existing) {
-            // REJECTED daftar ulang: pakai record lama, kembali PENDING, hapus alasan penolakan.
+            // Reuse rejected accounts when users register again.
             if ($existing->status === 'REJECTED') {
                 $existing->update([
                     'name' => $validated['name'],
@@ -88,7 +88,7 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
-        // Hanya ACTIVE boleh login.
+        // Only active accounts can log in.
         $user = Auth::user();
         if ($user->status !== 'ACTIVE') {
             Auth::logout();
