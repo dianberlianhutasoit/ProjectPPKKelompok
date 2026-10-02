@@ -8,19 +8,11 @@ use Carbon\Carbon;
 
 class ReservationRequest extends FormRequest
 {
-    /**
-     * Tentukan siapa yang boleh menggunakan request ini.
-     * Mengikuti standar Person 1 (Hanya role USER).
-     */
     public function authorize(): bool
     {
         return $this->user()?->role === 'USER';
     }
 
-    /**
-     * Aturan validasi pengajuan reservasi.
-     * Menggunakan nama field dari form Person 1 (participants, date).
-     */
     public function rules(): array
     {
         return [
@@ -42,11 +34,6 @@ class ReservationRequest extends FormRequest
         ];
     }
 
-    /**
-     * Batas awal reservasi hari ini: sekarang + 2 jam,
-     * dibulatkan ke slot 30 menit berikutnya.
-     * Contoh: 10:10 -> 12:10 -> 12:30.
-     */
     public static function roundedMinimumStart(?Carbon $now = null): Carbon
     {
         $minimum = ($now ?? Carbon::now())->copy()->addHours(2)->second(0);
@@ -62,9 +49,6 @@ class ReservationRequest extends FormRequest
         return $minimum->addHour()->minute(0)->second(0);
     }
 
-    /**
-     * Logika Tambahan milikmu: Validasi kelipatan 30 menit.
-     */
     public function withValidator(Validator $validator): void
     {
         $validator->after(function ($validator) {
@@ -80,17 +64,14 @@ class ReservationRequest extends FormRequest
                         $validator->errors()->add('start_time', 'Waktu mulai dan selesai harus dalam kelipatan 30 menit (contoh: 07:00, 07:30, 08:00).');
                     }
                 } catch (\Exception $e) {
-                    // Abaikan jika format jam tidak valid, akan ditangani oleh rule date_format
                 }
             }
 
-            // Reservasi hari yang sama: minimal 2 jam dari sekarang.
             $date = $this->input('date');
 
             if ($date && $startTime && $date === Carbon::now()->toDateString()) {
                 $minimum = self::roundedMinimumStart();
 
-                // Slot mulai valid terakhir 19:30 (selesai maks 20:00).
                 if ($minimum->format('H:i') > '19:30') {
                     $validator->errors()->add('date', 'Batas reservasi hari ini sudah lewat (minimal 2 jam sebelum pelaksanaan, jam operasional 07:00–20:00). Silakan pilih tanggal lain.');
 
@@ -104,9 +85,6 @@ class ReservationRequest extends FormRequest
         });
     }
 
-    /**
-     * Pesan validasi yang disesuaikan.
-     */
     public function messages(): array
     {
         return [
