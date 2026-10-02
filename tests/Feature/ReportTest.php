@@ -72,15 +72,26 @@ class ReportTest extends TestCase
     {
         $user = $this->makeUser('USER');
         $other = $this->makeUser('USER');
-        $report = $this->makeReport($other);
+        $ownReport = $this->makeReport($user);
+        $otherReport = $this->makeReport($other);
 
-        // index hanya milik sendiri
-        $index = $this->actingAs($user)->getJson(route('reports.index'));
+        // index hanya milik sendiri (Blade view)
+        $index = $this->actingAs($user)->get(route('reports.index'));
         $index->assertOk();
-        $index->assertJsonMissing(['id' => $report->id]);
+        $index->assertViewIs('reports.index');
+        $index->assertViewHas('reports');
+
+        $reports = $index->viewData('reports');
+        $this->assertTrue($reports->contains('id', $ownReport->id));
+        $this->assertFalse($reports->contains('id', $otherReport->id));
+
+        // show milik sendiri bisa dibuka
+        $this->actingAs($user)->get(route('reports.show', $ownReport))
+            ->assertOk()
+            ->assertViewIs('reports.show');
 
         // show milik orang lain ditolak
-        $this->actingAs($user)->getJson(route('reports.show', $report))->assertForbidden();
+        $this->actingAs($user)->get(route('reports.show', $otherReport))->assertForbidden();
     }
 
     public function test_staff_can_list_and_update_report(): void
@@ -89,11 +100,17 @@ class ReportTest extends TestCase
         $owner = $this->makeUser('USER');
         $report = $this->makeReport($owner);
 
-        $this->actingAs($staff)->getJson(route('staff.reports.index'))
-            ->assertOk()
-            ->assertJsonFragment(['id' => $report->id]);
+        $list = $this->actingAs($staff)->get(route('staff.reports.index'));
+        $list->assertOk();
+        $list->assertViewIs('staff.reports.index');
+        $list->assertViewHas('reports');
 
-        $this->actingAs($staff)->getJson(route('staff.reports.show', $report))->assertOk();
+        $this->assertTrue($list->viewData('reports')->contains('id', $report->id));
+
+        $this->actingAs($staff)->get(route('staff.reports.show', $report))
+            ->assertOk()
+            ->assertViewIs('staff.reports.show')
+            ->assertViewHas('report');
 
         $response = $this->actingAs($staff)->patch(route('staff.reports.update', $report), [
             'status' => 'PROCESSING',
