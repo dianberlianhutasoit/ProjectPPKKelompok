@@ -352,7 +352,8 @@
 
                                     @elseif($reservation->status === 'APPROVED')
 
-                                        @if(!\Carbon\Carbon::parse($reservation->end_time)->isPast())
+                                        {{-- Hanya diizinkan batal jika masih ada sisa waktu minimal 30 menit sebelum pelaksanaan --}}
+                                        @if(now()->addMinutes(30)->lte(\Carbon\Carbon::parse($reservation->start_time)))
 
                                             <form
                                                 method="POST"
@@ -384,8 +385,8 @@
 
                                         @else
 
-                                            <span class="text-sm font-medium text-[#8a9490]">
-                                                Reservasi sudah lewat
+                                            <span class="text-xs font-medium text-[#8a9490]">
+                                                Batas pembatalan lewat (&lt;30 mnt)
                                             </span>
 
                                         @endif
@@ -570,7 +571,8 @@
 
                     @elseif($reservation->status === 'APPROVED')
 
-                        @if(!\Carbon\Carbon::parse($reservation->end_time)->isPast())
+                        {{-- Hanya diizinkan batal jika masih ada sisa waktu minimal 30 menit sebelum pelaksanaan --}}
+                        @if(now()->addMinutes(30)->lte(\Carbon\Carbon::parse($reservation->start_time)))
 
                             <form
                                 method="POST"
@@ -605,7 +607,7 @@
                             <div class="mt-5 border-t border-[#eeeae4] pt-4">
 
                                 <p class="text-sm font-medium text-[#8a9490]">
-                                    Reservasi sudah lewat
+                                    Batas pembatalan lewat (&lt;30 mnt)
                                 </p>
 
                             </div>
