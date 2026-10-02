@@ -73,7 +73,9 @@ class AdminUserCreationTest extends TestCase
     public function test_admin_cannot_create_staff_with_student_domain(): void
     {
         $this->createAccount('student@students.undip.ac.id', 'STAFF')
-            ->assertSessionHasErrors('role');
+            ->assertSessionHasErrors([
+                'role' => 'Akun staff harus menggunakan email @undip.ac.id.',
+            ]);
 
         $this->assertDatabaseMissing('users', [
             'email' => 'student@students.undip.ac.id',

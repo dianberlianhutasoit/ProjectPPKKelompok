@@ -48,7 +48,7 @@ class UserController extends Controller
                 'in:STAFF,USER',
                 function ($attribute, $value, $fail) use ($request) {
                     if ($value === 'STAFF' && $this->emailDomain($request->input('email')) === 'students.undip.ac.id') {
-                        $fail('Email students.undip.ac.id hanya dapat digunakan untuk akun USER.');
+                        $fail('Akun staff harus menggunakan email @undip.ac.id.');
                     }
                 },
             ],
