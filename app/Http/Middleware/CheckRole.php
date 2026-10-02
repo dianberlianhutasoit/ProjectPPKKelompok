@@ -21,7 +21,7 @@ class CheckRole
         $allowedRoles = array_map('strtoupper', $roles);
 
         if (! in_array($userRole, $allowedRoles)) {
-            abort(403, 'Unauthorized Access');
+            abort(403, 'Anda tidak memiliki akses ke halaman ini.');
         }
 
         return $next($request);

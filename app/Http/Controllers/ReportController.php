@@ -64,7 +64,7 @@ class ReportController extends Controller
     public function show(Report $report)
     {
         if (strtoupper(Auth::user()->role) === 'USER' && $report->user_id !== Auth::id()) {
-            abort(403, 'Unauthorized Access');
+            abort(403, 'Anda tidak memiliki akses ke halaman ini.');
         }
 
         $report->load(['user', 'facility']);

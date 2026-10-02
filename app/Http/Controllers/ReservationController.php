@@ -94,7 +94,7 @@ class ReservationController extends Controller
     public function cancel(Reservation $reservation)
     {
         if ($reservation->user_id !== Auth::id()) {
-            abort(403, 'Unauthorized Access');
+            abort(403, 'Anda tidak memiliki akses ke halaman ini.');
         }
 
         if ($reservation->status !== 'PENDING') {
