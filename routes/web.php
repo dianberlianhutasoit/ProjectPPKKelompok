@@ -1,16 +1,16 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\FacilityController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\FacilityController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\Staff\ReservationApprovalController;
+use Illuminate\Support\Facades\Route;
 
-Route::get('/', fn() => redirect()->route('facilities.index'));
+Route::get('/', fn () => redirect()->route('facilities.index'));
 
-// Daftar sendiri khusus USER (langsung PENDING), + login & logout
 Route::middleware('guest')->group(function () {
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
     Route::post('/register', [AuthController::class, 'register']);
@@ -19,25 +19,20 @@ Route::middleware('guest')->group(function () {
 });
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
-// Setelah login diarahkan sesuai role-nya
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'active'])->name('dashboard');
 
-/// Daftar fasilitas bisa dilihat semua orang
 Route::get('/facilities', [FacilityController::class, 'index'])
     ->name('facilities.index');
 
-// Cuma admin yang boleh tambah / edit / nonaktifkan fasilitas
 Route::resource('facilities', FacilityController::class)
     ->except(['index', 'show'])
     ->middleware(['auth', 'active', 'role:ADMIN']);
 
-// Detail fasilitas + slot ketersediaan bisa dilihat guest.
-// Guest hanya dapat slot AVAILABLE/RESERVED/MAINTENANCE (tanpa data pemohon).
+// Guest hanya mendapat slot AVAILABLE/RESERVED/MAINTENANCE (tanpa data pemohon).
 // INACTIVE tetap 404 untuk non-ADMIN (ditangani di controller).
 Route::get('/facilities/{facility}', [FacilityController::class, 'show'])
     ->name('facilities.show');
 
-// Cuma admin: kelola akun & verifikasi pendaftar baru
 Route::middleware(['auth', 'active', 'role:ADMIN'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
@@ -46,7 +41,7 @@ Route::middleware(['auth', 'active', 'role:ADMIN'])->prefix('admin')->name('admi
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
 });
 
-// Reservasi khusus USER
+// Reservasi dan laporan USER (milik sendiri).
 Route::middleware(['auth', 'active', 'role:USER'])->group(function () {
     Route::get('/facilities/{facility}/reservations/create', [ReservationController::class, 'create'])
         ->name('reservations.create');
@@ -61,54 +56,29 @@ Route::middleware(['auth', 'active', 'role:USER'])->group(function () {
         ->name('reservations.cancel');
 });
 
-// Laporan kerusakan oleh USER (hanya milik sendiri)
 Route::middleware(['auth', 'active', 'role:USER'])->group(function () {
-    Route::get('/reports', [App\Http\Controllers\ReportController::class, 'index'])
+    Route::get('/reports', [ReportController::class, 'index'])
         ->name('reports.index');
 
-    Route::get('/reports/create', [App\Http\Controllers\ReportController::class, 'create'])
+    Route::get('/reports/create', [ReportController::class, 'create'])
         ->name('reports.create');
 
-    Route::post('/reports', [App\Http\Controllers\ReportController::class, 'store'])
+    Route::post('/reports', [ReportController::class, 'store'])
         ->name('reports.store');
 
-    Route::get('/reports/{report}', [App\Http\Controllers\ReportController::class, 'show'])
+    Route::get('/reports/{report}', [ReportController::class, 'show'])
         ->name('reports.show');
 });
 
-// Pemrosesan laporan oleh STAFF
+// Area STAFF: kelola laporan dan reservasi.
 Route::middleware(['auth', 'active', 'role:STAFF'])
     ->prefix('staff')
     ->name('staff.')
     ->group(function () {
+        Route::get('/reports', [ReportController::class, 'staffIndex'])->name('reports.index');
+        Route::get('/reports/{report}', [ReportController::class, 'staffShow'])->name('reports.show');
+        Route::patch('/reports/{report}', [ReportController::class, 'update'])->name('reports.update');
 
-        // Daftar semua laporan
-        Route::get('/reports', [
-            App\Http\Controllers\ReportController::class,
-            'staffIndex'
-        ])->name('reports.index');
-
-
-        // Detail + form pengelolaan laporan
-        Route::get('/reports/{report}', [
-            App\Http\Controllers\ReportController::class,
-            'staffShow'
-        ])->name('reports.show');
-
-
-        // Simpan perubahan status + catatan resolusi
-        Route::patch('/reports/{report}', [
-            App\Http\Controllers\ReportController::class,
-            'update'
-        ])->name('reports.update');
-
-    });
-
-// Pengelolaan reservasi oleh STAFF
-Route::middleware(['auth', 'active', 'role:STAFF'])
-    ->prefix('staff')
-    ->name('staff.')
-    ->group(function () {
         Route::get('/reservations', [ReservationApprovalController::class, 'index'])
             ->name('reservations.index');
 

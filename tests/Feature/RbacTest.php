@@ -8,8 +8,6 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-// Audit URL bypass / RBAC untuk scope Person-1 (Backend & Database).
-// Skenario yang sudah dicakup test lain tidak diulang di sini.
 class RbacTest extends TestCase
 {
     use RefreshDatabase;

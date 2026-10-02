@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\DB;
 
 class ReportController extends Controller
 {
-    // USER: daftar laporan milik sendiri
     public function index()
     {
         $reports = Report::with('facility')
@@ -21,10 +20,9 @@ class ReportController extends Controller
         return view('reports.index', compact('reports'));
     }
 
-    // USER: context form (daftar fasilitas untuk dropdown frontend)
     public function create(Request $request)
     {
-       $facilities = Facility::orderBy('name')->get();
+        $facilities = Facility::orderBy('name')->get();
 
         $selectedFacility = null;
 
@@ -35,7 +33,7 @@ class ReportController extends Controller
         return view('reports.create', compact('facilities', 'selectedFacility'));
     }
 
-    // USER: simpan laporan, user_id selalu dari Auth
+    // user_id selalu dari Auth, bukan dari input.
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -50,7 +48,7 @@ class ReportController extends Controller
             $photoPath = $request->file('photo')->store('reports', 'public');
         }
 
-        $report = Report::create([
+        Report::create([
             'user_id' => Auth::id(),
             'facility_id' => $validated['facility_id'],
             'category' => $validated['category'],
@@ -62,7 +60,7 @@ class ReportController extends Controller
         return redirect()->route('reports.index')->with('success', 'Laporan berhasil dibuat.');
     }
 
-    // USER (milik sendiri) / STAFF (semua): detail satu laporan
+    // USER hanya boleh melihat miliknya; STAFF boleh semua.
     public function show(Report $report)
     {
         if (strtoupper(Auth::user()->role) === 'USER' && $report->user_id !== Auth::id()) {
@@ -74,7 +72,6 @@ class ReportController extends Controller
         return view('reports.show', compact('report'));
     }
 
-    // STAFF: daftar semua laporan
     public function staffIndex()
     {
         $reports = Report::with(['user', 'facility'])
@@ -84,18 +81,13 @@ class ReportController extends Controller
         return view('staff.reports.index', compact('reports'));
     }
 
-    // STAFF: detail laporan untuk dikelola
     public function staffShow(Report $report)
     {
         $report->load(['user', 'facility']);
 
-        return view(
-            'staff.reports.show',
-            compact('report')
-        );
+        return view('staff.reports.show', compact('report'));
     }
 
-    // STAFF: perbarui status + resolution_note (+ sinkron status fasilitas)
     public function update(Request $request, Report $report)
     {
         $validated = $request->validate([

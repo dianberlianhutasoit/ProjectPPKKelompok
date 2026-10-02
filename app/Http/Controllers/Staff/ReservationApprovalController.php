@@ -13,10 +13,10 @@ class ReservationApprovalController extends Controller
     public function index(Request $request)
     {
         $filters = [
-            'status'      => $request->query('status', 'PENDING'),
+            'status' => $request->query('status', 'PENDING'),
             'facility_id' => $request->query('facility_id'),
-            'sort_by'     => $request->query('sort_by', 'created_at'),
-            'sort_order'  => $request->query('sort_order', 'asc'),
+            'sort_by' => $request->query('sort_by', 'created_at'),
+            'sort_order' => $request->query('sort_order', 'asc'),
         ];
 
         $reservations = Reservation::with(['user', 'facility'])
@@ -37,6 +37,7 @@ class ReservationApprovalController extends Controller
                 ->lockForUpdate()
                 ->firstOrFail();
 
+            // Tolak jika bentrok dengan reservasi PENDING/APPROVED lain (sama seperti saat pengajuan).
             $overlap = Reservation::where('facility_id', $reservation->facility_id)
                 ->where('id', '!=', $reservation->id)
                 ->whereIn('status', ['PENDING', 'APPROVED'])
@@ -46,8 +47,9 @@ class ReservationApprovalController extends Controller
 
             if ($overlap) {
                 DB::rollBack();
+
                 return back()->withErrors([
-                    'reservation' => 'Reservasi tidak dapat disetujui karena jadwal sudah bentrok.'
+                    'reservation' => 'Reservasi tidak dapat disetujui karena jadwal sudah bentrok.',
                 ]);
             }
 
@@ -59,8 +61,9 @@ class ReservationApprovalController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
+
             return back()->withErrors([
-                'reservation' => 'Terjadi kesalahan saat memproses persetujuan.'
+                'reservation' => 'Terjadi kesalahan saat memproses persetujuan.',
             ]);
         }
     }
@@ -75,12 +78,12 @@ class ReservationApprovalController extends Controller
 
         if ($reservation->status !== 'PENDING') {
             return back()->withErrors([
-                'reservation' => 'Hanya reservasi PENDING yang dapat ditolak.'
+                'reservation' => 'Hanya reservasi PENDING yang dapat ditolak.',
             ]);
         }
 
         $reservation->update([
-            'status'        => 'REJECTED',
+            'status' => 'REJECTED',
             'cancel_reason' => $validated['cancel_reason'],
         ]);
 
@@ -95,28 +98,27 @@ class ReservationApprovalController extends Controller
 
         $reservation = Reservation::findOrFail($id);
 
-        // PENDING diproses lewat Setujui/Tolak, bukan pembatalan darurat.
         if ($reservation->status === 'PENDING') {
             return back()->withErrors([
-                'reservation' => 'Reservasi PENDING diproses melalui Setujui / Tolak, bukan pembatalan darurat.'
+                'reservation' => 'Reservasi PENDING diproses melalui Setujui / Tolak, bukan pembatalan darurat.',
             ]);
         }
 
         if ($reservation->status !== 'APPROVED') {
             return back()->withErrors([
-                'reservation' => 'Reservasi ini tidak dapat dibatalkan oleh petugas.'
+                'reservation' => 'Reservasi ini tidak dapat dibatalkan oleh petugas.',
             ]);
         }
 
-        // Pembatalan paling lambat 30 menit sebelum start_time.
+        // Pembatalan petugas paling lambat 30 menit sebelum start_time.
         if (Carbon::now()->greaterThan(Carbon::parse($reservation->start_time)->subMinutes(30))) {
             return back()->withErrors([
-                'reservation' => 'Reservasi hanya dapat dibatalkan oleh petugas paling lambat 30 menit sebelum waktu penggunaan.'
+                'reservation' => 'Reservasi hanya dapat dibatalkan oleh petugas paling lambat 30 menit sebelum waktu penggunaan.',
             ]);
         }
 
         $reservation->update([
-            'status'        => 'CANCELLED',
+            'status' => 'CANCELLED',
             'cancel_reason' => $validated['cancel_reason'],
         ]);
 

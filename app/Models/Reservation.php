@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\User;
 
 class Reservation extends Model
 {
@@ -25,7 +24,7 @@ class Reservation extends Model
     {
         return [
             'start_time' => 'datetime',
-            'end_time'   => 'datetime',
+            'end_time' => 'datetime',
         ];
     }
 
@@ -41,16 +40,16 @@ class Reservation extends Model
 
     public function scopeFilterAndSort($query, array $filters)
     {
-        if (!empty($filters['status']) && $filters['status'] !== 'Semua') {
+        if (! empty($filters['status']) && $filters['status'] !== 'Semua') {
             $query->where('reservations.status', $filters['status']);
         }
 
-        if (!empty($filters['facility_id'])) {
+        if (! empty($filters['facility_id'])) {
             $query->where('reservations.facility_id', $filters['facility_id']);
         }
 
-        $sortBy = $filters['sort_by'] ?? 'created_at'; 
-        $sortOrder = $filters['sort_order'] ?? 'asc';  
+        $sortBy = $filters['sort_by'] ?? 'created_at';
+        $sortOrder = $filters['sort_order'] ?? 'asc';
 
         switch ($sortBy) {
             case 'event_date':

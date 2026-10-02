@@ -14,13 +14,10 @@ class AuthController extends Controller
         return view('auth.register');
     }
 
-    // Daftar akun baru — khusus USER, status awal PENDING (nunggu verifikasi admin)
-    // Email yang pernah REJECTED boleh daftar ulang: pakai record lama, tanpa INSERT baru
+    // Registrasi mandiri selalu USER/PENDING. Email REJECTED boleh daftar ulang pada record lama.
     public function register(Request $request)
     {
-        // Cek input di server biar aman (tanpa unique:users,email karena
-        // email REJECTED boleh daftar ulang — pengecekan manual di bawah).
-        // Domain email wajib milik UNDIP — dicek exact setelah @, bukan contains.
+        // Domain email wajib UNDIP (exact match setelah @).
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => [
@@ -40,8 +37,7 @@ class AuthController extends Controller
         $existing = User::where('email', $validated['email'])->first();
 
         if ($existing) {
-            // Registrasi ulang: pakai record lama, update data terbaru,
-            // kembalikan ke PENDING dan hapus alasan penolakan lama
+            // REJECTED daftar ulang: pakai record lama, kembali PENDING, hapus alasan penolakan.
             if ($existing->status === 'REJECTED') {
                 $existing->update([
                     'name' => $validated['name'],
@@ -86,13 +82,13 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
-        if (!Auth::attempt($credentials, $request->boolean('remember'))) {
+        if (! Auth::attempt($credentials, $request->boolean('remember'))) {
             return back()->withErrors(['email' => 'Email atau password salah.'])->onlyInput('email');
         }
 
         $request->session()->regenerate();
 
-        // Akun selain ACTIVE belum boleh login, langsung logout lagi
+        // Hanya ACTIVE boleh login.
         $user = Auth::user();
         if ($user->status !== 'ACTIVE') {
             Auth::logout();
@@ -102,7 +98,7 @@ class AuthController extends Controller
             $message = match ($user->status) {
                 'PENDING' => 'Akun menunggu verifikasi admin.',
                 'REJECTED' => $user->rejection_reason
-                    ? 'Pendaftaran akun ditolak. Alasan: ' . $user->rejection_reason . ' Silakan daftar ulang setelah memperbaiki data.'
+                    ? 'Pendaftaran akun ditolak. Alasan: '.$user->rejection_reason.' Silakan daftar ulang setelah memperbaiki data.'
                     : 'Pendaftaran akun ditolak oleh admin.',
                 'INACTIVE' => 'Akun dinonaktifkan admin, hubungi admin untuk aktivasi kembali.',
                 default => 'Akun tidak aktif, tidak dapat digunakan.',
@@ -125,7 +121,6 @@ class AuthController extends Controller
 
     private function redirectByRole($user)
     {
-        // Lempar ke dashboard, biar pembagian per-role diatur di satu tempat
         return redirect()->intended(route('dashboard'));
     }
 }

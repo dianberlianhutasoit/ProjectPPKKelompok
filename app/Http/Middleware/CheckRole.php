@@ -12,15 +12,15 @@ class CheckRole
     {
         $user = $request->user();
 
-        if (!$user) {
+        if (! $user) {
             return redirect('/login');
         }
 
-        // Ubah role user dan array roles menjadi huruf kapital semua agar aman dari penulisan sensitif
+        // Perbandingan case-insensitive.
         $userRole = strtoupper($user->role);
         $allowedRoles = array_map('strtoupper', $roles);
 
-        if (!in_array($userRole, $allowedRoles)) {
+        if (! in_array($userRole, $allowedRoles)) {
             abort(403, 'Unauthorized Access');
         }
 

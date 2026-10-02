@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use App\Models\Facility;
 use App\Models\Reservation;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -17,12 +17,12 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $users = [
-            // ADMIN 
+            // ADMIN
             ['Dian Berlian', 'dianberlian@undip.ac.id', 'dian1231', 'ADMIN'],
             ['Bagus Prasetyo', 'bagus.prasetyo@undip.ac.id', 'bagus123', 'ADMIN'],
             ['Sinta Maharani', 'sinta.maharani@undip.ac.id', 'sinta123', 'ADMIN'],
 
-            // STAFF 
+            // STAFF
             ['Marchella Arkhina', 'marchell@undip.ac.id', 'marsel123', 'STAFF'],
             ['Andi Kurniawan', 'andi.kurniawan@undip.ac.id', 'andi1231', 'STAFF'],
             ['Rina Wulandari', 'rina.wulandari@undip.ac.id', 'rina1231', 'STAFF'],
@@ -30,7 +30,7 @@ class DatabaseSeeder extends Seeder
             ['Nadia Putri', 'nadia.putri@undip.ac.id', 'nadia123', 'STAFF'],
             ['Hendra Gunawan', 'hendra.gunawan@undip.ac.id', 'hendra123', 'STAFF'],
 
-            // USER 
+            // USER
             ['Kayla Febrina', 'kayla@students.undip.ac.id', 'kayla123', 'USER'],
             ['Firdaus Argifari', 'argifari@students.undip.ac.id', 'argi1231', 'USER'],
             ['Aulia Rahma', 'aulia.rahma@students.undip.ac.id', 'aulia123', 'USER'],

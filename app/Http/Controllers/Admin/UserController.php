@@ -10,33 +10,24 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    // Daftar semua akun, yang PENDING tampil paling atas
+    // PENDING tampil paling atas.
     public function index(Request $request)
     {
         $status = $request->query('status');
 
         $users = User::when($status, fn ($q) => $q->where('status', $status))
-           ->orderByRaw("
-                CASE status
-                    WHEN 'PENDING' THEN 1
-                    WHEN 'ACTIVE' THEN 2
-                    WHEN 'REJECTED' THEN 3
-                    ELSE 4
-                END
-            ")
+            ->orderByRaw("CASE status WHEN 'PENDING' THEN 1 WHEN 'ACTIVE' THEN 2 WHEN 'REJECTED' THEN 3 ELSE 4 END")
             ->latest()
             ->get();
 
         return view('admin.users.index', compact('users', 'status'));
     }
 
-    // Admin: form buat akun STAFF / USER baru (langsung aktif)
     public function create()
     {
         return view('admin.users.create');
     }
 
-    // Admin: simpan akun baru
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -56,14 +47,10 @@ class UserController extends Controller
 
         return redirect()
             ->route('admin.users.index')
-            ->with(
-                'success',
-                'Akun ' . $validated['role'] . ' berhasil dibuat dan langsung aktif.'
-            );
+            ->with('success', 'Akun '.$validated['role'].' berhasil dibuat dan langsung aktif.');
     }
 
-    // Admin: setujui atau tolak akun hasil daftar mandiri
-    // Tolak wajib menyertakan alasan, setuju menghapus alasan lama
+    // Tolak wajib menyertakan alasan; setuju menghapus alasan lama.
     public function verify(Request $request, User $user)
     {
         $validated = $request->validate([
@@ -77,20 +64,20 @@ class UserController extends Controller
                 'rejection_reason' => null,
             ]);
 
-            $message = 'Akun ' . $user->email . ' diverifikasi (ACTIVE).';
+            $message = 'Akun '.$user->email.' diverifikasi (ACTIVE).';
         } else {
             $user->update([
                 'status' => 'REJECTED',
                 'rejection_reason' => trim($validated['rejection_reason']),
             ]);
 
-            $message = 'Akun ' . $user->email . ' ditolak (REJECTED).';
+            $message = 'Akun '.$user->email.' ditolak (REJECTED).';
         }
 
         return back()->with('success', $message);
     }
 
-    // Admin: nonaktifkan akun (soft — status jadi INACTIVE, record tetap ada untuk riwayat)
+    // Nonaktifkan akun (INACTIVE, record tetap ada untuk riwayat).
     public function destroy(User $user)
     {
         if ($user->id === Auth::id()) {
@@ -99,6 +86,6 @@ class UserController extends Controller
 
         $user->update(['status' => 'INACTIVE']);
 
-        return back()->with('success', 'Akun ' . $user->email . ' dinonaktifkan (INACTIVE).');
+        return back()->with('success', 'Akun '.$user->email.' dinonaktifkan (INACTIVE).');
     }
 }
