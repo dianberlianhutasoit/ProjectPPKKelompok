@@ -218,14 +218,11 @@
                                 Staff
                             </option>
 
-                            <option
-                                value="ADMIN"
-                                @selected(old('role') === 'ADMIN')
-                            >
-                                Admin
-                            </option>
-
                         </select>
+
+                        <p class="mt-1.5 text-sm text-[#8a9490]">
+                            USER dapat memakai email mahasiswa atau UNDIP. STAFF harus memakai @undip.ac.id.
+                        </p>
 
                         @error('role')
                             <p class="mt-1.5 text-xs text-[#a65f3e]">
@@ -296,5 +293,23 @@
     </div>
 
 </div>
+
+<script>
+    const emailInput = document.getElementById('email');
+    const roleSelect = document.getElementById('role');
+    const staffOption = roleSelect.querySelector('option[value="STAFF"]');
+
+    function updateRoleOptions() {
+        const domain = emailInput.value.trim().split('@').pop().toLowerCase();
+        staffOption.disabled = domain !== 'undip.ac.id';
+
+        if (staffOption.disabled && roleSelect.value === 'STAFF') {
+            roleSelect.value = 'USER';
+        }
+    }
+
+    emailInput.addEventListener('input', updateRoleOptions);
+    updateRoleOptions();
+</script>
 
 @endsection

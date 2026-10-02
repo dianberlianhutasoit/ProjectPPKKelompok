@@ -32,9 +32,26 @@ class UserController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
+            'email' => [
+                'required',
+                'email',
+                'unique:users,email',
+                function ($attribute, $value, $fail) {
+                    if (! in_array($this->emailDomain($value), ['students.undip.ac.id', 'undip.ac.id'], true)) {
+                        $fail('Gunakan email resmi UNDIP: students.undip.ac.id atau undip.ac.id.');
+                    }
+                },
+            ],
             'password' => 'required|string|min:8',
-            'role' => 'required|in:STAFF,USER',
+            'role' => [
+                'required',
+                'in:STAFF,USER',
+                function ($attribute, $value, $fail) use ($request) {
+                    if ($value === 'STAFF' && $this->emailDomain($request->input('email')) === 'students.undip.ac.id') {
+                        $fail('Email students.undip.ac.id hanya dapat digunakan untuk akun USER.');
+                    }
+                },
+            ],
         ]);
 
         User::create([
@@ -48,6 +65,15 @@ class UserController extends Controller
         return redirect()
             ->route('admin.users.index')
             ->with('success', 'Akun '.$validated['role'].' berhasil dibuat dan langsung aktif.');
+    }
+
+    private function emailDomain(mixed $email): ?string
+    {
+        if (! is_string($email) || ! str_contains($email, '@')) {
+            return null;
+        }
+
+        return strtolower(substr(strrchr($email, '@'), 1));
     }
 
     // Rejection needs a reason; approval clears any old one.
