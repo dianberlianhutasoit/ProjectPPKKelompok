@@ -54,7 +54,7 @@ class FacilityController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'type' => 'required|string|max:100',
+            'type' => 'required|string|max:255',
             'location' => 'required|string|max:255',
             'capacity' => 'required|integer|min:1',
             'description' => 'nullable|string',
