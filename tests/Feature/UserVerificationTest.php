@@ -64,6 +64,54 @@ class UserVerificationTest extends TestCase
         $this->assertEquals('Gunakan email domain kampus UNDIP.', $user->refresh()->rejection_reason);
     }
 
+    public function test_admin_can_approve_pending_user(): void
+    {
+        $admin = $this->makeAdmin();
+        $user = $this->makePendingUser('setuju_'.uniqid().'@students.undip.ac.id');
+
+        $response = $this->actingAs($admin)->patch(
+            route('admin.users.verify', $user),
+            ['action' => 'approve']
+        );
+
+        $response->assertSessionHasNoErrors();
+        $response->assertSessionHas('success');
+        $this->assertSame('ACTIVE', $user->refresh()->status);
+        $this->assertNull($user->refresh()->rejection_reason);
+    }
+
+    public function test_only_pending_user_accounts_can_be_verified(): void
+    {
+        $admin = $this->makeAdmin();
+        $cases = [
+            ['USER', 'ACTIVE'],
+            ['USER', 'REJECTED'],
+            ['USER', 'INACTIVE'],
+            ['STAFF', 'PENDING'],
+            ['ADMIN', 'PENDING'],
+        ];
+
+        foreach ($cases as [$role, $status]) {
+            $user = User::create([
+                'name' => 'Target '.$role.' '.$status,
+                'email' => strtolower($role).'_'.strtolower($status).'_'.uniqid().'@undip.ac.id',
+                'password' => 'password123',
+                'role' => $role,
+                'status' => $status,
+            ]);
+
+            $response = $this->actingAs($admin)->patch(
+                route('admin.users.verify', $user),
+                ['action' => 'approve']
+            );
+
+            $response->assertSessionHasErrors([
+                'user' => 'Hanya akun pengguna berstatus PENDING yang dapat diverifikasi.',
+            ]);
+            $this->assertSame($status, $user->refresh()->status);
+        }
+    }
+
     public function test_rejected_user_cannot_login(): void
     {
         $email = 'ditolak_'.uniqid().'@students.undip.ac.id';

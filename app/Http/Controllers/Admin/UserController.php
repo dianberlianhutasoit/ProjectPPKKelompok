@@ -79,6 +79,12 @@ class UserController extends Controller
     // Rejection needs a reason; approval clears any old one.
     public function verify(Request $request, User $user)
     {
+        if ($user->role !== 'USER' || $user->status !== 'PENDING') {
+            return back()->withErrors([
+                'user' => 'Hanya akun pengguna berstatus PENDING yang dapat diverifikasi.',
+            ]);
+        }
+
         $validated = $request->validate([
             'action' => 'required|in:approve,reject',
             'rejection_reason' => 'required_if:action,reject|nullable|string|max:1000',
