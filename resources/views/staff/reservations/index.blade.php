@@ -1,19 +1,13 @@
 @extends('layouts.app')
-
 @section('title', 'Kelola Reservasi - Campus Facility System')
-
 @section('content')
 
 <div class="mx-auto max-w-7xl">
-
     <div class="mb-6 border border-[#dedbd3] bg-white p-5">
-
-        <form
-            method="GET"
-            action="{{ route('staff.reservations.index') }}"
-            class="grid gap-4 md:grid-cols-4"
+        <form method="GET"
+                action="{{ route('staff.reservations.index') }}"
+                class="grid gap-4 md:grid-cols-4"
         >
-
             <div>
                 <label class="mb-2 block text-xs font-bold uppercase tracking-wide text-[#596460]">
                     Status
@@ -24,23 +18,38 @@
                     onchange="this.form.submit()"
                     class="w-full border border-[#d5d2ca] bg-[#fafaf8] px-3 py-2.5 text-base text-[#263634] outline-none focus:border-[#2f625b]"
                 >
-                    <option value="Semua" @selected(($filters['status'] ?? '') === 'Semua')}>
+                    <option
+                        value="Semua"
+                        {{ ($filters['status'] ?? 'Semua') === 'Semua' ? 'selected' : '' }}
+                    >
                         Semua
                     </option>
 
-                    <option value="PENDING" @selected(($filters['status'] ?? 'PENDING') === 'PENDING')}>
+                    <option
+                        value="PENDING"
+                        {{ ($filters['status'] ?? '') === 'PENDING' ? 'selected' : '' }}
+                    >
                         Menunggu
                     </option>
 
-                    <option value="APPROVED" @selected(($filters['status'] ?? '') === 'APPROVED')}>
+                    <option
+                        value="APPROVED"
+                        {{ ($filters['status'] ?? '') === 'APPROVED' ? 'selected' : '' }}
+                    >
                         Disetujui
                     </option>
 
-                    <option value="REJECTED" @selected(($filters['status'] ?? '') === 'REJECTED')}>
+                    <option
+                        value="REJECTED"
+                        {{ ($filters['status'] ?? '') === 'REJECTED' ? 'selected' : '' }}
+                    >
                         Ditolak
                     </option>
 
-                    <option value="CANCELLED" @selected(($filters['status'] ?? '') === 'CANCELLED')}>
+                    <option
+                        value="CANCELLED"
+                        {{ ($filters['status'] ?? '') === 'CANCELLED' ? 'selected' : '' }}
+                    >
                         Dibatalkan
                     </option>
                 </select>
@@ -84,15 +93,24 @@
                     onchange="this.form.submit()"
                     class="w-full border border-[#d5d2ca] bg-[#fafaf8] px-3 py-2.5 text-base text-[#263634] outline-none focus:border-[#2f625b]"
                 >
-                    <option value="created_at" @selected(($filters['sort_by'] ?? '') === 'created_at')}>
+                    <option
+                        value="created_at"
+                        {{ ($filters['sort_by'] ?? 'created_at') === 'created_at' ? 'selected' : '' }}
+                    >
                         Tanggal pengajuan
                     </option>
 
-                    <option value="event_date" @selected(($filters['sort_by'] ?? '') === 'event_date')}>
+                    <option
+                        value="event_date"
+                        {{ ($filters['sort_by'] ?? '') === 'event_date' ? 'selected' : '' }}
+                    >
                         Tanggal reservasi
                     </option>
 
-                    <option value="facility" @selected(($filters['sort_by'] ?? '') === 'facility')}>
+                    <option
+                        value="facility"
+                        {{ ($filters['sort_by'] ?? '') === 'facility' ? 'selected' : '' }}
+                    >
                         Nama fasilitas
                     </option>
                 </select>
@@ -110,19 +128,19 @@
                         onchange="this.form.submit()"
                         class="w-full border border-[#d5d2ca] bg-[#fafaf8] px-3 py-2.5 text-base text-[#263634] outline-none focus:border-[#2f625b]"
                     >
-                        <option value="asc" @selected(($filters['sort_order'] ?? '') === 'asc')}>
-                            Terlama
-                        </option>
-
-                        <option value="desc" @selected(($filters['sort_order'] ?? '') === 'desc')}>
+                        <option
+                            value="desc"
+                            {{ ($filters['sort_order'] ?? 'desc') === 'desc' ? 'selected' : '' }}
+                        >
                             Terbaru
                         </option>
+
+                        <option value="asc" {{ ($filters['sort_order'] ?? '') === 'asc' ? 'selected' : '' }}>
+                            Terlama
+                        </option>
                     </select>
-                </div>
             </div>
-
         </form>
-
     </div>
 
     <div class="mb-7">
