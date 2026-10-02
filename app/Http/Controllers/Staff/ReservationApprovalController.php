@@ -39,7 +39,7 @@ class ReservationApprovalController extends Controller
 
             $overlap = Reservation::where('facility_id', $reservation->facility_id)
                 ->where('id', '!=', $reservation->id)
-                ->where('status', 'APPROVED')
+                ->whereIn('status', ['PENDING', 'APPROVED'])
                 ->where('start_time', '<', $reservation->end_time)
                 ->where('end_time', '>', $reservation->start_time)
                 ->exists();
