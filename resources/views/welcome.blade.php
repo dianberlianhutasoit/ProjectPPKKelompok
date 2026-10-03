@@ -12,7 +12,6 @@
 
 <body class="min-h-screen bg-[#F3F1EC] text-[#263634]">
 
-    {{-- Navigation --}}
     <header class="border-b border-[#dedbd3] bg-[#F3F1EC]">
 
         <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-5 lg:px-8">
@@ -34,7 +33,6 @@
                 </div>
 
             </a>
-
 
             <div class="flex items-center gap-3">
 
@@ -71,15 +69,12 @@
 
     </header>
 
-
     <main>
 
-        {{-- Hero --}}
         <section class="mx-auto max-w-7xl px-6 pb-20 pt-16 lg:px-8 lg:pt-24">
 
             <div class="grid items-center gap-12 lg:grid-cols-[1.15fr_0.85fr]">
 
-                {{-- Hero Text --}}
                 <div>
 
                     <div class="inline-flex items-center gap-2 border border-[#d7d4cc] bg-white px-3 py-1.5">
@@ -92,7 +87,6 @@
 
                     </div>
 
-
                     <h1 class="mt-6 max-w-3xl text-4xl font-bold leading-[1.1] tracking-tight text-[#263634] sm:text-5xl lg:text-6xl">
                         Reservasi fasilitas kampus,
                         <span class="text-[#2f625b]">
@@ -100,12 +94,10 @@
                         </span>
                     </h1>
 
-
                     <p class="mt-6 max-w-xl text-base leading-7 text-[#68736f] sm:text-lg">
                         Temukan fasilitas yang tersedia, lihat jadwal penggunaan,
                         dan ajukan reservasi dalam satu sistem.
                     </p>
-
 
                     <div class="mt-8 flex flex-col gap-3 sm:flex-row">
 
@@ -132,8 +124,6 @@
 
                 </div>
 
-
-                {{-- Visual --}}
                 <div class="relative">
 
                     <div class="border border-[#d9d6ce] bg-white p-5 shadow-[0_18px_45px_rgba(38,54,52,0.08)]">
@@ -156,7 +146,6 @@
 
                         </div>
 
-
                         <div class="mt-5 space-y-3">
 
                             <div class="flex items-center justify-between border border-[#e4e1da] px-4 py-4">
@@ -177,7 +166,6 @@
 
                             </div>
 
-
                             <div class="flex items-center justify-between border border-[#e4e1da] px-4 py-4">
 
                                 <div>
@@ -195,7 +183,6 @@
                                 </span>
 
                             </div>
-
 
                             <div class="flex items-center justify-between border border-[#e4e1da] px-4 py-4">
 
@@ -216,7 +203,6 @@
                             </div>
 
                         </div>
-
 
                         <div class="mt-5 border-t border-[#e7e4dd] pt-4">
 
@@ -242,8 +228,6 @@
 
         </section>
 
-
-        {{-- Features --}}
         <section class="border-y border-[#dedbd3] bg-white">
 
             <div class="mx-auto max-w-7xl px-6 py-14 lg:px-8">
@@ -267,7 +251,6 @@
 
                     </div>
 
-
                     <div class="border-b border-[#e4e1da] py-8 md:border-b-0 md:border-r md:px-8 md:py-0">
 
                         <p class="text-xs font-bold uppercase tracking-[0.12em] text-[#2f625b]">
@@ -284,7 +267,6 @@
                         </p>
 
                     </div>
-
 
                     <div class="pt-8 md:pl-8 md:pt-0">
 
@@ -309,8 +291,6 @@
 
         </section>
 
-
-        {{-- Bottom CTA --}}
         <section class="mx-auto max-w-7xl px-6 py-16 lg:px-8">
 
             <div class="flex flex-col items-start justify-between gap-6 border border-[#d9d6ce] bg-[#2f625b] px-7 py-8 sm:flex-row sm:items-center sm:px-9">
@@ -331,7 +311,6 @@
 
                 </div>
 
-
                 <a
                     href="{{ route('facilities.index') }}"
                     class="shrink-0 rounded-lg bg-white px-5 py-3 text-sm font-bold text-[#2f625b] transition hover:bg-[#f3f1ec]"
@@ -345,8 +324,6 @@
 
     </main>
 
-
-    {{-- Footer --}}
     <footer class="border-t border-[#dedbd3]">
 
         <div class="mx-auto flex max-w-7xl flex-col gap-2 px-6 py-6 text-xs text-[#8a9490] sm:flex-row sm:items-center sm:justify-between lg:px-8">

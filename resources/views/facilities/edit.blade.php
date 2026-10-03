@@ -6,8 +6,6 @@
 
 <div class="mx-auto max-w-4xl">
 
-    {{-- Header --}}
-
     <div class="mb-8">
 
         <a
@@ -35,9 +33,6 @@
 
     </div>
 
-
-    {{-- Form --}}
-
     <form
         method="POST"
         action="{{ route('facilities.update', $facility) }}"
@@ -47,8 +42,6 @@
         @method('PUT')
 
         <div class="grid gap-6 lg:grid-cols-[1fr_280px]">
-
-            {{-- Main Form --}}
 
             <div class="border border-[#dedbd3] bg-white">
 
@@ -64,10 +57,7 @@
 
                 </div>
 
-
                 <div class="space-y-5 p-6">
-
-                    {{-- Name --}}
 
                     <div>
 
@@ -97,9 +87,6 @@
                         @enderror
 
                     </div>
-
-
-                    {{-- Type + Location --}}
 
                     <div class="grid gap-5 sm:grid-cols-2">
 
@@ -132,7 +119,6 @@
 
                         </div>
 
-
                         <div>
 
                             <label
@@ -163,9 +149,6 @@
                         </div>
 
                     </div>
-
-
-                    {{-- Capacity --}}
 
                     <div>
 
@@ -204,9 +187,6 @@
 
                     </div>
 
-
-                    {{-- Description --}}
-
                     <div>
 
                         <label
@@ -238,9 +218,6 @@
                         @enderror
 
                     </div>
-
-
-                    {{-- Status --}}
 
                     <div>
 
@@ -293,9 +270,6 @@
 
                 </div>
 
-
-                {{-- Actions --}}
-
                 <div class="flex flex-col-reverse gap-3 border-t border-[#e4e1da] bg-[#fafaf8] px-6 py-4 sm:flex-row sm:justify-end">
 
                     <a
@@ -316,9 +290,6 @@
 
             </div>
 
-
-            {{-- Side Information --}}
-
             <div class="h-fit border border-[#dedbd3] bg-[#2f625b] p-6 text-white">
 
                 <p class="text-xs font-bold uppercase tracking-[0.14em] text-white/60">
@@ -333,7 +304,6 @@
                     Pastikan informasi fasilitas tetap sesuai dengan kondisi
                     terbaru di lapangan.
                 </p>
-
 
                 <div class="mt-6 border-t border-white/15 pt-5">
 
@@ -375,7 +345,6 @@
 
                 </div>
 
-
                 <div class="mt-5 border-t border-white/15 pt-5">
 
                     <p class="text-xs text-white/55">
@@ -387,7 +356,6 @@
                     </p>
 
                 </div>
-
 
                 <div class="mt-5 border-t border-white/15 pt-5">
 

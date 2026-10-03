@@ -16,12 +16,10 @@
 
 <body class="min-h-screen bg-[#f5f3ee] text-[#263634]">
 
-    {{-- Navbar --}}
     <nav class="fixed top-0 left-0 right-0 z-50 border-b border-[#dedbd3] bg-white">
 
         <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
 
-            {{-- Logo / Brand --}}
             <a
                 href="{{ route('facilities.index') }}"
                 class="text-lg font-bold tracking-tight text-[#2f625b]"
@@ -29,11 +27,8 @@
                 Campus Facility
             </a>
 
-
-            {{-- Navigation --}}
             <div class="flex items-center gap-6 text-base">
 
-                {{-- Fasilitas --}}
                 <a
                     href="{{ route('facilities.index') }}"
                     class="relative hidden py-2 transition sm:inline
@@ -44,10 +39,8 @@
                     Fasilitas
                 </a>
 
-
                 @auth
 
-                    {{-- Admin --}}
                     @if(auth()->user()->role === 'ADMIN')
 
                         <a
@@ -62,8 +55,6 @@
 
                     @endif
 
-
-                    {{-- User --}}
                     @if(auth()->user()->role === 'USER')
 
                         <a href="{{ route('reservations.index') }}"
@@ -86,8 +77,6 @@
 
                     @endif
 
-
-                    {{-- Staff --}}
                     @if(in_array(auth()->user()->role, ['STAFF']))
 
                         <a
@@ -111,14 +100,10 @@
 
                     @endif
 
-
-                    {{-- Username --}}
                     <span class="hidden border-l border-[#dedbd3] pl-6 text-base text-[#7a827f] md:inline">
                         {{ auth()->user()->name }}
                     </span>
 
-
-                    {{-- Logout --}}
                     <form action="{{ route('logout') }}" method="POST">
 
                         @csrf
@@ -132,10 +117,8 @@
 
                     </form>
 
-
                 @else
 
-                    {{-- Login --}}
                     <a
                         href="{{ route('login') }}"
                         class="py-2 text-base text-[#596460] transition hover:text-[#2f625b]"
@@ -143,8 +126,6 @@
                         Login
                     </a>
 
-
-                    {{-- Register --}}
                     <a
                         href="{{ route('register') }}"
                         class="rounded-md bg-[#2f625b] px-4 py-2 text-base font-semibold text-white transition hover:bg-[#244d48]"
@@ -160,11 +141,8 @@
 
     </nav>
 
-
-    {{-- Main Content --}}
     <main class="mx-auto max-w-7xl px-6 pb-9 pt-28">
 
-        {{-- Success Message --}}
         @if(session('success'))
 
             <div class="mb-6 border-l-4 border-[#2f625b] bg-white px-5 py-4 text-base text-[#4d5c58]">
@@ -185,8 +163,6 @@
 
         @endif
 
-
-        {{-- Error Message --}}
         @if($errors->any())
 
             <div class="mb-6 border-l-4 border-[#a65f3e] bg-white px-5 py-4 text-base text-[#714c3d]">
@@ -211,8 +187,6 @@
 
         @endif
 
-
-        {{-- Page Content --}}
         @yield('content')
 
     </main>

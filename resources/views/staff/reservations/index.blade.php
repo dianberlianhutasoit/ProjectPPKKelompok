@@ -1,21 +1,13 @@
 @extends('layouts.app')
-
 @section('title', 'Kelola Reservasi - Campus Facility System')
-
 @section('content')
 
 <div class="mx-auto max-w-7xl">
-
-    {{-- Filter & Sorting --}}
     <div class="mb-6 border border-[#dedbd3] bg-white p-5">
-
-        <form
-            method="GET"
-            action="{{ route('staff.reservations.index') }}"
-            class="grid gap-4 md:grid-cols-4"
+        <form method="GET"
+                action="{{ route('staff.reservations.index') }}"
+                class="grid gap-4 md:grid-cols-4"
         >
-
-            {{-- Status --}}
             <div>
                 <label class="mb-2 block text-xs font-bold uppercase tracking-wide text-[#596460]">
                     Status
@@ -26,29 +18,43 @@
                     onchange="this.form.submit()"
                     class="w-full border border-[#d5d2ca] bg-[#fafaf8] px-3 py-2.5 text-base text-[#263634] outline-none focus:border-[#2f625b]"
                 >
-                    <option value="Semua" @selected(($filters['status'] ?? '') === 'Semua')}>
+                    <option
+                        value="Semua"
+                        {{ ($filters['status'] ?? 'Semua') === 'Semua' ? 'selected' : '' }}
+                    >
                         Semua
                     </option>
 
-                    <option value="PENDING" @selected(($filters['status'] ?? 'PENDING') === 'PENDING')}>
+                    <option
+                        value="PENDING"
+                        {{ ($filters['status'] ?? '') === 'PENDING' ? 'selected' : '' }}
+                    >
                         Menunggu
                     </option>
 
-                    <option value="APPROVED" @selected(($filters['status'] ?? '') === 'APPROVED')}>
+                    <option
+                        value="APPROVED"
+                        {{ ($filters['status'] ?? '') === 'APPROVED' ? 'selected' : '' }}
+                    >
                         Disetujui
                     </option>
 
-                    <option value="REJECTED" @selected(($filters['status'] ?? '') === 'REJECTED')}>
+                    <option
+                        value="REJECTED"
+                        {{ ($filters['status'] ?? '') === 'REJECTED' ? 'selected' : '' }}
+                    >
                         Ditolak
                     </option>
 
-                    <option value="CANCELLED" @selected(($filters['status'] ?? '') === 'CANCELLED')}>
+                    <option
+                        value="CANCELLED"
+                        {{ ($filters['status'] ?? '') === 'CANCELLED' ? 'selected' : '' }}
+                    >
                         Dibatalkan
                     </option>
                 </select>
             </div>
 
-            {{-- Fasilitas --}}
             <div>
                 <label class="mb-2 block text-xs font-bold uppercase tracking-wide text-[#596460]">
                     Fasilitas
@@ -77,7 +83,6 @@
                 </select>
             </div>
 
-            {{-- Urutkan --}}
             <div>
                 <label class="mb-2 block text-xs font-bold uppercase tracking-wide text-[#596460]">
                     Urutkan berdasarkan
@@ -88,21 +93,29 @@
                     onchange="this.form.submit()"
                     class="w-full border border-[#d5d2ca] bg-[#fafaf8] px-3 py-2.5 text-base text-[#263634] outline-none focus:border-[#2f625b]"
                 >
-                    <option value="created_at" @selected(($filters['sort_by'] ?? '') === 'created_at')}>
+                    <option
+                        value="created_at"
+                        {{ ($filters['sort_by'] ?? 'created_at') === 'created_at' ? 'selected' : '' }}
+                    >
                         Tanggal pengajuan
                     </option>
 
-                    <option value="event_date" @selected(($filters['sort_by'] ?? '') === 'event_date')}>
+                    <option
+                        value="event_date"
+                        {{ ($filters['sort_by'] ?? '') === 'event_date' ? 'selected' : '' }}
+                    >
                         Tanggal reservasi
                     </option>
 
-                    <option value="facility" @selected(($filters['sort_by'] ?? '') === 'facility')}>
+                    <option
+                        value="facility"
+                        {{ ($filters['sort_by'] ?? '') === 'facility' ? 'selected' : '' }}
+                    >
                         Nama fasilitas
                     </option>
                 </select>
             </div>
 
-            {{-- Urutan --}}
             <div>
                 <label class="mb-2 block text-xs font-bold uppercase tracking-wide text-[#596460]">
                     Urutan
@@ -115,22 +128,21 @@
                         onchange="this.form.submit()"
                         class="w-full border border-[#d5d2ca] bg-[#fafaf8] px-3 py-2.5 text-base text-[#263634] outline-none focus:border-[#2f625b]"
                     >
-                        <option value="asc" @selected(($filters['sort_order'] ?? '') === 'asc')}>
-                            Terlama
-                        </option>
-
-                        <option value="desc" @selected(($filters['sort_order'] ?? '') === 'desc')}>
+                        <option
+                            value="desc"
+                            {{ ($filters['sort_order'] ?? 'desc') === 'desc' ? 'selected' : '' }}
+                        >
                             Terbaru
                         </option>
+
+                        <option value="asc" {{ ($filters['sort_order'] ?? '') === 'asc' ? 'selected' : '' }}>
+                            Terlama
+                        </option>
                     </select>
-                </div>
             </div>
-
         </form>
-
     </div>
 
-    {{-- Header --}}
     <div class="mb-7">
 
         <p class="text-xs font-bold uppercase tracking-[0.14em] text-[#2f625b]">
@@ -162,7 +174,6 @@
 
     </div>
 
-    {{-- Flash Message --}}
     @if(session('success'))
 
         <div class="mb-5 border border-[#cfe0d7] bg-[#edf5f0] px-4 py-3 text-sm font-medium text-[#426b5a]">
@@ -188,10 +199,6 @@
     @endif
 
     @if($reservations->count())
-
-        {{-- ========================================================= --}}
-        {{-- DESKTOP TABLE --}}
-        {{-- ========================================================= --}}
 
         <div class="hidden overflow-hidden border border-[#dedbd3] bg-white md:block">
 
@@ -237,7 +244,6 @@
 
                             <tr class="transition hover:bg-[#fafaf8]">
 
-                                {{-- User --}}
                                 <td class="px-5 py-5 align-top">
 
                                     <p class="text-base font-bold text-[#263634]">
@@ -250,7 +256,6 @@
 
                                 </td>
 
-                                {{-- Facility --}}
                                 <td class="px-5 py-5 align-top">
 
                                     <p class="text-base font-semibold text-[#43504d]">
@@ -263,7 +268,6 @@
 
                                 </td>
 
-                                {{-- Schedule --}}
                                 <td class="whitespace-nowrap px-5 py-5 align-top">
 
                                     <p class="text-base font-semibold text-[#43504d]">
@@ -282,7 +286,6 @@
 
                                 </td>
 
-                                {{-- Purpose --}}
                                 <td class="max-w-[220px] px-5 py-5 align-top">
 
                                     <p class="text-base leading-6 text-[#596460]">
@@ -302,7 +305,6 @@
 
                                 </td>
 
-                                {{-- Status --}}
                                 <td class="px-5 py-5 align-top">
 
                                     @if($reservation->status === 'APPROVED')
@@ -333,7 +335,6 @@
 
                                 </td>
 
-                                {{-- Actions --}}
                                 <td class="px-5 py-5 align-top">
 
                                     @if($reservation->status === 'PENDING')
@@ -369,7 +370,8 @@
 
                                     @elseif($reservation->status === 'APPROVED')
 
-                                        @if(!\Carbon\Carbon::parse($reservation->end_time)->isPast())
+                                        {{-- Hanya diizinkan batal jika masih ada sisa waktu minimal 30 menit sebelum pelaksanaan --}}
+                                        @if(now()->addMinutes(30)->lte(\Carbon\Carbon::parse($reservation->start_time)))
 
                                             <form
                                                 method="POST"
@@ -401,8 +403,8 @@
 
                                         @else
 
-                                            <span class="text-sm font-medium text-[#8a9490]">
-                                                Reservasi sudah lewat
+                                            <span class="text-xs font-medium text-[#8a9490]">
+                                                Batas pembatalan lewat (&lt;30 mnt)
                                             </span>
 
                                         @endif
@@ -429,17 +431,12 @@
 
         </div>
 
-        {{-- ========================================================= --}}
-        {{-- MOBILE CARD --}}
-        {{-- ========================================================= --}}
-
         <div class="space-y-4 md:hidden">
 
             @foreach($reservations as $reservation)
 
                 <div class="border border-[#dedbd3] bg-white p-5">
 
-                    {{-- Facility + Status --}}
                     <div class="flex items-start justify-between gap-4">
 
                         <div>
@@ -482,7 +479,6 @@
 
                     </div>
 
-                    {{-- Information --}}
                     <div class="mt-5 grid grid-cols-2 gap-4 border-t border-[#eeeae4] pt-4">
 
                         <div>
@@ -537,7 +533,6 @@
 
                     </div>
 
-                    {{-- Purpose --}}
                     <div class="mt-5 border-t border-[#eeeae4] pt-4">
 
                         <p class="text-xs font-semibold uppercase tracking-wide text-[#8a9490]">
@@ -561,7 +556,6 @@
 
                     </div>
 
-                    {{-- Actions --}}
                     @if($reservation->status === 'PENDING')
 
                         <div class="mt-5 flex flex-col gap-2 border-t border-[#eeeae4] pt-4">
@@ -595,7 +589,8 @@
 
                     @elseif($reservation->status === 'APPROVED')
 
-                        @if(!\Carbon\Carbon::parse($reservation->end_time)->isPast())
+                        {{-- Hanya diizinkan batal jika masih ada sisa waktu minimal 30 menit sebelum pelaksanaan --}}
+                        @if(now()->addMinutes(30)->lte(\Carbon\Carbon::parse($reservation->start_time)))
 
                             <form
                                 method="POST"
@@ -630,7 +625,7 @@
                             <div class="mt-5 border-t border-[#eeeae4] pt-4">
 
                                 <p class="text-sm font-medium text-[#8a9490]">
-                                    Reservasi sudah lewat
+                                    Batas pembatalan lewat (&lt;30 mnt)
                                 </p>
 
                             </div>
@@ -647,7 +642,6 @@
 
     @else
 
-        {{-- Empty State --}}
         <div class="rounded-lg border border-[#dedbd3] bg-white p-8 text-center">
 
             <p class="text-base text-[#7b8581]">
@@ -659,10 +653,6 @@
     @endif
 
 </div>
-
-{{-- ========================================================= --}}
-{{-- REJECT REASON MODAL --}}
-{{-- ========================================================= --}}
 
 <div
     id="reject-reason-modal"
@@ -734,10 +724,6 @@
     </div>
 
 </div>
-
-{{-- ========================================================= --}}
-{{-- REJECT CONFIRMATION MODAL --}}
-{{-- ========================================================= --}}
 
 <div
     id="reject-confirm-modal"

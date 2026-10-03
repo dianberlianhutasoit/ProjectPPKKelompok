@@ -6,7 +6,6 @@
 
 <div class="mx-auto max-w-4xl">
 
-    {{-- Header --}}
     <div class="mb-7">
 
         <a href="{{ route('facilities.index') }}"
@@ -34,8 +33,6 @@
 
     </div>
 
-
-    {{-- Form --}}
     <div class="border border-[#dedbd3] bg-white">
 
         <div class="border-b border-[#e4e1da] px-6 py-5">
@@ -50,7 +47,6 @@
 
         </div>
 
-
         <form
             id="report-form"
             action="{{ route('reports.store') }}"
@@ -62,7 +58,6 @@
 
             <div class="space-y-6 p-6">
 
-                {{-- Facility --}}
                 <div>
 
                     <label
@@ -109,7 +104,6 @@
 
                 </div>
 
-                {{-- Category --}}
                 <div>
 
                     <label
@@ -170,7 +164,6 @@
 
                 </div>
 
-                {{-- Description --}}
                 <div>
 
                     <div class="flex items-end justify-between gap-3">
@@ -212,7 +205,6 @@
 
                 </div>
 
-                {{-- Photo --}}
                 <div>
 
                     <label
@@ -254,7 +246,6 @@
 
                 </div>
 
-                {{-- Info --}}
                 <div class="border border-[#ddd9d0] bg-[#f7f6f2] p-5">
 
                     <div class="flex gap-3">
@@ -282,7 +273,6 @@
 
             </div>
 
-            {{-- Actions --}}
             <div class="flex flex-col-reverse gap-3 border-t border-[#e4e1da] bg-[#fafaf8] px-6 py-4 sm:flex-row sm:justify-end">
 
                 <a href="{{ route('facilities.index') }}"
@@ -301,7 +291,6 @@
         </form>
     </div>
 </div>
-
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {

@@ -4,7 +4,6 @@
 
 @section('content')
 
-{{-- Back --}}
 <div class="mb-6">
     <a
         href="{{ route('facilities.index') }}"
@@ -14,10 +13,8 @@
     </a>
 </div>
 
-{{-- Facility Header --}}
 <div class="mb-7 grid gap-6 lg:grid-cols-[1fr_280px]">
 
-    {{-- Main Info --}}
     <div class="border border-[#dedbd3] bg-white p-7">
         <div class="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
 
@@ -49,7 +46,6 @@
                 </div>
             </div>
 
-            {{-- Status --}}
             <div class="shrink-0">
                 @if($facility->status === 'AVAILABLE')
                     <span class="inline-flex items-center gap-2 rounded-full bg-[#e7f0eb] px-3 py-1.5 text-xs font-bold text-[#376453]">
@@ -71,7 +67,6 @@
 
         </div>
 
-        {{-- Description --}}
         <div class="mt-7 border-t border-[#e8e5de] pt-6">
             <p class="mb-2 text-xs font-bold uppercase tracking-[0.12em] text-[#7a8581]">
                 Tentang fasilitas
@@ -88,7 +83,6 @@
             @endif
         </div>
 
-        {{-- Admin Action --}}
         @auth
             @if(auth()->user()->role === 'ADMIN')
                 <div class="mt-6 border-t border-[#e8e5de] pt-5">
@@ -104,7 +98,6 @@
 
     </div>
 
-    {{-- Quick Info --}}
     <div class="border border-[#dedbd3] bg-[#2f625b] p-6 text-white">
 
         <p class="text-xs font-bold uppercase tracking-[0.14em] text-white/60">
@@ -146,11 +139,8 @@
 
 </div>
 
-
-{{-- Availability --}}
 <div class="border border-[#dedbd3] bg-white">
 
-    {{-- Section Header --}}
     <div class="border-b border-[#e4e1da] px-6 py-5">
 
         <div class="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
@@ -169,7 +159,6 @@
                 </p>
             </div>
 
-            {{-- Date --}}
             <form
                 method="GET"
                 action="{{ route('facilities.show', $facility) }}"
@@ -205,11 +194,8 @@
         </div>
     </div>
 
-
-    {{-- Availability Content --}}
     <div class="p-6">
 
-        {{-- Legend --}}
         <div class="mb-6 flex flex-wrap gap-2">
 
             <span class="inline-flex items-center gap-2 rounded-full bg-[#e7f0eb] px-3 py-1.5 text-xs font-semibold text-[#376453]">
@@ -229,8 +215,6 @@
 
         </div>
 
-
-        {{-- Maintenance --}}
         @if($facility->status === 'MAINTENANCE')
 
             <div class="border border-[#dfc9b4] bg-[#f4e9dd] px-5 py-5">
@@ -271,7 +255,6 @@
 
         @else
 
-            {{-- Date Info --}}
             <div class="mb-5 flex items-center justify-between">
 
                 <div>
@@ -290,8 +273,6 @@
 
             </div>
 
-
-            {{-- Slots --}}
             <div class="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
 
                 @foreach($slots as $slot)
@@ -302,7 +283,6 @@
 
                             @if(auth()->user()->role === 'USER')
 
-                                {{-- Available Slot for USER --}}
                                 <a
                                     href="{{ route('reservations.create', [
                                         'facility' => $facility,
@@ -337,7 +317,6 @@
 
                             @else
 
-                                {{-- Available Slot for Other Authenticated Roles --}}
                                 <div class="border border-[#b8d1c3] bg-[#e7f0eb] p-3.5">
 
                                     <p class="text-base font-bold text-[#376453]">
@@ -358,7 +337,6 @@
 
                         @else
 
-                            {{-- Available Slot for Guest --}}
                             <a
                                 href="{{ route('login') }}"
                                 class="group border border-[#b8d1c3] bg-[#e7f0eb] p-3.5 text-left transition hover:border-[#2f625b] hover:bg-[#dceae3]"
@@ -388,10 +366,8 @@
 
                         @endauth
 
-
                     @elseif($slot['status'] === 'RESERVED')
 
-                        {{-- Reserved Slot --}}
                         <div class="border border-[#d8ccc7] bg-[#eee8e5] p-3.5">
 
                             <div class="flex items-center justify-between">
@@ -416,10 +392,8 @@
 
                         </div>
 
-
                     @else
 
-                        {{-- Maintenance Slot --}}
                         <div class="border border-[#dfc9b4] bg-[#f4e9dd] p-3.5">
 
                             <div class="flex items-center justify-between">
@@ -450,8 +424,6 @@
 
             </div>
 
-
-            {{-- Lapor Kerusakan --}}
             @auth
                 @if(auth()->user()->role === 'USER')
                     <div class="mt-6 flex justify-end">
@@ -472,8 +444,6 @@
     </div>
 </div>
 
-
-{{-- Bottom Note --}}
 <div class="mt-5 flex items-start gap-3 border border-[#dedbd3] bg-[#fafaf8] px-5 py-4">
 
     <span class="mt-0.5 text-[#2f625b]">

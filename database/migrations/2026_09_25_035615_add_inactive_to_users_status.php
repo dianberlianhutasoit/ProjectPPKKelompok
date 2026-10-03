@@ -7,9 +7,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    // Longgarkan users.status dari enum menjadi string agar INACTIVE didukung
-    // di semua driver (MySQL enum + SQLite CHECK constraint menolak nilai baru).
-    // Sama pola dengan migration INACTIVE pada tabel facilities.
+    // Use a string so INACTIVE works across database drivers.
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {

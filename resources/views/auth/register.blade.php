@@ -8,20 +8,16 @@
 
     <div class="grid w-full overflow-hidden rounded-2xl border border-[#dedbd3] bg-white shadow-[0_12px_35px_rgba(38,54,52,0.08)] md:grid-cols-2">
 
-        {{-- LEFT : VISUAL --}}
         <div class="relative hidden min-h-[600px] overflow-hidden bg-[#dfeae5] md:flex">
 
-            {{-- Decorative shapes --}}
             <div class="absolute -left-20 -top-20 h-64 w-64 rounded-full bg-[#c4d9d1]"></div>
 
             <div class="absolute -bottom-24 -right-16 h-72 w-72 rounded-full bg-[#ead8c8]"></div>
 
             <div class="absolute right-10 top-16 h-20 w-20 rounded-full border-[10px] border-[#a65f3e]/15"></div>
 
-
             <div class="relative z-10 flex w-full flex-col justify-between p-10">
 
-                {{-- Text --}}
                 <div>
 
                     <h2 class="mt-7 max-w-sm text-4xl font-bold leading-tight tracking-tight text-[#263634]">
@@ -34,17 +30,12 @@
 
                 </div>
 
-
-                {{-- Illustration --}}
                 <div class="relative mx-auto mt-8 flex h-64 w-full max-w-sm items-end justify-center">
 
-                    {{-- Building --}}
                     <div class="relative h-44 w-64 rounded-t-lg bg-white shadow-sm">
 
-                        {{-- Roof --}}
                         <div class="absolute -left-5 -top-7 h-0 w-0 border-b-[30px] border-l-[147px] border-r-[147px] border-b-[#2f625b] border-l-transparent border-r-transparent"></div>
 
-                        {{-- Windows --}}
                         <div class="grid grid-cols-4 gap-4 px-7 pt-8">
 
                             <div class="h-12 rounded bg-[#dfeae5]"></div>
@@ -54,16 +45,13 @@
 
                         </div>
 
-                        {{-- Door --}}
                         <div class="absolute bottom-0 left-1/2 h-20 w-12 -translate-x-1/2 rounded-t bg-[#a65f3e]"></div>
 
                     </div>
 
-                    {{-- Ground --}}
                     <div class="absolute bottom-0 h-3 w-full rounded-full bg-[#2f625b]/20"></div>
 
                 </div>
-
 
                 <div class="flex items-center gap-3 text-sm text-[#68736f]">
 
@@ -79,13 +67,10 @@
 
         </div>
 
-
-        {{-- RIGHT : REGISTER --}}
         <div class="flex min-h-[600px] items-center bg-white px-7 py-10 sm:px-12">
 
             <div class="mx-auto w-full max-w-sm">
 
-                {{-- Header --}}
                 <div class="mb-7">
 
                     <p class="text-xs font-bold uppercase tracking-[0.14em] text-[#2f625b]">
@@ -102,14 +87,10 @@
 
                 </div>
 
-
-                {{-- Form --}}
                 <form method="POST" action="{{ route('register') }}" class="space-y-4">
 
                     @csrf
 
-
-                    {{-- Name --}}
                     <div>
 
                         <label
@@ -133,8 +114,6 @@
 
                     </div>
 
-
-                    {{-- Email --}}
                     <div>
 
                         <label
@@ -170,8 +149,6 @@
 
                     </div>
 
-
-                    {{-- Password --}}
                     <div>
 
                         <label
@@ -193,8 +170,6 @@
 
                     </div>
 
-
-                    {{-- Confirm Password --}}
                     <div>
 
                         <label
@@ -216,8 +191,6 @@
 
                     </div>
 
-
-                    {{-- Submit --}}
                     <button
                         type="submit"
                         class="mt-2 w-full rounded-lg bg-[#2f625b] px-4 py-3.5 text-base font-bold text-white transition hover:bg-[#244d48] hover:shadow-md"
@@ -227,8 +200,6 @@
 
                 </form>
 
-
-                {{-- Login --}}
                 <div class="mt-7 border-t border-[#e8e5de] pt-5 text-center">
 
                     <p class="text-base text-[#68736f]">
@@ -255,7 +226,7 @@
 </div>
 
 <script>
-    // Peringatan ringan domain UNDIP — server tetap sumber kebenaran utama.
+    // The server validates email domains on submission.
     (function () {
         const emailInput = document.getElementById('email');
         const warning = document.getElementById('email-domain-warning');
@@ -263,7 +234,7 @@
 
         function isUndipEmail(value) {
             const at = value.lastIndexOf('@');
-            if (at < 0) return true; // belum diketik lengkap, jangan ganggu
+            if (at < 0) return true;
             return allowed.includes(value.slice(at + 1).toLowerCase());
         }
 

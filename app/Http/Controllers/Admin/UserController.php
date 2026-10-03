@@ -10,40 +10,48 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    // Daftar semua akun, yang PENDING tampil paling atas
+    // Show pending accounts first.
     public function index(Request $request)
     {
         $status = $request->query('status');
 
         $users = User::when($status, fn ($q) => $q->where('status', $status))
-           ->orderByRaw("
-                CASE status
-                    WHEN 'PENDING' THEN 1
-                    WHEN 'ACTIVE' THEN 2
-                    WHEN 'REJECTED' THEN 3
-                    ELSE 4
-                END
-            ")
+            ->orderByRaw("CASE status WHEN 'PENDING' THEN 1 WHEN 'ACTIVE' THEN 2 WHEN 'REJECTED' THEN 3 ELSE 4 END")
             ->latest()
             ->get();
 
         return view('admin.users.index', compact('users', 'status'));
     }
 
-    // Admin: form buat akun STAFF / USER baru (langsung aktif)
     public function create()
     {
         return view('admin.users.create');
     }
 
-    // Admin: simpan akun baru
     public function store(Request $request)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
+            'email' => [
+                'required',
+                'email',
+                'unique:users,email',
+                function ($attribute, $value, $fail) {
+                    if (! in_array($this->emailDomain($value), ['students.undip.ac.id', 'undip.ac.id'], true)) {
+                        $fail('Gunakan email resmi UNDIP: students.undip.ac.id atau undip.ac.id.');
+                    }
+                },
+            ],
             'password' => 'required|string|min:8',
-            'role' => 'required|in:STAFF,USER',
+            'role' => [
+                'required',
+                'in:STAFF,USER',
+                function ($attribute, $value, $fail) use ($request) {
+                    if ($value === 'STAFF' && $this->emailDomain($request->input('email')) === 'students.undip.ac.id') {
+                        $fail('Akun staff harus menggunakan email @undip.ac.id.');
+                    }
+                },
+            ],
         ]);
 
         User::create([
@@ -56,16 +64,27 @@ class UserController extends Controller
 
         return redirect()
             ->route('admin.users.index')
-            ->with(
-                'success',
-                'Akun ' . $validated['role'] . ' berhasil dibuat dan langsung aktif.'
-            );
+            ->with('success', 'Akun '.$validated['role'].' berhasil dibuat dan langsung aktif.');
     }
 
-    // Admin: setujui atau tolak akun hasil daftar mandiri
-    // Tolak wajib menyertakan alasan, setuju menghapus alasan lama
+    private function emailDomain(mixed $email): ?string
+    {
+        if (! is_string($email) || ! str_contains($email, '@')) {
+            return null;
+        }
+
+        return strtolower(substr(strrchr($email, '@'), 1));
+    }
+
+    // Rejection needs a reason; approval clears any old one.
     public function verify(Request $request, User $user)
     {
+        if ($user->role !== 'USER' || $user->status !== 'PENDING') {
+            return back()->withErrors([
+                'user' => 'Hanya akun pengguna berstatus PENDING yang dapat diverifikasi.',
+            ]);
+        }
+
         $validated = $request->validate([
             'action' => 'required|in:approve,reject',
             'rejection_reason' => 'required_if:action,reject|nullable|string|max:1000',
@@ -77,20 +96,20 @@ class UserController extends Controller
                 'rejection_reason' => null,
             ]);
 
-            $message = 'Akun ' . $user->email . ' diverifikasi (ACTIVE).';
+            $message = 'Akun '.$user->email.' diverifikasi (ACTIVE).';
         } else {
             $user->update([
                 'status' => 'REJECTED',
                 'rejection_reason' => trim($validated['rejection_reason']),
             ]);
 
-            $message = 'Akun ' . $user->email . ' ditolak (REJECTED).';
+            $message = 'Akun '.$user->email.' ditolak (REJECTED).';
         }
 
         return back()->with('success', $message);
     }
 
-    // Admin: nonaktifkan akun (soft — status jadi INACTIVE, record tetap ada untuk riwayat)
+    // Keep account history when deactivating it.
     public function destroy(User $user)
     {
         if ($user->id === Auth::id()) {
@@ -99,6 +118,6 @@ class UserController extends Controller
 
         $user->update(['status' => 'INACTIVE']);
 
-        return back()->with('success', 'Akun ' . $user->email . ' dinonaktifkan (INACTIVE).');
+        return back()->with('success', 'Akun '.$user->email.' dinonaktifkan (INACTIVE).');
     }
 }

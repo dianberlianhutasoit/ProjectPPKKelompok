@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\DB;
 
 class ReportController extends Controller
 {
-    // USER: daftar laporan milik sendiri
     public function index()
     {
         $reports = Report::with('facility')
@@ -21,10 +20,9 @@ class ReportController extends Controller
         return view('reports.index', compact('reports'));
     }
 
-    // USER: context form (daftar fasilitas untuk dropdown frontend)
     public function create(Request $request)
     {
-       $facilities = Facility::orderBy('name')->get();
+        $facilities = Facility::orderBy('name')->get();
 
         $selectedFacility = null;
 
@@ -35,7 +33,7 @@ class ReportController extends Controller
         return view('reports.create', compact('facilities', 'selectedFacility'));
     }
 
-    // USER: simpan laporan, user_id selalu dari Auth
+    // Set the report owner from the signed-in user.
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -50,7 +48,7 @@ class ReportController extends Controller
             $photoPath = $request->file('photo')->store('reports', 'public');
         }
 
-        $report = Report::create([
+        Report::create([
             'user_id' => Auth::id(),
             'facility_id' => $validated['facility_id'],
             'category' => $validated['category'],
@@ -62,11 +60,11 @@ class ReportController extends Controller
         return redirect()->route('reports.index')->with('success', 'Laporan berhasil dibuat.');
     }
 
-    // USER (milik sendiri) / STAFF (semua): detail satu laporan
+    // Users can view only their own reports.
     public function show(Report $report)
     {
         if (strtoupper(Auth::user()->role) === 'USER' && $report->user_id !== Auth::id()) {
-            abort(403, 'Unauthorized Access');
+            abort(403, 'Anda tidak memiliki akses ke halaman ini.');
         }
 
         $report->load(['user', 'facility']);
@@ -74,7 +72,6 @@ class ReportController extends Controller
         return view('reports.show', compact('report'));
     }
 
-    // STAFF: daftar semua laporan
     public function staffIndex()
     {
         $reports = Report::with(['user', 'facility'])
@@ -84,18 +81,13 @@ class ReportController extends Controller
         return view('staff.reports.index', compact('reports'));
     }
 
-    // STAFF: detail laporan untuk dikelola
     public function staffShow(Report $report)
     {
         $report->load(['user', 'facility']);
 
-        return view(
-            'staff.reports.show',
-            compact('report')
-        );
+        return view('staff.reports.show', compact('report'));
     }
 
-    // STAFF: perbarui status + resolution_note (+ sinkron status fasilitas)
     public function update(Request $request, Report $report)
     {
         $validated = $request->validate([
@@ -114,7 +106,7 @@ class ReportController extends Controller
 
             $facility = $report->facility;
 
-            // INACTIVE permanen: jangan ubah status fasilitas.
+            // Leave inactive facilities unchanged.
             if (! $facility || $facility->status === 'INACTIVE') {
                 return;
             }
@@ -127,8 +119,7 @@ class ReportController extends Controller
                 return;
             }
 
-            // COMPLETED/REJECTED: kembalikan AVAILABLE hanya jika
-            // tidak ada laporan PROCESSING lain untuk fasilitas yang sama.
+            // Restore availability when no other report is processing.
             if ($facility->status === 'MAINTENANCE') {
                 $otherProcessing = Report::where('facility_id', $facility->id)
                     ->where('id', '!=', $report->id)

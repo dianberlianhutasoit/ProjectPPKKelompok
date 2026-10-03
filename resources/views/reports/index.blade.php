@@ -6,7 +6,6 @@
 
 <div class="mx-auto max-w-6xl">
 
-    {{-- Header --}}
     <div class="mb-7 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
 
         <div>
@@ -28,7 +27,6 @@
         </a>
 
     </div>
-
 
     @if($reports->count())
 
@@ -55,7 +53,6 @@
                             </p>
 
                         </div>
-
 
                         @if($report->status === 'NEW')
 
@@ -85,11 +82,9 @@
 
                     </div>
 
-
                     <p class="mt-5 text-base leading-7 text-[#596460]">
                         {{ \Illuminate\Support\Str::limit($report->description, 180) }}
                     </p>
-
 
                     <div class="mt-5 flex flex-col gap-3 border-t border-[#eeeae4] pt-4 sm:flex-row sm:items-center sm:justify-between">
 
@@ -110,7 +105,6 @@
                             </p>
 
                         @endif
-
 
                         <a
                             href="{{ route('reports.show', $report) }}"
