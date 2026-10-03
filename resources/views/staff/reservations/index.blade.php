@@ -97,7 +97,7 @@
             </form>
         </div>
 
-        <div class="mb-7">
+        <div class="mt-7 mb-7">
 
             <p class="text-xs font-bold uppercase tracking-[0.14em] text-[#2f625b]">
                 Staff Workspace

@@ -114,7 +114,7 @@
         </div>
     </nav>
 
-    <main class="mx-auto max-w-7xl px-6 pb-9 pt-20">
+    <main class="mx-auto max-w-7xl px-6 pb-9 pt-24">
 
         @if (session('success'))
             <div class="mb-6 border-l-4 border-[#2f625b] bg-white px-5 py-4 text-base text-[#4d5c58]">
