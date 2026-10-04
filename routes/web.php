@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\Staff\ReservationApprovalController;
+use App\Http\Controllers\ReportController;
 
 Route::get('/', fn() => redirect()->route('facilities.index'));
 
@@ -120,4 +121,17 @@ Route::middleware(['auth', 'active', 'role:STAFF'])
 
         Route::patch('/reservations/{id}/cancel', [ReservationApprovalController::class, 'staffCancel'])
             ->name('reservations.cancel');
+    });
+
+    // Laporan untuk Pengguna Terautentikasi
+Route::middleware(['auth', 'active'])->group(function () {
+        Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+        Route::get('/reports/create', [ReportController::class, 'create'])->name('reports.create');
+        Route::post('/reports', [ReportController::class, 'store'])->name('reports.store');
+    });
+    
+    // Pengelolaan Laporan khusus Staff & Admin
+Route::middleware(['auth', 'active', 'role:STAFF,ADMIN'])->prefix('staff')->name('staff.')->group(function () {
+        Route::patch('/reports/{report}/status', [ReportController::class, 'updateStatus'])->name('reports.updateStatus');
+        Route::get('/reports/export-csv', [ReportController::class, 'exportCsv'])->name('reports.exportCsv');
     });
