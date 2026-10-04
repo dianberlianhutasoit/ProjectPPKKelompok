@@ -6,20 +6,37 @@
 
     <div class="mx-auto max-w-7xl">
 
-        <div class="mb-7">
+        {{-- =========================================================
+            HEADER & TOMBOL EXPORT CSV (STAFF WORKSPACE)
+        ========================================================== --}}
+        <div class="mb-8 flex flex-col gap-4 border-b border-[#dedbd3] pb-6 sm:flex-row sm:items-center sm:justify-between">
+            
+            {{-- Sisi Kiri: Judul & Deskripsi --}}
+            <div class="max-w-2xl">
+                <p class="text-xs font-bold uppercase tracking-[0.14em] text-[#2f625b]">
+                    Staff Workspace
+                </p>
 
-            <p class="text-xs font-bold uppercase tracking-[0.14em] text-[#2f625b]">
-                Staff Workspace
-            </p>
+                <h1 class="mt-2 text-3xl font-bold tracking-tight text-[#263634] sm:text-4xl">
+                    Kelola Laporan
+                </h1>
 
-            <h1 class="mt-2 text-4xl font-bold tracking-tight text-[#263634]">
-                Kelola Laporan
-            </h1>
+                <p class="mt-2 text-base leading-6 text-[#68736f]">
+                    Periksa laporan kerusakan, perbarui status penanganan,
+                    dan kelola kondisi fasilitas berdasarkan proses perbaikan.
+                </p>
+            </div>
 
-            <p class="mt-2 max-w-2xl text-base leading-6 text-[#68736f]">
-                Periksa laporan kerusakan, perbarui status penanganan,
-                dan kelola kondisi fasilitas berdasarkan proses perbaikan.
-            </p>
+            {{-- Sisi Kanan: Tombol Export CSV --}}
+            <div class="flex shrink-0 items-center justify-start sm:justify-end">
+                <a href="{{ route('staff.reports.exportCsv') }}"
+                   class="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition-all duration-200 hover:bg-emerald-700 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <span>Export CSV</span>
+                </a>
+            </div>
 
         </div>
 
@@ -37,6 +54,7 @@
 
         @if ($reports->count())
 
+            {{-- Tampilan Desktop (Tabel) --}}
             <div class="hidden overflow-hidden border border-[#dedbd3] bg-white md:block">
 
                 <div class="overflow-x-auto">
@@ -211,6 +229,7 @@
 
             </div>
 
+            {{-- Tampilan Mobile (Card) --}}
             <div class="divide-y divide-[#ece9e3] border border-[#dedbd3] bg-white md:hidden">
 
                 @foreach ($reports as $report)
