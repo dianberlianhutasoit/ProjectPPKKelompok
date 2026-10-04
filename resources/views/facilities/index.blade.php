@@ -6,9 +6,7 @@
 
     <div class="space-y-10">
 
-        {{-- =========================================================
-        HERO
-    ========================================================== --}}
+        {{-- HERO --}}
 
         <section class="relative overflow-hidden rounded-[28px] bg-[#2f625b]">
 
@@ -42,17 +40,21 @@
 
                     </p>
 
+                    <div class="mt-7 flex flex-wrap gap-3">
+                        <a href="#daftar-fasilitas"
+                            class="inline-flex items-center justify-center rounded-xl bg-white px-5 py-3 text-sm font-semibold text-[#2f625b] transition hover:bg-[#f5f3ee]">
+                            Jelajahi Fasilitas
+                            <span class="ml-2">→</span>
+                        </a>
+                    </div>
+
                 </div>
 
             </div>
 
         </section>
 
-
-
-        {{-- =========================================================
-        SEARCH & FILTER
-    ========================================================== --}}
+        {{-- SEARCH & FILTER --}}
 
         <section>
 
@@ -80,8 +82,6 @@
                         </div>
 
                     </div>
-
-
 
                     {{-- Type --}}
 
@@ -113,8 +113,6 @@
                         </select>
 
                     </div>
-
-
 
                     {{-- Location --}}
 
@@ -148,8 +146,6 @@
 
                     </div>
 
-
-
                     {{-- Capacity --}}
 
                     <div>
@@ -168,8 +164,6 @@
                     </div>
 
                 </div>
-
-
 
                 <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
 
@@ -203,13 +197,9 @@
 
         </section>
 
+        {{-- QUICK INFO --}}
 
-
-        {{-- =========================================================
-        QUICK INFO
-    ========================================================== --}}
-
-        <section class="grid gap-4 sm:grid-cols-3">
+        <section class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
 
             <div class="rounded-[22px] border border-[#ddd9d0] bg-white p-6 shadow-sm">
 
@@ -233,8 +223,6 @@
 
             </div>
 
-
-
             <div class="rounded-[22px] border border-[#ddd9d0] bg-white p-6 shadow-sm">
 
                 <p class="text-xs font-bold uppercase tracking-wide text-[#7b8581]">
@@ -256,8 +244,6 @@
                 </p>
 
             </div>
-
-
 
             <div class="rounded-[22px] border border-[#ddd9d0] bg-white p-6 shadow-sm">
 
@@ -281,15 +267,25 @@
 
             </div>
 
+            <div class="rounded-[22px] border border-[#ddd9d0] bg-white p-6 shadow-sm">
+                <p class="text-xs font-bold uppercase tracking-wide text-[#7b8581]">
+                    Jam Operasional
+                </p>
+
+                <p class="mt-2 text-3xl font-bold text-[#2f625b]">
+                    07:00–20:00
+                </p>
+
+                <p class="mt-1 text-sm text-[#68736f]">
+                    Setiap hari
+                </p>
+            </div>
+
         </section>
 
+        {{-- FACILITY LIST --}}
 
-
-        {{-- =========================================================
-        FACILITY LIST
-    ========================================================== --}}
-
-        <section>
+        <section id="daftar-fasilitas">
 
             <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
 
@@ -315,15 +311,22 @@
 
                 </div>
 
-                <p class="text-sm font-medium text-[#7b8581]">
+                <div class="flex flex-wrap items-center gap-3">
+                    <p class="text-sm font-medium text-[#7b8581]">
+                        {{ $facilities->count() }} fasilitas
+                    </p>
 
-                    {{ $facilities->count() }} fasilitas
-
-                </p>
+                    @auth
+                        @if (auth()->user()->role === 'ADMIN')
+                            <a href="{{ route('facilities.create') }}"
+                                class="inline-flex items-center justify-center rounded-xl bg-[#2f625b] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#244d48]">
+                                + Tambah Fasilitas
+                            </a>
+                        @endif
+                    @endauth
+                </div>
 
             </div>
-
-
 
             @if ($facilities->count())
 
@@ -333,9 +336,7 @@
                         <article
                             class="group overflow-hidden rounded-[24px] border border-[#ddd9d0] bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg">
 
-                            {{-- =================================================
-                            FACILITY IMAGE
-                        ================================================== --}}
+                            {{-- FACILITY IMAGE --}}
 
                             <div class="relative h-56 overflow-hidden bg-[#e6f0ea]">
 
@@ -395,8 +396,6 @@
                                     </div>
                                 @endif
 
-
-
                                 {{-- Status --}}
 
                                 <div class="absolute right-4 top-4">
@@ -428,11 +427,7 @@
 
                             </div>
 
-
-
-                            {{-- =================================================
-                            CARD CONTENT
-                        ================================================== --}}
+                            {{-- CARD CONTENT --}}
 
                             <div class="p-6">
 
@@ -449,8 +444,6 @@
 
                                 </div>
 
-
-
                                 {{-- Name --}}
 
                                 <h3 class="text-2xl font-bold leading-tight text-[#263634]">
@@ -459,8 +452,6 @@
 
                                 </h3>
 
-
-
                                 {{-- Description --}}
 
                                 <p class="mt-3 line-clamp-2 text-base leading-6 text-[#68736f]">
@@ -468,8 +459,6 @@
                                     {{ $f->description }}
 
                                 </p>
-
-
 
                                 {{-- Facility Info --}}
 
@@ -504,8 +493,6 @@
 
                                     </div>
 
-
-
                                     {{-- Capacity --}}
 
                                     <div class="flex items-start gap-3">
@@ -537,8 +524,6 @@
 
                                 </div>
 
-
-
                                 {{-- Action --}}
 
                                 <div class="mt-6 flex items-center justify-between border-t border-[#eeeae4] pt-5">
@@ -556,8 +541,6 @@
                                         </span>
 
                                     </a>
-
-
 
                                     @auth
 
