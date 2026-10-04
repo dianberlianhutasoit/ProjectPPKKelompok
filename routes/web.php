@@ -26,12 +26,9 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['au
 
 // Facility Public Routes
 Route::get('/facilities', [FacilityController::class, 'index'])->name('facilities.index');
-Route::resource('facilities', FacilityController::class)
-    ->except(['index', 'show'])
-    ->middleware(['auth', 'active', 'role:ADMIN']);
 Route::get('/facilities/{facility}', [FacilityController::class, 'show'])->name('facilities.show');
 
-// Admin Routes
+// Admin Routes (Kelola User)
 Route::middleware(['auth', 'active', 'role:ADMIN'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
@@ -40,7 +37,12 @@ Route::middleware(['auth', 'active', 'role:ADMIN'])->prefix('admin')->name('admi
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
 });
 
-// User Routes (Reservasi & Laporan Disatukan dalam 1 Group)
+// Resource Facility (Khusus Admin)
+Route::resource('facilities', FacilityController::class)
+    ->except(['index', 'show'])
+    ->middleware(['auth', 'active', 'role:ADMIN']);
+
+// User Routes (Reservasi & Laporan Milik User)
 Route::middleware(['auth', 'active', 'role:USER'])->group(function () {
     // Management Reservasi User
     Route::get('/facilities/{facility}/reservations/create', [ReservationController::class, 'create'])->name('reservations.create');
@@ -55,38 +57,21 @@ Route::middleware(['auth', 'active', 'role:USER'])->group(function () {
     Route::get('/reports/{report}', [ReportController::class, 'show'])->name('reports.show');
 });
 
-// Staff Routes (Persetujuan Reservasi & Penanganan Laporan)
-Route::middleware(['auth', 'active', 'role:STAFF'])
-    ->prefix('staff')
-    ->name('staff.')
-    ->group(function () {
-        // Laporan Staff
-        Route::get('/reports', [ReportController::class, 'staffIndex'])->name('reports.index');
-        Route::get('/reports/{report}', [ReportController::class, 'staffShow'])->name('reports.show');
-        Route::patch('/reports/{report}', [ReportController::class, 'update'])->name('reports.update');
-
-        Route::get('/reservations', [ReservationApprovalController::class, 'index'])
-            ->name('reservations.index');
-
-        Route::patch('/reservations/{id}/approve', [ReservationApprovalController::class, 'approve'])
-            ->name('reservations.approve');
-
-        Route::patch('/reservations/{id}/reject', [ReservationApprovalController::class, 'reject'])
-            ->name('reservations.reject');
-
-        Route::patch('/reservations/{id}/cancel', [ReservationApprovalController::class, 'staffCancel'])
-            ->name('reservations.cancel');
-    });
-
-    // Laporan untuk Pengguna Terautentikasi
-Route::middleware(['auth', 'active'])->group(function () {
-        Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
-        Route::get('/reports/create', [ReportController::class, 'create'])->name('reports.create');
-        Route::post('/reports', [ReportController::class, 'store'])->name('reports.store');
-    });
+// Staff Workspace (Persetujuan Reservasi & Penanganan Laporan)
+Route::middleware(['auth', 'active'])->prefix('staff')->name('staff.')->group(function () {
     
-    // Pengelolaan Laporan khusus Staff & Admin
-Route::middleware(['auth', 'active', 'role:STAFF,ADMIN'])->prefix('staff')->name('staff.')->group(function () {
-        Route::patch('/reports/{report}/status', [ReportController::class, 'updateStatus'])->name('reports.updateStatus');
-        Route::get('/reports/export-csv', [ReportController::class, 'exportCsv'])->name('reports.exportCsv');
-    });
+    // RUTE SPESIFIK WAJIB DITARUH SEBELUM RUTE PARAMETER {report}
+    Route::get('/reports/export-csv', [ReportController::class, 'exportCsv'])->name('reports.exportCsv');
+
+    // Laporan Staff
+    Route::get('/reports', [ReportController::class, 'staffIndex'])->name('reports.index');
+    Route::get('/reports/{report}', [ReportController::class, 'staffShow'])->name('reports.show');
+    Route::patch('/reports/{report}', [ReportController::class, 'update'])->name('reports.update');
+    Route::patch('/reports/{report}/status', [ReportController::class, 'updateStatus'])->name('reports.updateStatus');
+
+    // Persetujuan Reservasi Staff
+    Route::get('/reservations', [ReservationApprovalController::class, 'index'])->name('reservations.index');
+    Route::patch('/reservations/{id}/approve', [ReservationApprovalController::class, 'approve'])->name('reservations.approve');
+    Route::patch('/reservations/{id}/reject', [ReservationApprovalController::class, 'reject'])->name('reservations.reject');
+    Route::patch('/reservations/{id}/cancel', [ReservationApprovalController::class, 'staffCancel'])->name('reservations.cancel');
+});
