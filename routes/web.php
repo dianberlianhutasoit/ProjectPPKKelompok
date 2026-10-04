@@ -24,7 +24,20 @@ Route::middleware('guest')->group(function () {
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'active'])->name('dashboard');
 
-// Facility Public Routes
+// =========================================================
+// KELOLA FASILITAS (ADMIN) - WAJIB DI ATAS RUTE PUBLIK {facility}
+// =========================================================
+Route::middleware(['auth', 'active', 'role:ADMIN'])->group(function () {
+    Route::get('/facilities/create', [FacilityController::class, 'create'])->name('facilities.create');
+    Route::post('/facilities', [FacilityController::class, 'store'])->name('facilities.store');
+    Route::get('/facilities/{facility}/edit', [FacilityController::class, 'edit'])->name('facilities.edit');
+    Route::put('/facilities/{facility}', [FacilityController::class, 'update'])->name('facilities.update');
+    Route::delete('/facilities/{facility}', [FacilityController::class, 'destroy'])->name('facilities.destroy');
+});
+
+// =========================================================
+// FASILITAS PUBLIK (UMUM)
+// =========================================================
 Route::get('/facilities', [FacilityController::class, 'index'])->name('facilities.index');
 Route::get('/facilities/{facility}', [FacilityController::class, 'show'])->name('facilities.show');
 
@@ -37,20 +50,13 @@ Route::middleware(['auth', 'active', 'role:ADMIN'])->prefix('admin')->name('admi
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
 });
 
-// Resource Facility (Khusus Admin)
-Route::resource('facilities', FacilityController::class)
-    ->except(['index', 'show'])
-    ->middleware(['auth', 'active', 'role:ADMIN']);
-
-// User Routes (Reservasi & Laporan Milik User)
+// User Routes (Reservasi & Laporan User)
 Route::middleware(['auth', 'active', 'role:USER'])->group(function () {
-    // Management Reservasi User
     Route::get('/facilities/{facility}/reservations/create', [ReservationController::class, 'create'])->name('reservations.create');
     Route::post('/facilities/{facility}/reservations', [ReservationController::class, 'store'])->name('reservations.store');
     Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations.index');
     Route::patch('/reservations/{reservation}/cancel', [ReservationController::class, 'cancel'])->name('reservations.cancel');
 
-    // Management Laporan User
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
     Route::get('/reports/create', [ReportController::class, 'create'])->name('reports.create');
     Route::post('/reports', [ReportController::class, 'store'])->name('reports.store');
@@ -59,17 +65,12 @@ Route::middleware(['auth', 'active', 'role:USER'])->group(function () {
 
 // Staff Workspace (Persetujuan Reservasi & Penanganan Laporan)
 Route::middleware(['auth', 'active'])->prefix('staff')->name('staff.')->group(function () {
-    
-    // RUTE SPESIFIK WAJIB DITARUH SEBELUM RUTE PARAMETER {report}
     Route::get('/reports/export-csv', [ReportController::class, 'exportCsv'])->name('reports.exportCsv');
-
-    // Laporan Staff
     Route::get('/reports', [ReportController::class, 'staffIndex'])->name('reports.index');
     Route::get('/reports/{report}', [ReportController::class, 'staffShow'])->name('reports.show');
     Route::patch('/reports/{report}', [ReportController::class, 'update'])->name('reports.update');
     Route::patch('/reports/{report}/status', [ReportController::class, 'updateStatus'])->name('reports.updateStatus');
 
-    // Persetujuan Reservasi Staff
     Route::get('/reservations', [ReservationApprovalController::class, 'index'])->name('reservations.index');
     Route::patch('/reservations/{id}/approve', [ReservationApprovalController::class, 'approve'])->name('reservations.approve');
     Route::patch('/reservations/{id}/reject', [ReservationApprovalController::class, 'reject'])->name('reservations.reject');
