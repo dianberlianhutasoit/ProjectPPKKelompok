@@ -143,4 +143,41 @@ class ReportController extends Controller
 
         return back()->with('success', 'Status laporan berhasil diperbarui.');
     }
+    // Ekspor data laporan kerusakan ke CSV
+    public function exportCsv()
+    {
+        $fileName = 'rekap_laporan_kerusakan_' . date('Y-m-d_H-i') . '.csv';
+        $reports = Report::with(['facility', 'user'])->get();
+
+        $headers = [
+            "Content-type"        => "text/csv; charset=UTF-8",
+            "Content-Disposition" => "attachment; filename=$fileName",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        ];
+
+        $callback = function () use ($reports) {
+            $file = fopen('php://output', 'w');
+            fputs($file, "\xEF\xBB\xBF"); // UTF-8 BOM untuk Excel
+
+            fputcsv($file, ['ID Laporan', 'Nama Fasilitas', 'Nama Pelapor', 'Judul Kerusakan', 'Deskripsi', 'Status', 'Tanggal Lapor']);
+
+            foreach ($reports as $report) {
+                fputcsv($file, [
+                    $report->id,
+                    $report->facility->name ?? '-',
+                    $report->user->name ?? '-',
+                    $report->title,
+                    $report->description,
+                    $report->status,
+                    $report->created_at->format('d-m-Y H:i'),
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
 }
