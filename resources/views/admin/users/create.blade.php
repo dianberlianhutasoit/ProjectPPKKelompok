@@ -6,7 +6,6 @@
 
 <div class="mx-auto max-w-5xl">
 
-    {{-- Header --}}
     <div class="mb-7">
 
         <a
@@ -33,10 +32,8 @@
         </div>
     </div>
 
-
     <div class="grid gap-6 lg:grid-cols-[280px_1fr]">
 
-        {{-- Info Panel --}}
         <div class="h-fit border border-[#dedbd3] bg-[#2f625b] p-6 text-white">
 
             <p class="text-xs font-bold uppercase tracking-[0.14em] text-white/60">
@@ -79,8 +76,6 @@
             </div>
         </div>
 
-
-        {{-- Form --}}
         <div class="border border-[#dedbd3] bg-white">
 
             <div class="border-b border-[#e4e1da] px-6 py-5">
@@ -95,7 +90,6 @@
 
             </div>
 
-
             <form
                 method="POST"
                 action="{{ route('admin.users.store') }}"
@@ -105,7 +99,6 @@
 
                 <div class="space-y-5 p-6">
 
-                    {{-- Name --}}
                     <div>
 
                         <label
@@ -134,8 +127,6 @@
 
                     </div>
 
-
-                    {{-- Email --}}
                     <div>
 
                         <label
@@ -163,8 +154,6 @@
 
                     </div>
 
-
-                    {{-- Password --}}
                     <div>
 
                         <label
@@ -195,8 +184,6 @@
 
                     </div>
 
-
-                    {{-- Role --}}
                     <div>
 
                         <label
@@ -231,14 +218,11 @@
                                 Staff
                             </option>
 
-                            <option
-                                value="ADMIN"
-                                @selected(old('role') === 'ADMIN')
-                            >
-                                Admin
-                            </option>
-
                         </select>
+
+                        <p class="mt-1.5 text-sm text-[#8a9490]">
+                            USER dapat memakai email mahasiswa atau UNDIP. STAFF harus memakai @undip.ac.id.
+                        </p>
 
                         @error('role')
                             <p class="mt-1.5 text-xs text-[#a65f3e]">
@@ -248,8 +232,6 @@
 
                     </div>
 
-
-                    {{-- Active --}}
                     <div class="border border-[#e4e1da] bg-[#fafaf8] p-4">
 
                         <label class="flex cursor-pointer items-start gap-3">
@@ -286,8 +268,6 @@
 
                 </div>
 
-
-                {{-- Actions --}}
                 <div class="flex flex-col-reverse gap-3 border-t border-[#e4e1da] bg-[#fafaf8] px-6 py-4 sm:flex-row sm:justify-end">
 
                     <a

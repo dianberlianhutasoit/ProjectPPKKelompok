@@ -9,7 +9,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class EnsureUserActive
 {
-    // Pastikan yang login statusnya ACTIVE, kalau tidak langsung logout
     public function handle(Request $request, Closure $next): Response
     {
         $user = $request->user();

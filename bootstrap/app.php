@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Middleware\CheckRole;
+use App\Http\Middleware\EnsureUserActive;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -12,8 +14,8 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            'role' => \App\Http\Middleware\CheckRole::class,       // jaga halaman per role (ADMIN / STAFF / USER)
-            'active' => \App\Http\Middleware\EnsureUserActive::class,   // cuma yang ACTIVE boleh masuk
+            'role' => CheckRole::class,
+            'active' => EnsureUserActive::class,
         ]);
         $middleware->validateCsrfTokens(except: [
             'reservasi',
@@ -21,6 +23,4 @@ return Application::configure(basePath: dirname(__DIR__))
             'petugas/*',
         ]);
     })
-    ->withExceptions(function (Exceptions $exceptions): void {
-        //
-    })->create();
+    ->withExceptions(function (Exceptions $exceptions): void {})->create();

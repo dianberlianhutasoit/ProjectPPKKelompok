@@ -15,7 +15,7 @@ class UserVerificationTest extends TestCase
     {
         return User::create([
             'name' => 'Admin Test',
-            'email' => 'admin_' . uniqid() . '@students.undip.ac.id',
+            'email' => 'admin_'.uniqid().'@students.undip.ac.id',
             'password' => 'password123',
             'role' => 'ADMIN',
             'status' => 'ACTIVE',
@@ -36,7 +36,7 @@ class UserVerificationTest extends TestCase
     public function test_admin_cannot_reject_without_reason(): void
     {
         $admin = $this->makeAdmin();
-        $user = $this->makePendingUser('tolak_' . uniqid() . '@students.undip.ac.id');
+        $user = $this->makePendingUser('tolak_'.uniqid().'@students.undip.ac.id');
 
         $response = $this->actingAs($admin)->patch(
             route('admin.users.verify', $user),
@@ -51,7 +51,7 @@ class UserVerificationTest extends TestCase
     public function test_admin_can_reject_with_reason(): void
     {
         $admin = $this->makeAdmin();
-        $user = $this->makePendingUser('tolak_' . uniqid() . '@students.undip.ac.id');
+        $user = $this->makePendingUser('tolak_'.uniqid().'@students.undip.ac.id');
 
         $response = $this->actingAs($admin)->patch(
             route('admin.users.verify', $user),
@@ -64,9 +64,57 @@ class UserVerificationTest extends TestCase
         $this->assertEquals('Gunakan email domain kampus UNDIP.', $user->refresh()->rejection_reason);
     }
 
+    public function test_admin_can_approve_pending_user(): void
+    {
+        $admin = $this->makeAdmin();
+        $user = $this->makePendingUser('setuju_'.uniqid().'@students.undip.ac.id');
+
+        $response = $this->actingAs($admin)->patch(
+            route('admin.users.verify', $user),
+            ['action' => 'approve']
+        );
+
+        $response->assertSessionHasNoErrors();
+        $response->assertSessionHas('success');
+        $this->assertSame('ACTIVE', $user->refresh()->status);
+        $this->assertNull($user->refresh()->rejection_reason);
+    }
+
+    public function test_only_pending_user_accounts_can_be_verified(): void
+    {
+        $admin = $this->makeAdmin();
+        $cases = [
+            ['USER', 'ACTIVE'],
+            ['USER', 'REJECTED'],
+            ['USER', 'INACTIVE'],
+            ['STAFF', 'PENDING'],
+            ['ADMIN', 'PENDING'],
+        ];
+
+        foreach ($cases as [$role, $status]) {
+            $user = User::create([
+                'name' => 'Target '.$role.' '.$status,
+                'email' => strtolower($role).'_'.strtolower($status).'_'.uniqid().'@undip.ac.id',
+                'password' => 'password123',
+                'role' => $role,
+                'status' => $status,
+            ]);
+
+            $response = $this->actingAs($admin)->patch(
+                route('admin.users.verify', $user),
+                ['action' => 'approve']
+            );
+
+            $response->assertSessionHasErrors([
+                'user' => 'Hanya akun pengguna berstatus PENDING yang dapat diverifikasi.',
+            ]);
+            $this->assertSame($status, $user->refresh()->status);
+        }
+    }
+
     public function test_rejected_user_cannot_login(): void
     {
-        $email = 'ditolak_' . uniqid() . '@students.undip.ac.id';
+        $email = 'ditolak_'.uniqid().'@students.undip.ac.id';
         $user = $this->makePendingUser($email);
         $user->update(['status' => 'REJECTED', 'rejection_reason' => 'Gunakan email domain kampus UNDIP.']);
 
@@ -81,7 +129,7 @@ class UserVerificationTest extends TestCase
 
     public function test_rejected_login_message_contains_reason(): void
     {
-        $email = 'ditolak_' . uniqid() . '@students.undip.ac.id';
+        $email = 'ditolak_'.uniqid().'@students.undip.ac.id';
         $user = $this->makePendingUser($email);
         $user->update(['status' => 'REJECTED', 'rejection_reason' => 'Gunakan email domain kampus UNDIP.']);
 
@@ -97,7 +145,7 @@ class UserVerificationTest extends TestCase
 
     public function test_rejected_login_without_reason_uses_fallback_message(): void
     {
-        $email = 'ditolak_' . uniqid() . '@students.undip.ac.id';
+        $email = 'ditolak_'.uniqid().'@students.undip.ac.id';
         $user = $this->makePendingUser($email);
         $user->update(['status' => 'REJECTED', 'rejection_reason' => null]);
 
@@ -113,7 +161,7 @@ class UserVerificationTest extends TestCase
 
     public function test_rejected_user_can_reregister_with_same_email(): void
     {
-        $email = 'ulang_' . uniqid() . '@students.undip.ac.id';
+        $email = 'ulang_'.uniqid().'@students.undip.ac.id';
         $user = $this->makePendingUser($email);
         $user->update(['status' => 'REJECTED', 'rejection_reason' => 'Data tidak valid.']);
 
@@ -133,7 +181,7 @@ class UserVerificationTest extends TestCase
 
     public function test_reregister_reuses_record_and_updates_data(): void
     {
-        $email = 'ulang_' . uniqid() . '@students.undip.ac.id';
+        $email = 'ulang_'.uniqid().'@students.undip.ac.id';
         $user = $this->makePendingUser($email);
         $user->update(['status' => 'REJECTED', 'rejection_reason' => 'Data tidak valid.']);
         $oldId = $user->id;
@@ -158,7 +206,7 @@ class UserVerificationTest extends TestCase
 
     public function test_pending_email_cannot_reregister(): void
     {
-        $email = 'pending_' . uniqid() . '@students.undip.ac.id';
+        $email = 'pending_'.uniqid().'@students.undip.ac.id';
         $this->makePendingUser($email);
         $countBefore = User::count();
 
@@ -177,7 +225,7 @@ class UserVerificationTest extends TestCase
 
     public function test_active_email_cannot_reregister(): void
     {
-        $email = 'aktif_' . uniqid() . '@students.undip.ac.id';
+        $email = 'aktif_'.uniqid().'@students.undip.ac.id';
         $user = $this->makePendingUser($email);
         $user->update(['status' => 'ACTIVE']);
         $countBefore = User::count();
@@ -197,7 +245,7 @@ class UserVerificationTest extends TestCase
 
     public function test_inactive_email_cannot_reregister(): void
     {
-        $email = 'nonaktif_' . uniqid() . '@students.undip.ac.id';
+        $email = 'nonaktif_'.uniqid().'@students.undip.ac.id';
         $user = $this->makePendingUser($email);
         $user->update(['status' => 'INACTIVE']);
         $countBefore = User::count();
@@ -218,7 +266,7 @@ class UserVerificationTest extends TestCase
     public function test_reregistered_user_can_login_after_approve(): void
     {
         $admin = $this->makeAdmin();
-        $email = 'ulang_' . uniqid() . '@students.undip.ac.id';
+        $email = 'ulang_'.uniqid().'@students.undip.ac.id';
         $user = $this->makePendingUser($email);
         $user->update(['status' => 'REJECTED', 'rejection_reason' => 'Data tidak valid.']);
 
@@ -249,7 +297,7 @@ class UserVerificationTest extends TestCase
 
     public function test_register_with_students_domain_creates_pending_user(): void
     {
-        $email = 'maba_' . uniqid() . '@students.undip.ac.id';
+        $email = 'maba_'.uniqid().'@students.undip.ac.id';
 
         $response = $this->post('/register', [
             'name' => 'Mahasiswa Baru',
@@ -265,7 +313,7 @@ class UserVerificationTest extends TestCase
 
     public function test_register_with_undip_domain_creates_pending_user(): void
     {
-        $email = 'dosen_' . uniqid() . '@undip.ac.id';
+        $email = 'dosen_'.uniqid().'@undip.ac.id';
 
         $response = $this->post('/register', [
             'name' => 'Dosen Baru',
@@ -285,7 +333,7 @@ class UserVerificationTest extends TestCase
 
         $response = $this->post('/register', [
             'name' => 'User Gmail',
-            'email' => 'dian' . uniqid() . '@gmail.com',
+            'email' => 'dian'.uniqid().'@gmail.com',
             'password' => 'password123',
             'password_confirmation' => 'password123',
         ]);
@@ -302,7 +350,7 @@ class UserVerificationTest extends TestCase
 
         $response = $this->post('/register', [
             'name' => 'User Palsu',
-            'email' => 'user' . uniqid() . '@students.undip.ac.id.fake.com',
+            'email' => 'user'.uniqid().'@students.undip.ac.id.fake.com',
             'password' => 'password123',
             'password_confirmation' => 'password123',
         ]);
@@ -315,14 +363,14 @@ class UserVerificationTest extends TestCase
 
     public function test_rejected_reregister_still_requires_undip_domain(): void
     {
-        $email = 'ulang_' . uniqid() . '@students.undip.ac.id';
+        $email = 'ulang_'.uniqid().'@students.undip.ac.id';
         $user = $this->makePendingUser($email);
         $user->update(['status' => 'REJECTED', 'rejection_reason' => 'Data tidak valid.']);
         $countBefore = User::count();
 
         $response = $this->post('/register', [
             'name' => 'Nama Baru',
-            'email' => 'ulang' . uniqid() . '@gmail.com',
+            'email' => 'ulang'.uniqid().'@gmail.com',
             'password' => 'passwordbaru123',
             'password_confirmation' => 'passwordbaru123',
         ]);

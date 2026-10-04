@@ -6,18 +6,13 @@
 
 <div class="space-y-10">
 
-    {{-- =========================================================
-        HERO
-    ========================================================== --}}
     <section class="relative overflow-hidden rounded-[28px] bg-[#2f625b]">
 
-        {{-- Decorative background --}}
         <div class="absolute -right-24 -top-24 h-80 w-80 rounded-full bg-[#dce9c9]/10"></div>
         <div class="absolute -bottom-32 -left-20 h-96 w-96 rounded-full bg-[#a65f3e]/10"></div>
 
         <div class="relative grid min-h-[390px] lg:grid-cols-[1.05fr_0.95fr]">
 
-            {{-- Hero text --}}
             <div class="flex flex-col justify-center px-7 py-12 sm:px-10 lg:px-14">
 
                 <h1 class="mt-6 max-w-xl text-5xl font-bold leading-tight tracking-tight text-white sm:text-6xl">
@@ -30,12 +25,10 @@
 
                 </h1>
 
-
                 <p class="mt-5 max-w-lg text-base leading-7 text-[#e5eeea] sm:text-lg">
                     Temukan ruang dan fasilitas kampus yang sesuai
                     dengan kebutuhan kegiatan akademik maupun non-akademik.
                 </p>
-
 
                 <div class="mt-8 flex flex-wrap gap-3">
 
@@ -47,13 +40,10 @@
                         <span class="text-lg">↓</span>
                     </a>
 
-
                     <div class="inline-flex items-center rounded-full border border-white/25 bg-white/10 px-5 py-3.5 text-base font-medium text-white">
                         07:00 — 20:00
                     </div>
 
-
-                    {{-- Admin only --}}
                     @auth
                         @if(auth()->user()->role === 'ADMIN')
 
@@ -72,22 +62,16 @@
 
             </div>
 
-
-            {{-- Hero visual --}}
             <div class="relative hidden min-h-[390px] lg:block">
 
                 <div class="absolute inset-0 flex items-center justify-center px-12">
 
                     <div class="relative w-full max-w-md">
 
-                        {{-- Building visual --}}
                         <div class="overflow-hidden rounded-[26px] bg-[#f3f1ec] shadow-2xl">
 
-                            {{-- Roof --}}
                             <div class="h-9 bg-[#263634]"></div>
 
-
-                            {{-- Building --}}
                             <div class="grid grid-cols-3 gap-3 bg-[#e8e5dc] p-7">
 
                                 <div class="h-28 rounded-xl bg-[#d4dfd8]"></div>
@@ -95,7 +79,6 @@
                                 <div class="h-28 rounded-xl bg-[#c5d5cd]"></div>
 
                                 <div class="h-28 rounded-xl bg-[#d4dfd8]"></div>
-
 
                                 <div class="h-20 rounded-xl bg-[#b9cbc2]"></div>
 
@@ -105,8 +88,6 @@
 
                             </div>
 
-
-                            {{-- Ground --}}
                             <div class="h-9 bg-[#dce9c9]"></div>
 
                         </div>
@@ -121,10 +102,6 @@
 
     </section>
 
-
-    {{-- =========================================================
-        SEARCH / FILTER
-    ========================================================== --}}
     <section class="-mt-16 relative z-10 px-4 sm:px-8">
 
         <div class="rounded-[22px] border border-[#dedbd3] bg-[#f3f1ec] p-3 shadow-[0_12px_35px_rgba(38,54,52,0.10)]">
@@ -135,7 +112,6 @@
                 class="grid grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-[1.3fr_0.8fr_0.8fr_auto]"
             >
 
-                {{-- Type --}}
                 <div class="relative">
 
                     <label
@@ -168,15 +144,12 @@
 
                     </select>
 
-
                     <span class="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-base text-[#7b8581]">
                         ↓
                     </span>
 
                 </div>
 
-
-                {{-- Location --}}
                 <div>
 
                     <label
@@ -198,8 +171,6 @@
 
                 </div>
 
-
-                {{-- Capacity --}}
                 <div>
 
                     <label
@@ -221,8 +192,6 @@
 
                 </div>
 
-
-                {{-- Search --}}
                 <div class="flex gap-2">
 
                     <button
@@ -231,7 +200,6 @@
                     >
                         Cari
                     </button>
-
 
                     @if(
                         ($filters['type'] ?? '') ||
@@ -256,13 +224,8 @@
 
     </section>
 
-
-    {{-- =========================================================
-        QUICK INFO
-    ========================================================== --}}
     <section class="grid gap-4 sm:grid-cols-3">
 
-        {{-- Catalog --}}
         <div class="rounded-[18px] border border-[#ddd9d0] bg-white px-6 py-6">
 
             <div class="flex items-center justify-between">
@@ -283,7 +246,6 @@
 
                 </div>
 
-
                 <div class="flex h-12 w-12 items-center justify-center rounded-full bg-[#e6f0ea] text-xl text-[#2f625b]">
                     ▦
                 </div>
@@ -292,8 +254,6 @@
 
         </div>
 
-
-        {{-- Operating --}}
         <div class="rounded-[18px] border border-[#ddd9d0] bg-white px-6 py-6">
 
             <div class="flex items-center justify-between">
@@ -314,7 +274,6 @@
 
                 </div>
 
-
                 <div class="flex h-12 w-12 items-center justify-center rounded-full bg-[#f3f1ec] text-xl text-[#2f625b]">
                     ◷
                 </div>
@@ -323,8 +282,6 @@
 
         </div>
 
-
-        {{-- Reservation --}}
         <div class="rounded-[18px] border border-[#ddd9d0] bg-white px-6 py-6">
 
             <div class="flex items-center justify-between">
@@ -345,7 +302,6 @@
 
                 </div>
 
-
                 <div class="flex h-12 w-12 items-center justify-center rounded-full bg-[#f4e9dd] text-xl text-[#a65f3e]">
                     ◫
                 </div>
@@ -356,10 +312,6 @@
 
     </section>
 
-
-    {{-- =========================================================
-        FACILITY HEADER
-    ========================================================== --}}
     <section
         id="daftar-fasilitas"
         class="scroll-mt-28"
@@ -369,13 +321,11 @@
             Explore
         </p>
 
-
         <div class="mt-2 flex items-center gap-3">
 
             <h2 class="text-4xl font-bold tracking-tight text-[#263634]">
                 Semua Fasilitas
             </h2>
-
 
             <span class="rounded-full bg-[#e6f0ea] px-3.5 py-1.5 text-sm font-bold text-[#2f625b]">
                 {{ $facilities->count() }}
@@ -383,17 +333,12 @@
 
         </div>
 
-
         <p class="mt-3 text-base leading-7 text-[#68736f]">
             Pilih fasilitas untuk melihat informasi dan jadwal ketersediaannya.
         </p>
 
     </section>
 
-
-    {{-- =========================================================
-        FACILITY CARDS
-    ========================================================== --}}
     @if($facilities->count())
 
         <section class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -404,22 +349,14 @@
                     class="group flex flex-col overflow-hidden rounded-[22px] border border-[#ddd9d0] bg-white transition duration-300 hover:-translate-y-1 hover:border-[#b8c9c3] hover:shadow-[0_14px_35px_rgba(38,54,52,0.10)]"
                 >
 
-                    {{-- =================================================
-                        IMAGE PLACEHOLDER
-                    ================================================== --}}
                     <div class="relative h-56 overflow-hidden bg-[#e6f0ea]">
 
-                        {{-- Background --}}
                         <div class="absolute inset-0 bg-gradient-to-br from-[#dce9c9] via-[#e6f0ea] to-[#cbdcd4]"></div>
 
-
-                        {{-- Decorative circles --}}
                         <div class="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/30"></div>
 
                         <div class="absolute -bottom-16 -left-8 h-44 w-44 rounded-full bg-[#2f625b]/10"></div>
 
-
-                        {{-- Facility icon --}}
                         <div class="absolute inset-0 flex items-center justify-center">
 
                             <div class="flex h-28 w-28 items-center justify-center rounded-[28px] bg-white/80 shadow-sm backdrop-blur-sm">
@@ -466,8 +403,6 @@
 
                         </div>
 
-
-                        {{-- Status --}}
                         <div class="absolute right-4 top-4">
 
                             @if($f->status === 'AVAILABLE')
@@ -504,8 +439,6 @@
 
                         </div>
 
-
-                        {{-- Type --}}
                         <div class="absolute bottom-4 left-4">
 
                             <span class="rounded-full bg-white/90 px-3.5 py-2 text-sm font-bold text-[#2f625b] shadow-sm backdrop-blur-sm">
@@ -516,19 +449,13 @@
 
                     </div>
 
-
-                    {{-- =================================================
-                        CARD CONTENT
-                    ================================================== --}}
                     <div class="flex flex-1 flex-col p-6">
 
-                        {{-- Name + description --}}
                         <div>
 
                             <h3 class="text-2xl font-bold leading-8 text-[#263634]">
                                 {{ $f->name }}
                             </h3>
-
 
                             @if($f->description)
 
@@ -546,8 +473,6 @@
 
                         </div>
 
-
-                        {{-- Information --}}
                         <div class="mt-6 grid grid-cols-2 gap-3">
 
                             <div class="rounded-xl bg-[#f5f3ee] px-4 py-3.5">
@@ -561,7 +486,6 @@
                                 </p>
 
                             </div>
-
 
                             <div class="rounded-xl bg-[#f5f3ee] px-4 py-3.5">
 
@@ -577,8 +501,6 @@
 
                         </div>
 
-
-                        {{-- Action --}}
                         <div class="mt-6 flex items-center justify-between gap-3">
 
                             <a
@@ -592,7 +514,6 @@
                                 </span>
 
                             </a>
-
 
                             @auth
 
@@ -621,26 +542,20 @@
 
     @else
 
-        {{-- =========================================================
-            EMPTY STATE
-        ========================================================== --}}
         <section class="rounded-[24px] border border-dashed border-[#cbc8c0] bg-white px-6 py-16 text-center">
 
             <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-[#e6f0ea] text-3xl text-[#2f625b]">
                 ⌕
             </div>
 
-
             <h2 class="mt-5 text-2xl font-bold text-[#263634]">
                 Belum ada fasilitas
             </h2>
-
 
             <p class="mx-auto mt-3 max-w-md text-base leading-7 text-[#7a8581]">
                 Tidak ada fasilitas yang sesuai dengan filter yang dipilih.
                 Coba ubah filter atau tampilkan seluruh fasilitas.
             </p>
-
 
             <a
                 href="{{ route('facilities.index') }}"

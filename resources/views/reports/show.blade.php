@@ -19,7 +19,6 @@
 
     <div class="border border-[#dedbd3] bg-white">
 
-        {{-- Header --}}
         <div class="border-b border-[#e4e1da] p-6">
 
             <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -39,7 +38,6 @@
                     </p>
 
                 </div>
-
 
                 @if($report->status === 'NEW')
 
@@ -71,8 +69,6 @@
 
         </div>
 
-
-        {{-- Content --}}
         <div class="space-y-6 p-6">
 
             <div>
@@ -87,7 +83,6 @@
 
             </div>
 
-
             <div>
 
                 <p class="text-xs font-bold uppercase tracking-wide text-[#68736f]">
@@ -99,7 +94,6 @@
                 </p>
 
             </div>
-
 
             @if($report->photo)
 
@@ -122,7 +116,6 @@
                 </div>
 
             @endif
-
 
             <div class="border-t border-[#eeeae4] pt-6">
 

@@ -6,7 +6,6 @@
 
 <div class="mx-auto max-w-6xl">
 
-    {{-- Back --}}
     <div class="mb-6">
         <a
             href="{{ route('staff.reports.index') }}"
@@ -16,17 +15,10 @@
         </a>
     </div>
 
-
     <div class="grid gap-6 lg:grid-cols-[1fr_390px]">
-
-
-        {{-- ================================================== --}}
-        {{-- DETAIL LAPORAN --}}
-        {{-- ================================================== --}}
 
         <div class="border border-[#dedbd3] bg-white">
 
-            {{-- Header --}}
             <div class="border-b border-[#e4e1da] p-6">
 
                 <p class="text-xs font-bold uppercase tracking-[0.14em] text-[#2f625b]">
@@ -43,15 +35,10 @@
 
             </div>
 
-
-            {{-- Detail Content --}}
             <div class="space-y-6 p-6">
 
-
-                {{-- STATUS --}}
                 <div class="grid gap-5 sm:grid-cols-2">
 
-                    {{-- Status Laporan --}}
                     <div class="border border-[#eeeae4] bg-[#faf9f6] px-4 py-4">
 
                         <p class="text-xs font-bold uppercase tracking-wide text-[#68736f]">
@@ -90,8 +77,6 @@
 
                     </div>
 
-
-                    {{-- Status Fasilitas --}}
                     <div class="border border-[#eeeae4] bg-[#faf9f6] px-4 py-4">
 
                         <p class="text-xs font-bold uppercase tracking-wide text-[#68736f]">
@@ -134,11 +119,8 @@
 
                 </div>
 
-
-                {{-- KATEGORI + DESKRIPSI --}}
                 <div class="grid gap-5 sm:grid-cols-2">
 
-                    {{-- Kategori --}}
                     <div class="border border-[#eeeae4] bg-[#faf9f6] px-4 py-4">
 
                         <p class="text-xs font-bold uppercase tracking-wide text-[#68736f]">
@@ -151,8 +133,6 @@
 
                     </div>
 
-
-                    {{-- Deskripsi --}}
                     <div class="border border-[#eeeae4] bg-[#faf9f6] px-4 py-4">
 
                         <p class="text-xs font-bold uppercase tracking-wide text-[#68736f]">
@@ -167,8 +147,6 @@
 
                 </div>
 
-
-                {{-- FOTO --}}
                 @if($report->photo)
 
                     <div>
@@ -191,8 +169,6 @@
 
                 @endif
 
-
-                {{-- CATATAN RESOLUSI --}}
                 @if($report->resolution_note)
 
                     <div class="border-t border-[#eeeae4] pt-5">
@@ -217,12 +193,6 @@
 
         </div>
 
-
-
-        {{-- ================================================== --}}
-        {{-- TINDAKAN PETUGAS --}}
-        {{-- ================================================== --}}
-
         <div class="h-fit border border-[#dedbd3] bg-white">
 
             <div class="border-b border-[#e4e1da] p-6">
@@ -242,7 +212,6 @@
 
             </div>
 
-
             <form
                 id="report-update-form"
                 action="{{ route('staff.reports.update', $report) }}"
@@ -253,8 +222,6 @@
                 @csrf
                 @method('PATCH')
 
-
-                {{-- STATUS --}}
                 <div>
 
                     <label
@@ -303,8 +270,6 @@
 
                 </div>
 
-
-                {{-- PENJELASAN STATUS --}}
                 <div
                     id="status-guide"
                     class="border border-[#dedbd3] bg-[#f7f6f2] px-4 py-4"
@@ -322,8 +287,6 @@
 
                 </div>
 
-
-                {{-- RESOLUTION NOTE --}}
                 <div>
 
                     <label
@@ -358,8 +321,6 @@
 
                 </div>
 
-
-                {{-- SAVE --}}
                 <button
                     type="submit"
                     class="w-full rounded-lg bg-[#2f625b] px-5 py-3 text-base font-semibold text-white transition hover:bg-[#244d48] focus:outline-none focus:ring-4 focus:ring-[#2f625b]/20"
@@ -375,8 +336,6 @@
 
 </div>
 
-
-
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -389,11 +348,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const requiredLabel = document.getElementById('required-label');
     const resolutionHelp = document.getElementById('resolution-help');
 
-
     function updateStatusGuide() {
 
         const value = status.value;
-
 
         if (value === 'NEW') {
 
@@ -420,7 +377,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 'Catatan resolusi belum wajib diisi pada status Baru.';
         }
 
-
         else if (value === 'PROCESSING') {
 
             guide.className =
@@ -446,7 +402,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 'Catatan penanganan dapat diisi selama proses perbaikan.';
         }
 
-
         else if (value === 'COMPLETED') {
 
             guide.className =
@@ -471,7 +426,6 @@ document.addEventListener('DOMContentLoaded', function () {
             resolutionHelp.textContent =
                 'Catatan resolusi wajib diisi. Jelaskan tindakan dan hasil perbaikan yang dilakukan.';
         }
-
 
         else if (value === 'REJECTED') {
 
@@ -500,12 +454,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     }
 
-
     status.addEventListener(
         'change',
         updateStatusGuide
     );
-
 
     form.addEventListener(
         'submit',
@@ -514,7 +466,6 @@ document.addEventListener('DOMContentLoaded', function () {
             const requiresNote =
                 status.value === 'COMPLETED'
                 || status.value === 'REJECTED';
-
 
             if (
                 requiresNote
@@ -535,7 +486,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         }
     );
-
 
     updateStatusGuide();
 

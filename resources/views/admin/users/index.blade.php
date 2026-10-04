@@ -6,7 +6,6 @@
 
 <div class="mx-auto max-w-7xl">
 
-    {{-- Header --}}
     <div class="mb-7 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
 
         <div>
@@ -34,8 +33,6 @@
 
     </div>
 
-
-    {{-- Flash Message --}}
     @if(session('success'))
 
         <div class="mb-5 border border-[#cfe0d7] bg-[#edf5f0] px-4 py-3 text-sm font-medium text-[#426b5a]">
@@ -60,10 +57,8 @@
 
     @endif
 
-
     @if($users->count())
 
-        {{-- Desktop Table --}}
         <div class="hidden overflow-hidden border border-[#dedbd3] bg-white md:block">
 
             <div class="overflow-x-auto">
@@ -98,14 +93,12 @@
 
                     </thead>
 
-
                     <tbody class="divide-y divide-[#ece9e3]">
 
                         @foreach($users as $user)
 
                             <tr class="transition hover:bg-[#fafaf8]">
 
-                                {{-- User --}}
                                 <td class="px-5 py-5">
 
                                     <div class="flex items-center gap-3">
@@ -130,8 +123,6 @@
 
                                 </td>
 
-
-                                {{-- Role --}}
                                 <td class="px-5 py-5">
 
                                     @if($user->role === 'ADMIN')
@@ -156,8 +147,6 @@
 
                                 </td>
 
-
-                                {{-- Status --}}
                                 <td class="px-5 py-5">
 
                                     @if($user->status === 'ACTIVE')
@@ -212,8 +201,6 @@
 
                                 </td>
 
-
-                                {{-- Date --}}
                                 <td class="px-5 py-5">
 
                                     <span class="text-sm text-[#596460]">
@@ -222,8 +209,6 @@
 
                                 </td>
 
-
-                                {{-- Action --}}
                                 <td class="px-5 py-5">
 
                                     @if(auth()->id() === $user->id)
@@ -259,7 +244,6 @@
                                                 </button>
 
                                             </form>
-
 
                                             <button
                                                 type="button"
@@ -313,8 +297,6 @@
 
         </div>
 
-
-        {{-- Mobile Cards --}}
         <div class="space-y-4 md:hidden">
 
             @foreach($users as $user)
@@ -341,7 +323,6 @@
 
                     </div>
 
-
                     <div class="mt-5 grid grid-cols-2 gap-4 border-t border-[#eeeae4] pt-4">
 
                         <div>
@@ -355,7 +336,6 @@
                             </p>
 
                         </div>
-
 
                         <div>
 
@@ -399,7 +379,6 @@
 
                         </div>
 
-
                         <div>
 
                             <p class="text-xs font-semibold uppercase tracking-wide text-[#8a9490]">
@@ -413,7 +392,6 @@
                         </div>
 
                     </div>
-
 
                     @if(auth()->id() !== $user->id && in_array($user->status, ['PENDING', 'ACTIVE']))
 
@@ -446,7 +424,6 @@
                                         </button>
 
                                     </form>
-
 
                                     <button
                                         type="button"
@@ -490,8 +467,6 @@
 
         </div>
 
-
-        {{-- Pagination --}}
         @if(method_exists($users, 'links'))
 
             <div class="mt-5">
@@ -499,7 +474,6 @@
             </div>
 
         @endif
-
 
     @else
 
@@ -530,7 +504,6 @@
 
 </div>
 
-{{-- Modal alasan penolakan (dipakai desktop & mobile) --}}
 <div
     id="reject-reason-modal"
     class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 px-4"

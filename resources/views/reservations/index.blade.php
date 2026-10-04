@@ -1,4 +1,3 @@
-```blade
 @extends('layouts.app')
 
 @section('title', 'Reservasi Saya - Campus Facility System')
@@ -7,7 +6,6 @@
 
 <div class="mx-auto max-w-6xl">
 
-    {{-- Header --}}
     <div class="mb-7 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
             <p class="text-xs font-bold uppercase tracking-[0.18em] text-[#2f625b]">
@@ -31,24 +29,18 @@
         </a>
     </div>
 
-
-    {{-- Success Message --}}
     @if(session('success'))
         <div class="mb-6 rounded-2xl border border-[#cfe1d6] bg-[#e6f0ea] px-5 py-4 text-sm font-medium text-[#426b5a]">
             {{ session('success') }}
         </div>
     @endif
 
-
-    {{-- Error Message --}}
     @if(session('error'))
         <div class="mb-6 rounded-2xl border border-[#e4d1ca] bg-[#f3e8e5] px-5 py-4 text-sm font-medium text-[#765f59]">
             {{ session('error') }}
         </div>
     @endif
 
-
-    {{-- Validation Errors --}}
     @if($errors->any())
         <div class="mb-6 rounded-2xl border border-[#e4d1ca] bg-[#f3e8e5] px-5 py-4">
             <p class="mb-2 text-sm font-bold text-[#765f59]">
@@ -63,15 +55,10 @@
         </div>
     @endif
 
-
-    {{-- Reservation Container --}}
     <div class="overflow-hidden rounded-[28px] border border-[#ddd9d0] bg-white shadow-sm">
 
         @if($reservations->count())
 
-            {{-- =====================================================
-                DESKTOP TABLE
-            ====================================================== --}}
             <div class="hidden overflow-x-auto md:block">
 
                 <table class="w-full text-left">
@@ -79,27 +66,22 @@
                     <thead class="border-b border-[#e4e1da] bg-[#f7f6f2]">
                         <tr>
 
-                            {{-- Facility --}}
                             <th class="px-5 py-4 text-xs font-bold uppercase tracking-wide text-[#737d79]">
                                 Fasilitas
                             </th>
 
-                            {{-- Schedule --}}
                             <th class="px-5 py-4 text-xs font-bold uppercase tracking-wide text-[#737d79]">
                                 Jadwal
                             </th>
 
-                            {{-- Status --}}
                             <th class="px-5 py-4 text-xs font-bold uppercase tracking-wide text-[#737d79]">
                                 Status
                             </th>
 
-                            {{-- Empty header for arrow --}}
                             <th class="w-12 px-4 py-4"></th>
 
                         </tr>
                     </thead>
-
 
                     <tbody class="divide-y divide-[#ece9e3]">
 
@@ -107,9 +89,6 @@
 
                             <tr class="transition hover:bg-[#fafaf8]">
 
-                                {{-- =================================================
-                                    FACILITY
-                                ================================================== --}}
                                 <td class="px-5 py-5 align-top">
 
                                     <p class="text-base font-bold text-[#263634]">
@@ -122,10 +101,6 @@
 
                                 </td>
 
-
-                                {{-- =================================================
-                                    SCHEDULE
-                                ================================================== --}}
                                 <td class="px-5 py-5 align-top">
 
                                     <p class="text-base font-semibold text-[#43504d]">
@@ -140,10 +115,6 @@
 
                                 </td>
 
-
-                                {{-- =================================================
-                                    STATUS
-                                ================================================== --}}
                                 <td class="px-5 py-5 align-top">
 
                                     @if($reservation->status === 'APPROVED')
@@ -174,10 +145,6 @@
 
                                 </td>
 
-
-                                {{-- =================================================
-                                    DETAIL ARROW
-                                ================================================== --}}
                                 <td class="w-12 px-4 py-5 text-right align-middle">
 
                                     <button
@@ -201,17 +168,12 @@
 
             </div>
 
-
-            {{-- =====================================================
-                MOBILE CARDS
-            ====================================================== --}}
             <div class="space-y-4 p-4 md:hidden">
 
                 @foreach($reservations as $reservation)
 
                     <div class="rounded-2xl border border-[#e4e1da] bg-[#fafaf8] p-5">
 
-                        {{-- Facility --}}
                         <div>
                             <p class="text-base font-bold text-[#263634]">
                                 {{ $reservation->facility->name ?? '-' }}
@@ -222,8 +184,6 @@
                             </p>
                         </div>
 
-
-                        {{-- Schedule --}}
                         <div class="mt-4">
 
                             <p class="text-xs font-bold uppercase tracking-wide text-[#7b8581]">
@@ -242,8 +202,6 @@
 
                         </div>
 
-
-                        {{-- Status --}}
                         <div class="mt-4">
 
                             <p class="text-xs font-bold uppercase tracking-wide text-[#7b8581]">
@@ -282,8 +240,6 @@
 
                         </div>
 
-
-                        {{-- Detail Arrow --}}
                         <div class="mt-5 flex justify-end border-t border-[#eeeae4] pt-4">
 
                             <button
@@ -305,9 +261,6 @@
 
         @else
 
-            {{-- =====================================================
-                EMPTY STATE
-            ====================================================== --}}
             <div class="px-6 py-16 text-center">
 
                 <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#e6f0ea] text-3xl">
@@ -337,11 +290,6 @@
 
 </div>
 
-
-{{-- =============================================================
-    RESERVATION DETAIL MODALS
-============================================================= --}}
-
 @foreach($reservations as $reservation)
 
     <div
@@ -355,7 +303,6 @@
             onclick="event.stopPropagation()"
         >
 
-            {{-- Modal Header --}}
             <div class="flex items-start justify-between border-b border-[#e4e1da] px-6 py-5">
 
                 <div>
@@ -378,11 +325,8 @@
 
             </div>
 
-
-            {{-- Modal Content --}}
             <div class="space-y-5 px-6 py-6">
 
-                {{-- Facility --}}
                 <div>
                     <p class="text-xs font-bold uppercase tracking-wide text-[#7b8581]">
                         Fasilitas
@@ -393,8 +337,6 @@
                     </p>
                 </div>
 
-
-                {{-- Location --}}
                 <div>
                     <p class="text-xs font-bold uppercase tracking-wide text-[#7b8581]">
                         Lokasi
@@ -405,8 +347,6 @@
                     </p>
                 </div>
 
-
-                {{-- Date --}}
                 <div>
                     <p class="text-xs font-bold uppercase tracking-wide text-[#7b8581]">
                         Tanggal
@@ -417,8 +357,6 @@
                     </p>
                 </div>
 
-
-                {{-- Time --}}
                 <div>
                     <p class="text-xs font-bold uppercase tracking-wide text-[#7b8581]">
                         Waktu
@@ -431,8 +369,6 @@
                     </p>
                 </div>
 
-
-                {{-- Participants --}}
                 <div>
                     <p class="text-xs font-bold uppercase tracking-wide text-[#7b8581]">
                         Jumlah Peserta
@@ -443,8 +379,6 @@
                     </p>
                 </div>
 
-
-                {{-- Purpose --}}
                 <div>
                     <p class="text-xs font-bold uppercase tracking-wide text-[#7b8581]">
                         Tujuan Reservasi
@@ -457,8 +391,6 @@
                     </div>
                 </div>
 
-
-                {{-- Status --}}
                 <div>
                     <p class="text-xs font-bold uppercase tracking-wide text-[#7b8581]">
                         Status
@@ -496,8 +428,6 @@
 
                 </div>
 
-
-                {{-- Rejection / Cancellation Reason --}}
                 @if(
                     !empty($reservation->cancel_reason) ||
                     !empty($reservation->rejection_reason) ||
@@ -528,11 +458,8 @@
 
             </div>
 
-
-            {{-- Modal Footer --}}
             <div class="flex flex-col-reverse gap-3 border-t border-[#e4e1da] px-6 py-5 sm:flex-row sm:items-center sm:justify-end">
 
-                {{-- Close --}}
                 <button
                     type="button"
                     onclick="closeReservationDetail({{ $reservation->id }})"
@@ -541,8 +468,6 @@
                     Tutup
                 </button>
 
-
-                {{-- Cancel --}}
                 @if($reservation->status === 'PENDING')
 
                     <form
@@ -573,11 +498,6 @@
 
 @endforeach
 
-
-{{-- =============================================================
-    MODAL SCRIPT
-============================================================= --}}
-
 <script>
 
     function openReservationDetail(id) {
@@ -594,7 +514,6 @@
         document.body.classList.add('overflow-hidden');
     }
 
-
     function closeReservationDetail(id) {
 
         const modal = document.getElementById('reservation-detail-' + id);
@@ -608,7 +527,6 @@
 
         document.body.classList.remove('overflow-hidden');
     }
-
 
     document.addEventListener('keydown', function(event) {
 
@@ -634,4 +552,3 @@
 </script>
 
 @endsection
-```

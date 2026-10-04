@@ -43,12 +43,12 @@ class ReservationTimeRuleTest extends TestCase
 
     public function test_rounding_to_next_30_minute_slot(): void
     {
-        // 10:10 + 2 jam = 12:10 -> 12:30
+        // 10:10 plus two hours rounds up to 12:30.
         $this->assertEquals('12:30', ReservationRequest::roundedMinimumStart(Carbon::create(2026, 10, 5, 10, 10))->format('H:i'));
-        // Tepat di slot -> tidak berubah
+        // 10:30 is already a valid slot.
         $this->assertEquals('12:30', ReservationRequest::roundedMinimumStart(Carbon::create(2026, 10, 5, 10, 30))->format('H:i'));
         $this->assertEquals('12:00', ReservationRequest::roundedMinimumStart(Carbon::create(2026, 10, 5, 10, 0))->format('H:i'));
-        // Lewat :30 -> jam berikutnya
+        // Times past :30 round up to the next hour.
         $this->assertEquals('13:00', ReservationRequest::roundedMinimumStart(Carbon::create(2026, 10, 5, 10, 31))->format('H:i'));
         $this->assertEquals('13:00', ReservationRequest::roundedMinimumStart(Carbon::create(2026, 10, 5, 10, 45))->format('H:i'));
     }
@@ -61,7 +61,7 @@ class ReservationTimeRuleTest extends TestCase
 
         $response = $this->actingAs($user)->post(route('reservations.store', $facility), [
             'date' => '2026-10-05',
-            'start_time' => '12:00', // minimum valid 12:30
+            'start_time' => '12:00',
             'end_time' => '12:30',
             'participants' => 5,
             'purpose' => 'Rapat',
@@ -115,7 +115,7 @@ class ReservationTimeRuleTest extends TestCase
 
     public function test_same_day_rejected_when_minimum_past_operating_hours(): void
     {
-        Carbon::setTestNow(Carbon::create(2026, 10, 5, 18, 0)); // minimum 20:00 > 19:30
+        Carbon::setTestNow(Carbon::create(2026, 10, 5, 18, 0));
         $user = $this->makeUser();
         $facility = $this->makeFacility();
 

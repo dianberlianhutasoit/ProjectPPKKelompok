@@ -6,7 +6,6 @@
 
 <div class="mx-auto max-w-5xl">
 
-    {{-- Header --}}
     <div class="mb-7">
 
         <a
@@ -34,7 +33,6 @@
 
     <div class="grid gap-6 lg:grid-cols-[320px_1fr]">
 
-        {{-- Facility Information --}}
         <div class="h-fit border border-[#dedbd3] bg-white">
 
             <div class="border-b border-[#e4e1da] px-5 py-4">
@@ -94,8 +92,6 @@
             </div>
         </div>
 
-
-        {{-- Reservation Form --}}
         <div class="border border-[#dedbd3] bg-white">
 
             <div class="border-b border-[#e4e1da] px-6 py-5">
@@ -120,7 +116,6 @@
 
                 <div class="space-y-5 p-6">
 
-                    {{-- Nama Pemohon --}}
                     <div>
 
                         <label
@@ -140,8 +135,6 @@
 
                     </div>
 
-
-                    {{-- Date --}}
                     <div>
 
                         <label
@@ -174,8 +167,6 @@
 
                     </div>
 
-
-                    {{-- Time --}}
                     <div class="grid gap-5 sm:grid-cols-2">
 
                         <div>
@@ -206,7 +197,6 @@
                             @enderror
 
                         </div>
-
 
                         <div>
 
@@ -239,8 +229,6 @@
 
                     </div>
 
-
-                    {{-- Participants --}}
                     <div>
 
                         <label
@@ -273,8 +261,6 @@
 
                     </div>
 
-
-                    {{-- Purpose --}}
                     <div>
 
                         <label
@@ -304,8 +290,6 @@
 
                 </div>
 
-
-                {{-- Actions --}}
                 <div class="flex flex-col-reverse gap-3 border-t border-[#e4e1da] bg-[#fafaf8] px-6 py-4 sm:flex-row sm:justify-end">
 
                     <a
@@ -333,7 +317,6 @@
 
 </div>
 
-
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -344,7 +327,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const submitButton = document.getElementById('submit-reservation');
 
     const pad = (number) => String(number).padStart(2, '0');
-
 
     function getTodayString() {
 
@@ -358,20 +340,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
     }
 
-
     function formatTime(date) {
 
         return `${pad(date.getHours())}:${pad(date.getMinutes())}`;
 
     }
 
-
     function getCurrentTimeString() {
 
         return formatTime(new Date());
 
     }
-
 
     function roundUpToNext30Minutes(date) {
 
@@ -404,7 +383,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     }
 
-
     function showWarning(message) {
 
         warning.textContent = message;
@@ -419,7 +397,6 @@ document.addEventListener('DOMContentLoaded', function () {
         );
 
     }
-
 
     function hideWarning() {
 
@@ -436,7 +413,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     }
 
-
     function getMinimumStartTime() {
 
         const now = new Date();
@@ -452,7 +428,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     }
 
-
     function updateTimeLimit() {
 
         hideWarning();
@@ -463,7 +438,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!selectedDate) {
             return;
         }
-
 
         if (selectedDate === today) {
 
@@ -504,7 +478,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     }
 
-
     function updateEndTime() {
 
         if (!startInput.value) {
@@ -514,7 +487,6 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
 
         }
-
 
         const [hours, minutes] =
             startInput.value.split(':').map(Number);
@@ -533,7 +505,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         endInput.min = minimumEnd;
 
-
         if (
             endInput.value &&
             endInput.value < minimumEnd
@@ -546,7 +517,6 @@ document.addEventListener('DOMContentLoaded', function () {
         validateCurrentSelection();
 
     }
-
 
     function validateCurrentSelection() {
 
@@ -561,7 +531,6 @@ document.addEventListener('DOMContentLoaded', function () {
         ) {
             return;
         }
-
 
         if (selectedDate === today) {
 
@@ -588,7 +557,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         }
 
-
         if (
             endInput.value &&
             endInput.value <= startInput.value
@@ -602,12 +570,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     }
 
-
     dateInput.addEventListener(
         'change',
         updateTimeLimit
     );
-
 
     startInput.addEventListener(
         'change',
@@ -619,12 +585,10 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     );
 
-
     endInput.addEventListener(
         'change',
         validateCurrentSelection
     );
-
 
     updateTimeLimit();
 

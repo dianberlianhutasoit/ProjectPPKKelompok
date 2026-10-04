@@ -90,7 +90,7 @@ class ReportFacilityStatusTest extends TestCase
         $staff = $this->makeStaff();
         $facility = $this->makeFacility('MAINTENANCE');
         $report = $this->makeReport($facility, 'PROCESSING');
-        $this->makeReport($facility, 'PROCESSING'); // laporan lain masih ditangani
+        $this->makeReport($facility, 'PROCESSING'); // Another report is still processing.
 
         $this->actingAs($staff)->patch(route('staff.reports.update', $report), [
             'status' => 'COMPLETED',
