@@ -19,24 +19,57 @@ class FacilityController extends Controller
             $query->where('status', '!=', 'INACTIVE');
         }
 
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%'.$request->input('search').'%');
+        }
+
         if ($request->filled('type')) {
             $query->where('type', $request->string('type'));
         }
+
         if ($request->filled('location')) {
-            $query->where('location', 'like', '%'.$request->string('location').'%');
+            $query->where('location', $request->string('location'));
         }
+
         if ($request->filled('min_capacity')) {
             $query->where('capacity', '>=', (int) $request->input('min_capacity'));
         }
 
         $facilities = $query->orderBy('name')->get();
 
-        $types = Facility::select('type')->distinct()->orderBy('type')->pluck('type');
+        $typesQuery = Facility::query();
+
+        if (! Auth::check() || Auth::user()->role !== 'ADMIN') {
+            $typesQuery->where('status', '!=', 'INACTIVE');
+        }
+
+        $types = $typesQuery
+            ->whereNotNull('type')
+            ->where('type', '!=', '')
+            ->select('type')
+            ->distinct()
+            ->orderBy('type')
+            ->pluck('type');
+
+        $locationsQuery = Facility::query();
+
+        if (! Auth::check() || Auth::user()->role !== 'ADMIN') {
+            $locationsQuery->where('status', '!=', 'INACTIVE');
+        }
+
+        $locations = $locationsQuery
+            ->whereNotNull('location')
+            ->where('location', '!=', '')
+            ->select('location')
+            ->distinct()
+            ->orderBy('location')
+            ->pluck('location');
 
         return view('facilities.index', [
             'facilities' => $facilities,
             'types' => $types,
-            'filters' => $request->only(['type', 'location', 'min_capacity']),
+            'locations' => $locations,
+            'filters' => $request->only(['search', 'type', 'location', 'min_capacity']),
         ]);
     }
 
@@ -86,7 +119,6 @@ class FacilityController extends Controller
         while ($start->lessThan($end)) {
             $slotStart = $start->copy();
             $slotEnd = $start->copy()->addMinutes(30);
-
             $status = 'AVAILABLE';
 
             // Maintenance blocks every slot.
