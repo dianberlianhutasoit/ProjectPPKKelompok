@@ -47,6 +47,14 @@
                             : 'text-[#596460] hover:text-[#2f625b]' }}">
                             Kelola Akun
                         </a>
+                        {{-- Tombol Baru: Rekap Okupansi (analytics) --}}
+                        <a href="{{ route('admin.analytics.index') }}"
+                            class="relative hidden py-2 transition sm:inline
+                            {{ request()->routeIs('admin.analytics.*')
+                            ? 'font-bold text-[#2f625b] after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:bg-[#2f625b]'
+                            : 'text-[#596460] hover:text-[#2f625b]' }}">
+                                Rekap Okupansi
+                        </a>
                     @endif
 
                     @if (auth()->user()->role === 'USER')
