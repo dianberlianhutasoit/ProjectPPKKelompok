@@ -38,9 +38,9 @@ class ReportController extends Controller
     {
         $validated = $request->validate([
             'facility_id' => 'required|exists:facilities,id',
-            'category' => 'required|string|max:255',
+            'category'    => 'required|string|max:255',
             'description' => 'required|string',
-            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'photo'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         $photoPath = null;
@@ -49,12 +49,12 @@ class ReportController extends Controller
         }
 
         Report::create([
-            'user_id' => Auth::id(),
+            'user_id'     => Auth::id(),
             'facility_id' => $validated['facility_id'],
-            'category' => $validated['category'],
+            'category'    => $validated['category'],
             'description' => $validated['description'],
-            'photo' => $photoPath,
-            'status' => 'NEW',
+            'photo'       => $photoPath,
+            'status'      => 'NEW',
         ]);
 
         return redirect()->route('reports.index')->with('success', 'Laporan berhasil dibuat.');
@@ -91,7 +91,7 @@ class ReportController extends Controller
     public function update(Request $request, Report $report)
     {
         $validated = $request->validate([
-            'status' => 'required|in:NEW,PROCESSING,COMPLETED,REJECTED',
+            'status'          => 'required|in:NEW,PROCESSING,COMPLETED,REJECTED',
             'resolution_note' => 'nullable|string|max:2000',
         ]);
 
@@ -134,41 +134,7 @@ class ReportController extends Controller
 
         return back()->with('success', 'Status laporan berhasil diperbarui.');
     }
-    // Ekspor data laporan kerusakan ke CSV
-    public function exportCsv()
-    {
-        $fileName = 'rekap_laporan_kerusakan_' . date('Y-m-d_H-i') . '.csv';
-        $reports = Report::with(['facility', 'user'])->get();
 
-        $headers = [
-            "Content-type"        => "text/csv; charset=UTF-8",
-            "Content-Disposition" => "attachment; filename=$fileName",
-            "Pragma"              => "no-cache",
-            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
-            "Expires"             => "0"
-        ];
 
-        $callback = function () use ($reports) {
-            $file = fopen('php://output', 'w');
-            fputs($file, "\xEF\xBB\xBF"); // UTF-8 BOM untuk Excel
-
-            fputcsv($file, ['ID Laporan', 'Nama Fasilitas', 'Nama Pelapor', 'Judul Kerusakan', 'Deskripsi', 'Status', 'Tanggal Lapor']);
-
-            foreach ($reports as $report) {
-                fputcsv($file, [
-                    $report->id,
-                    $report->facility->name ?? '-',
-                    $report->user->name ?? '-',
-                    $report->title,
-                    $report->description,
-                    $report->status,
-                    $report->created_at->format('d-m-Y H:i'),
-                ]);
-            }
-
-            fclose($file);
-        };
-
-        return response()->stream($callback, 200, $headers);
-    }
+   
 }
