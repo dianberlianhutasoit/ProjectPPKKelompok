@@ -15,7 +15,7 @@
                 </p>
 
                 <h1 class="mt-2 text-4xl font-bold tracking-tight text-[#263634]">
-                    Kelola Pengguna
+                    Kelola Akun
                 </h1>
 
                 <p class="mt-2 text-base leading-6 text-[#68736f]">
