@@ -14,19 +14,19 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $users = [
-            ['Dian Berlian', 'dianberlian@undip.ac.id', 'dian1231', 'ADMIN'],
+            ['Dian Berlian', 'dianberlian@undip.ac.id', 'dian123', 'ADMIN'],
             ['Bagus Prasetyo', 'bagus.prasetyo@undip.ac.id', 'bagus123', 'ADMIN'],
             ['Sinta Maharani', 'sinta.maharani@undip.ac.id', 'sinta123', 'ADMIN'],
 
             ['Marchella Arkhina', 'marchell@undip.ac.id', 'marsel123', 'STAFF'],
-            ['Andi Kurniawan', 'andi.kurniawan@undip.ac.id', 'andi1231', 'STAFF'],
-            ['Rina Wulandari', 'rina.wulandari@undip.ac.id', 'rina1231', 'STAFF'],
-            ['Dedi Supriyanto', 'dedi.supriyanto@undip.ac.id', 'dedi1231', 'STAFF'],
+            ['Andi Kurniawan', 'andi.kurniawan@undip.ac.id', 'andi123', 'STAFF'],
+            ['Rina Wulandari', 'rina.wulandari@undip.ac.id', 'rina123', 'STAFF'],
+            ['Dedi Supriyanto', 'dedi.supriyanto@undip.ac.id', 'dedi123', 'STAFF'],
             ['Nadia Putri', 'nadia.putri@undip.ac.id', 'nadia123', 'STAFF'],
             ['Hendra Gunawan', 'hendra.gunawan@undip.ac.id', 'hendra123', 'STAFF'],
 
             ['Kayla Febrina', 'kayla@students.undip.ac.id', 'kayla123', 'USER'],
-            ['Firdaus Argifari', 'argifari@students.undip.ac.id', 'argi1231', 'USER'],
+            ['Firdaus Argifari', 'argifari@students.undip.ac.id', 'argi123', 'USER'],
             ['Aulia Rahma', 'aulia.rahma@students.undip.ac.id', 'aulia123', 'USER'],
             ['Rizky Ramadhan', 'rizky.ramadhan@students.undip.ac.id', 'rizky123', 'USER'],
             ['Putri Anjani', 'putri.anjani@students.undip.ac.id', 'putri123', 'USER'],
@@ -34,7 +34,7 @@ class DatabaseSeeder extends Seeder
             ['Intan Permata', 'intan.permata@students.undip.ac.id', 'intan123', 'USER'],
             ['Fajar Nugroho', 'fajar.nugroho@students.undip.ac.id', 'fajar123', 'USER'],
             ['Dinda Lestari', 'dinda.lestari@students.undip.ac.id', 'dinda123', 'USER'],
-            ['Yoga Saputra', 'yoga.saputra@students.undip.ac.id', 'yoga1231', 'USER'],
+            ['Yoga Saputra', 'yoga.saputra@students.undip.ac.id', 'yoga123', 'USER'],
         ];
 
         foreach ($users as [$name, $email, $plain, $role]) {
