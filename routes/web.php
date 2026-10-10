@@ -54,8 +54,8 @@ Route::middleware(['auth', 'active', 'role:ADMIN'])->prefix('admin')->name('admi
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
 
     // Halaman Tersendiri Rekap Okupansi & Frekuensi Kerusakan (Khusus Admin)
-    Route::get('/analytics', 'App\\Http\\Controllers\\Admin\\AnalyticsController@index')->name('analytics.index');
-    Route::get('/analytics/export-csv', 'App\\Http\\Controllers\\Admin\\AnalyticsController@exportCsv')->name('analytics.exportCsv');
+    Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
+    Route::get('/analytics/export-csv', [AnalyticsController::class, 'exportCsv'])->name('analytics.exportCsv');
 });
 
 // =========================================================
@@ -79,7 +79,7 @@ Route::middleware(['auth', 'active', 'role:USER'])->group(function () {
 // STAFF WORKSPACE (PERSETUJUAN RESERVASI & PENANGANAN LAPORAN)
 // =========================================================
 Route::middleware(['auth', 'active', 'role:STAFF'])->prefix('staff')->name('staff.')->group(function () {
-    // Management Laporan Staff (Export CSV wajib ditaruh sebelum {report})
+    // Management Laporan Staff
     Route::get('/reports', [ReportController::class, 'staffIndex'])->name('reports.index');
     Route::get('/reports/{report}', [ReportController::class, 'staffShow'])->name('reports.show');
     Route::patch('/reports/{report}', [ReportController::class, 'update'])->name('reports.update');
