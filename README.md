@@ -1,58 +1,277 @@
-# Campus Facility System
+# Backend - Campus Facility System
 
-Sistem peminjaman fasilitas dan pelaporan kerusakan kampus Universitas Diponegoro (Tembalang).
-Dibangun dengan Laravel 12 + PHP 8.2. SQLite untuk pengembangan, MySQL untuk produksi (via `.env`).
+Branch ini berisi pengembangan backend untuk **Campus Facility System**, yaitu sistem reservasi dan pelaporan fasilitas kampus.
 
-## Peran
+Fokus utama backend adalah pengelolaan **database, autentikasi, otorisasi, akun pengguna, fasilitas, serta keamanan akses berdasarkan role** menggunakan Laravel.
 
-- **ADMIN** — kelola fasilitas (`/facilities/create`, `/facilities/{id}/edit`, nonaktifkan via `INACTIVE`) dan kelola/verifikasi akun (`/admin/users`).
-- **USER** — ajukan dan batalkan reservasi miliknya (`/reservations`), buat dan lihat laporan kerusakannya (`/reports`).
-- **STAFF** — setujui/tolak/batalkan reservasi (`/staff/reservations`), proses laporan kerusakan (`/staff/reports`).
-- **Guest** — katalog dan detail fasilitas beserta slot ketersediaan (`/facilities`, `/facilities/{id}`); `INACTIVE` mengembalikan 404.
+## Scope Backend
 
-Akun baru mendaftar lewat `/register` sebagai `USER` berstatus `PENDING` dan baru bisa login setelah disetujui admin. Email wajib domain UNDIP (`students.undip.ac.id` / `undip.ac.id`).
+Implementasi backend pada branch ini meliputi:
 
-## Rute utama
+- setup database, migration, dan seeder,
+- register, login, dan logout,
+- verifikasi akun USER oleh Admin,
+- pembatasan akses berdasarkan role,
+- pengelolaan akun USER dan STAFF,
+- pengelolaan data fasilitas,
+- perlindungan route dari akses role yang tidak sesuai,
+- integrasi backend dengan fitur reservasi dan laporan.
 
-Sumber kebenaran: `routes/web.php`.
+## Teknologi
 
-| Akses | Rute |
-|---|---|
-| Publik | `/` → redirect `/facilities`; `GET /facilities`, `GET /facilities/{id}` (+ slot `AVAILABLE`/`RESERVED`/`MAINTENANCE`) |
-| Auth | `/register`, `/login`, `POST /logout`, `GET /dashboard` (cabang per role) |
-| USER | `GET/POST /facilities/{facility}/reservations`, `GET /reservations`, `PATCH /reservations/{reservation}/cancel` |
-| USER | `GET/POST /reports`, `GET /reports/create`, `GET /reports/{report}` (milik sendiri) |
-| STAFF | `GET /staff/reservations`, `PATCH .../approve`, `.../reject`, `.../cancel` |
-| STAFF | `GET /staff/reports`, `GET /staff/reports/{report}`, `PATCH /staff/reports/{report}` |
-| ADMIN | `/facilities/create`, `/facilities/{id}/edit`, `DELETE` → `INACTIVE`; `/admin/users`, `/admin/users/create`, `PATCH /admin/users/{user}/verify`, `DELETE /admin/users/{user}` |
+- Laravel 12
+- PHP 8.2+
+- MySQL / MariaDB
+- Eloquent ORM
+- Composer
 
-## Aturan bisnis penting
+## Struktur Database
 
-- Slot reservasi kelipatan 30 menit, jam operasional 07:00–20:00; reservasi hari yang sama minimal 2 jam dari sekarang.
-- Jadwal bentrok (overlap dengan `PENDING`/`APPROVED`) ditolak; USER hanya bisa batalkan `PENDING` maksimal 2 jam sebelum mulai; STAFF hanya bisa batalkan `APPROVED` maksimal 30 menit sebelum mulai.
-- Laporan `PROCESSING` mengubah fasilitas `AVAILABLE` → `MAINTENANCE`; `COMPLETED`/`REJECTED` wajib `resolution_note` dan mengembalikan `AVAILABLE` bila tidak ada laporan `PROCESSING` lain.
-- Nonaktifkan fasilitas/akun = status `INACTIVE`, record tidak dihapus agar riwayat tetap terjaga.
-- Rute sensitif dijaga middleware `auth` + `active` (hanya `ACTIVE`) + `role:...`.
+Tabel utama yang digunakan:
 
-## Cara menjalankan
+```text
+users
+facilities
+reservations
+reports
+```
+
+Relasi utama:
+
+```text
+User 1 --- N Reservations
+User 1 --- N Reports
+
+Facility 1 --- N Reservations
+Facility 1 --- N Reports
+```
+
+## Autentikasi dan Role
+
+Sistem memiliki tiga role utama yang dapat login:
+
+### USER
+- dapat melakukan registrasi mandiri,
+- status awal akun adalah `PENDING`,
+- hanya dapat login setelah disetujui Admin.
+
+### STAFF
+- dibuat langsung oleh Admin,
+- menggunakan email domain `@undip.ac.id`,
+- menangani reservasi dan laporan kerusakan.
+
+### ADMIN
+- mengelola akun USER dan STAFF,
+- memverifikasi atau menolak registrasi USER,
+- mengelola fasilitas,
+- melihat rekap okupansi dan kerusakan.
+
+## Status User
+
+Status akun yang digunakan:
+
+```text
+PENDING
+ACTIVE
+REJECTED
+INACTIVE
+```
+
+Hanya akun dengan status `ACTIVE` yang dapat mengakses fitur yang dilindungi.
+
+## Middleware dan Keamanan Akses
+
+Route penting dilindungi menggunakan middleware:
+
+```text
+auth
+active
+role
+```
+
+Contoh:
+
+```php
+Route::middleware(['auth', 'active', 'role:ADMIN'])->group(function () {
+    // route khusus admin
+});
+```
+
+Middleware digunakan untuk memastikan user hanya dapat mengakses fitur sesuai role dan status akunnya.
+
+## Pengelolaan Akun
+
+Admin dapat:
+
+- membuat akun USER,
+- membuat akun STAFF,
+- menyetujui registrasi USER,
+- menolak registrasi USER dengan alasan,
+- menonaktifkan akun.
+
+Akun STAFF hanya dapat dibuat menggunakan email dengan domain:
+
+```text
+@undip.ac.id
+```
+
+## Pengelolaan Fasilitas
+
+Admin dapat:
+
+- menambah fasilitas,
+- mengubah data fasilitas,
+- mengubah status fasilitas,
+- menonaktifkan fasilitas.
+
+Status fasilitas:
+
+```text
+AVAILABLE
+MAINTENANCE
+INACTIVE
+```
+
+Fasilitas berstatus `INACTIVE` tidak dapat digunakan untuk reservasi baru dan tidak ditampilkan kepada pengguna umum.
+
+## Aturan Backend Reservasi
+
+Backend menerapkan beberapa aturan utama:
+
+- jam operasional reservasi `07.00–20.00`,
+- interval waktu reservasi 30 menit,
+- reservasi hari yang sama minimal 2 jam sebelum waktu mulai,
+- jumlah peserta tidak boleh melebihi kapasitas fasilitas,
+- jadwal yang bentrok dengan reservasi `PENDING` atau `APPROVED` ditolak,
+- USER hanya dapat membatalkan reservasi `PENDING`,
+- STAFF hanya dapat membatalkan reservasi `APPROVED` sebelum batas waktu tertentu.
+
+## Laporan Kerusakan
+
+Status laporan yang digunakan:
+
+```text
+NEW
+PROCESSING
+COMPLETED
+REJECTED
+```
+
+Ketika laporan berubah menjadi `PROCESSING`, fasilitas terkait dapat berubah menjadi:
+
+```text
+MAINTENANCE
+```
+
+Jika penanganan selesai dan tidak ada laporan lain yang masih diproses, fasilitas dapat kembali menjadi:
+
+```text
+AVAILABLE
+```
+
+## Konfigurasi Database
+
+Gunakan konfigurasi berikut pada `.env`:
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=campus_facility
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+Sesuaikan `DB_USERNAME` dan `DB_PASSWORD` dengan konfigurasi MySQL/MariaDB masing-masing.
+
+## Setup Project
+
+Install dependency:
 
 ```bash
 composer install
-copy .env.example .env   # Linux: cp .env.example .env
+npm install
+```
+
+Salin file environment:
+
+Windows:
+
+```bash
+copy .env.example .env
+```
+
+Linux/macOS:
+
+```bash
+cp .env.example .env
+```
+
+Generate application key:
+
+```bash
 php artisan key:generate
-php artisan migrate --seed
+```
+
+Jalankan migration dan seeder:
+
+```bash
+php artisan migrate:fresh --seed
+```
+
+Buat symbolic link untuk storage:
+
+```bash
 php artisan storage:link
+```
+
+## Menjalankan Aplikasi
+
+Terminal pertama:
+
+```bash
 php artisan serve
 ```
 
-Buka `http://localhost:8000`. Untuk MySQL, sesuaikan `DB_*` di `.env` sebelum migrasi.
-Seeder mengisi 19 user (3 admin, 6 staff, 10 user, semua `ACTIVE`), 20 fasilitas, dan 5 reservasi contoh —
-contoh: `dianberlian@undip.ac.id` (ADMIN), `marchell@undip.ac.id` (STAFF), `kayla@students.undip.ac.id` (USER); password lihat `database/seeders/DatabaseSeeder.php`.
+Terminal kedua:
 
-## Test & CI
+```bash
+npm run dev
+```
+
+Akses aplikasi melalui:
+
+```text
+http://localhost:8000
+```
+
+## Testing
+
+Jalankan automated test dengan:
 
 ```bash
 php artisan test
 ```
 
-Mencakup RBAC, verifikasi akun, ketersediaan fasilitas, aturan waktu reservasi, batas cancel user/staff, dan alur laporan. Setiap push menjalankan `.github/workflows/ci.yml` (install, key, migrasi SQLite, test).
+Testing mencakup:
+
+- autentikasi,
+- otorisasi dan role access,
+- verifikasi akun,
+- pengelolaan fasilitas,
+- aturan reservasi,
+- pembatalan reservasi,
+- dan proses laporan kerusakan.
+
+## Branch
+
+```text
+feature/person-1-backend
+```
+
+Branch ini digunakan untuk pengembangan bagian backend dan database sebelum perubahan digabungkan ke branch `main`.
+
+## Kontributor
+
+**Dian Berlian Hutasoit**  
+Backend & Database Architect
