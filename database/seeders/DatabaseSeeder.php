@@ -14,27 +14,27 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $users = [
-            ['Dian Berlian', 'dianberlian@undip.ac.id', 'dian123', 'ADMIN'],
-            ['Bagus Prasetyo', 'bagus.prasetyo@undip.ac.id', 'bagus123', 'ADMIN'],
-            ['Sinta Maharani', 'sinta.maharani@undip.ac.id', 'sinta123', 'ADMIN'],
+            ['Dian Berlian', 'dianberlian@undip.ac.id', 'dian1234', 'ADMIN'],
+            ['Bagus Prasetyo', 'bagus.prasetyo@undip.ac.id', 'bagus1234', 'ADMIN'],
+            ['Sinta Maharani', 'sinta.maharani@undip.ac.id', 'sinta1234', 'ADMIN'],
 
-            ['Marchella Arkhina', 'marchell@undip.ac.id', 'marsel123', 'STAFF'],
-            ['Andi Kurniawan', 'andi.kurniawan@undip.ac.id', 'andi123', 'STAFF'],
-            ['Rina Wulandari', 'rina.wulandari@undip.ac.id', 'rina123', 'STAFF'],
-            ['Dedi Supriyanto', 'dedi.supriyanto@undip.ac.id', 'dedi123', 'STAFF'],
-            ['Nadia Putri', 'nadia.putri@undip.ac.id', 'nadia123', 'STAFF'],
-            ['Hendra Gunawan', 'hendra.gunawan@undip.ac.id', 'hendra123', 'STAFF'],
+            ['Marchella Arkhina', 'marchell@undip.ac.id', 'marsel1234', 'STAFF'],
+            ['Andi Kurniawan', 'andi.kurniawan@undip.ac.id', 'andi1234', 'STAFF'],
+            ['Rina Wulandari', 'rina.wulandari@undip.ac.id', 'rina1234', 'STAFF'],
+            ['Dedi Supriyanto', 'dedi.supriyanto@undip.ac.id', 'dedi1234', 'STAFF'],
+            ['Nadia Putri', 'nadia.putri@undip.ac.id', 'nadia1234', 'STAFF'],
+            ['Hendra Gunawan', 'hendra.gunawan@undip.ac.id', 'hendra1234', 'STAFF'],
 
-            ['Kayla Febrina', 'kayla@students.undip.ac.id', 'kayla123', 'USER'],
-            ['Firdaus Argifari', 'argifari@students.undip.ac.id', 'argi123', 'USER'],
-            ['Aulia Rahma', 'aulia.rahma@students.undip.ac.id', 'aulia123', 'USER'],
-            ['Rizky Ramadhan', 'rizky.ramadhan@students.undip.ac.id', 'rizky123', 'USER'],
-            ['Putri Anjani', 'putri.anjani@students.undip.ac.id', 'putri123', 'USER'],
-            ['Bagas Pratama', 'bagas.pratama@students.undip.ac.id', 'bagas123', 'USER'],
-            ['Intan Permata', 'intan.permata@students.undip.ac.id', 'intan123', 'USER'],
-            ['Fajar Nugroho', 'fajar.nugroho@students.undip.ac.id', 'fajar123', 'USER'],
-            ['Dinda Lestari', 'dinda.lestari@students.undip.ac.id', 'dinda123', 'USER'],
-            ['Yoga Saputra', 'yoga.saputra@students.undip.ac.id', 'yoga123', 'USER'],
+            ['Kayla Febrina', 'kayla@students.undip.ac.id', 'kayla1234', 'USER'],
+            ['Firdaus Argifari', 'argifari@students.undip.ac.id', 'argi1234', 'USER'],
+            ['Aulia Rahma', 'aulia.rahma@students.undip.ac.id', 'aulia1234', 'USER'],
+            ['Rizky Ramadhan', 'rizky.ramadhan@students.undip.ac.id', 'rizky1234', 'USER'],
+            ['Putri Anjani', 'putri.anjani@students.undip.ac.id', 'putri1234', 'USER'],
+            ['Bagas Pratama', 'bagas.pratama@students.undip.ac.id', 'bagas1234', 'USER'],
+            ['Intan Permata', 'intan.permata@students.undip.ac.id', 'intan1234', 'USER'],
+            ['Fajar Nugroho', 'fajar.nugroho@students.undip.ac.id', 'fajar1234', 'USER'],
+            ['Dinda Lestari', 'dinda.lestari@students.undip.ac.id', 'dinda1234', 'USER'],
+            ['Yoga Saputra', 'yoga.saputra@students.undip.ac.id', 'yoga1234', 'USER'],
         ];
 
         foreach ($users as [$name, $email, $plain, $role]) {
