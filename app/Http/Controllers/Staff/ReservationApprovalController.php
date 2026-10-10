@@ -115,19 +115,19 @@ class ReservationApprovalController extends Controller
         $reservation = Reservation::findOrFail($id);
 
         if ($reservation->status === 'PENDING') {
-            return back()->with('error', 'Reservasi PENDING diproses melalui tombol Setujui / Tolak, bukan pembatalan.');
+            return back()->withErrors(['reservation' => 'Reservasi PENDING diproses melalui tombol Setujui / Tolak, bukan pembatalan.']);
         }
 
         if ($reservation->status !== 'APPROVED') {
-            return back()->with('error', 'Hanya reservasi yang sudah disetujui yang dapat dibatalkan.');
+            return back()->withErrors(['reservation' => 'Hanya reservasi yang sudah disetujui yang dapat dibatalkan.']);
         }
 
         // Petugas hanya bisa membatalkan paling lambat 30 menit sebelum waktu pelaksanaan
         $startTime = Carbon::parse($reservation->start_time, config('app.timezone'));
         $cancelDeadline = $startTime->copy()->subMinutes(30);
 
-        if (now(config('app.timezone'))->greaterThanOrEqualTo($cancelDeadline)) {
-            return back()->with('error', 'Reservasi hanya dapat dibatalkan paling lambat 30 menit sebelum waktu pelaksanaan.');
+        if (now(config('app.timezone'))->greaterThan($cancelDeadline)) {
+            return back()->withErrors(['reservation' => 'Reservasi hanya dapat dibatalkan paling lambat 30 menit sebelum waktu pelaksanaan.']);
         }
 
         $reservation->update([
