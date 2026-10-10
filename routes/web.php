@@ -78,7 +78,7 @@ Route::middleware(['auth', 'active', 'role:USER'])->group(function () {
 // =========================================================
 // STAFF WORKSPACE (PERSETUJUAN RESERVASI & PENANGANAN LAPORAN)
 // =========================================================
-Route::middleware(['auth', 'active', 'role:STAFF,ADMIN'])->prefix('staff')->name('staff.')->group(function () {
+Route::middleware(['auth', 'active', 'role:STAFF'])->prefix('staff')->name('staff.')->group(function () {
     // Management Laporan Staff (Export CSV wajib ditaruh sebelum {report})
     Route::get('/reports/export-csv', [ReportController::class, 'exportCsv'])->name('reports.exportCsv');
     Route::get('/reports', [ReportController::class, 'staffIndex'])->name('reports.index');
