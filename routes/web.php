@@ -80,11 +80,9 @@ Route::middleware(['auth', 'active', 'role:USER'])->group(function () {
 // =========================================================
 Route::middleware(['auth', 'active', 'role:STAFF'])->prefix('staff')->name('staff.')->group(function () {
     // Management Laporan Staff (Export CSV wajib ditaruh sebelum {report})
-    Route::get('/reports/export-csv', [ReportController::class, 'exportCsv'])->name('reports.exportCsv');
     Route::get('/reports', [ReportController::class, 'staffIndex'])->name('reports.index');
     Route::get('/reports/{report}', [ReportController::class, 'staffShow'])->name('reports.show');
     Route::patch('/reports/{report}', [ReportController::class, 'update'])->name('reports.update');
-    Route::patch('/reports/{report}/status', [ReportController::class, 'updateStatus'])->name('reports.updateStatus');
 
     // Persetujuan Reservasi Staff
     Route::get('/reservations', [ReservationApprovalController::class, 'index'])->name('reservations.index');
